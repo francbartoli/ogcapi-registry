@@ -64,7 +64,8 @@ class SpecificationMetadata(BaseModel):
     model_config = {"frozen": True}
 
     source_url: str | None = Field(
-        None, description="Original URL from which the specification was fetched"
+        None,
+        description="Original URL from which the specification was fetched",
     )
     fetched_at: datetime = Field(
         default_factory=datetime.utcnow,
@@ -73,7 +74,9 @@ class SpecificationMetadata(BaseModel):
     content_type: str | None = Field(
         None, description="Original content type (e.g., 'application/json')"
     )
-    etag: str | None = Field(None, description="ETag header from the HTTP response")
+    etag: str | None = Field(
+        None, description="ETag header from the HTTP response"
+    )
 
 
 class RegisteredSpecification(BaseModel):
@@ -85,7 +88,9 @@ class RegisteredSpecification(BaseModel):
 
     model_config = {"frozen": True}
 
-    key: SpecificationKey = Field(..., description="Unique identifier for this spec")
+    key: SpecificationKey = Field(
+        ..., description="Unique identifier for this spec"
+    )
     metadata: SpecificationMetadata = Field(
         ..., description="Metadata about the specification"
     )
@@ -159,7 +164,10 @@ class ValidationResult(BaseModel):
     ) -> "ValidationResult":
         """Create a successful validation result."""
         return cls(
-            is_valid=True, errors=(), warnings=warnings, validated_against=validated_against
+            is_valid=True,
+            errors=(),
+            warnings=warnings,
+            validated_against=validated_against,
         )
 
     @classmethod

@@ -162,7 +162,9 @@ CONFORMANCE_PATTERNS: dict[OGCAPIType, list[str]] = {
 }
 
 
-def parse_conformance_classes(conformance_data: list[str] | dict[str, Any]) -> list[ConformanceClass]:
+def parse_conformance_classes(
+    conformance_data: list[str] | dict[str, Any],
+) -> list[ConformanceClass]:
     """Parse conformance classes from various formats.
 
     Args:
@@ -180,7 +182,9 @@ def parse_conformance_classes(conformance_data: list[str] | dict[str, Any]) -> l
     return [ConformanceClass(uri=uri) for uri in uris if isinstance(uri, str)]
 
 
-def detect_api_types(conformance_classes: list[ConformanceClass]) -> set[OGCAPIType]:
+def detect_api_types(
+    conformance_classes: list[ConformanceClass],
+) -> set[OGCAPIType]:
     """Detect all OGC API types from a list of conformance classes.
 
     Args:
@@ -199,7 +203,9 @@ def detect_api_types(conformance_classes: list[ConformanceClass]) -> set[OGCAPIT
     return types
 
 
-def get_primary_api_type(conformance_classes: list[ConformanceClass]) -> OGCAPIType:
+def get_primary_api_type(
+    conformance_classes: list[ConformanceClass],
+) -> OGCAPIType:
     """Determine the primary OGC API type from conformance classes.
 
     The primary type is determined by priority (most specific first).

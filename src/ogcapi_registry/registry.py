@@ -4,7 +4,10 @@ import threading
 from typing import Iterator
 
 from .client import AsyncOpenAPIClient, OpenAPIClient
-from .exceptions import SpecificationAlreadyExistsError, SpecificationNotFoundError
+from .exceptions import (
+    SpecificationAlreadyExistsError,
+    SpecificationNotFoundError,
+)
 from .models import (
     RegisteredSpecification,
     SpecificationKey,
@@ -23,7 +26,9 @@ class SpecificationRegistry:
 
     def __init__(self) -> None:
         """Initialize an empty registry."""
-        self._specifications: dict[SpecificationKey, RegisteredSpecification] = {}
+        self._specifications: dict[
+            SpecificationKey, RegisteredSpecification
+        ] = {}
         self._lock = threading.RLock()
         self._client = OpenAPIClient()
 
@@ -146,7 +151,9 @@ class SpecificationRegistry:
         """
         with self._lock:
             if key not in self._specifications:
-                raise SpecificationNotFoundError(key.spec_type.value, key.version)
+                raise SpecificationNotFoundError(
+                    key.spec_type.value, key.version
+                )
             return self._specifications[key]
 
     def exists(self, spec_type: SpecificationType, version: str) -> bool:
@@ -280,7 +287,10 @@ class AsyncSpecificationRegistry:
         Returns:
             The registered specification
         """
-        content, metadata = await self._async_client.fetch_and_validate_structure(url)
+        (
+            content,
+            metadata,
+        ) = await self._async_client.fetch_and_validate_structure(url)
 
         # Infer type and version from content if not provided
         openapi_version = content["openapi"]

@@ -6,7 +6,6 @@ from .models import ValidationResult
 from .ogc_types import (
     ConformanceClass,
     OGCAPIType,
-    detect_api_types,
     parse_conformance_classes,
 )
 from .strategies import (
@@ -103,7 +102,9 @@ class StrategyRegistry:
 
         # Multiple matches - create composite strategy
         # Exclude CommonStrategy if we have more specific ones
-        strategies = [s for _, s in matching_strategies if s.api_type != OGCAPIType.COMMON]
+        strategies = [
+            s for _, s in matching_strategies if s.api_type != OGCAPIType.COMMON
+        ]
 
         if not strategies:
             strategies = [matching_strategies[0][1]]
@@ -116,7 +117,10 @@ class StrategyRegistry:
     def detect_and_validate(
         self,
         document: dict[str, Any],
-        conformance_classes: list[ConformanceClass] | list[str] | dict[str, Any] | None = None,
+        conformance_classes: list[ConformanceClass]
+        | list[str]
+        | dict[str, Any]
+        | None = None,
     ) -> ValidationResult:
         """Detect the appropriate strategy and validate a document.
 
@@ -205,7 +209,9 @@ class StrategyRegistry:
         # Always add common core if we have basic OGC API structure
         if "/" in path_set and "/conformance" in path_set:
             inferred.append(
-                ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core")
+                ConformanceClass(
+                    uri="http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core"
+                )
             )
 
         # Check for Features patterns
@@ -218,12 +224,16 @@ class StrategyRegistry:
 
             if has_feature_id or (not has_record_id and has_items):
                 inferred.append(
-                    ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core")
+                    ConformanceClass(
+                        uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"
+                    )
                 )
 
             if has_record_id:
                 inferred.append(
-                    ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-records-1/1.0/conf/core")
+                    ConformanceClass(
+                        uri="http://www.opengis.net/spec/ogcapi-records-1/1.0/conf/core"
+                    )
                 )
 
         # Check for Tiles patterns
@@ -231,7 +241,9 @@ class StrategyRegistry:
         has_tile_matrix = any("tileMatrix" in p for p in path_set)
         if has_tiles and has_tile_matrix:
             inferred.append(
-                ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/core")
+                ConformanceClass(
+                    uri="http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/core"
+                )
             )
 
         # Check for Processes patterns
@@ -239,21 +251,27 @@ class StrategyRegistry:
         has_execution = any("/execution" in p for p in path_set)
         if has_processes and has_execution:
             inferred.append(
-                ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-processes-1/1.0/conf/core")
+                ConformanceClass(
+                    uri="http://www.opengis.net/spec/ogcapi-processes-1/1.0/conf/core"
+                )
             )
 
         # Check for Maps patterns
         has_map = any("/map" in p for p in path_set)
         if has_map and has_collections:
             inferred.append(
-                ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-maps-1/1.0/conf/core")
+                ConformanceClass(
+                    uri="http://www.opengis.net/spec/ogcapi-maps-1/1.0/conf/core"
+                )
             )
 
         # Check for Coverages patterns
         has_coverage = any("/coverage" in p for p in path_set)
         if has_coverage and has_collections:
             inferred.append(
-                ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-coverages-1/1.0/conf/core")
+                ConformanceClass(
+                    uri="http://www.opengis.net/spec/ogcapi-coverages-1/1.0/conf/core"
+                )
             )
 
         # Check for EDR patterns
@@ -261,21 +279,27 @@ class StrategyRegistry:
         has_edr = any(any(q in p for q in edr_queries) for p in path_set)
         if has_edr and has_collections:
             inferred.append(
-                ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core")
+                ConformanceClass(
+                    uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core"
+                )
             )
 
         # Check for Styles patterns
         has_styles = "/styles" in path_set
         if has_styles:
             inferred.append(
-                ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-styles-1/1.0/conf/core")
+                ConformanceClass(
+                    uri="http://www.opengis.net/spec/ogcapi-styles-1/1.0/conf/core"
+                )
             )
 
         # Check for Routes patterns
         has_routes = "/routes" in path_set
         if has_routes:
             inferred.append(
-                ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-routes-1/1.0/conf/core")
+                ConformanceClass(
+                    uri="http://www.opengis.net/spec/ogcapi-routes-1/1.0/conf/core"
+                )
             )
 
         return inferred
@@ -315,7 +339,10 @@ def get_default_registry() -> StrategyRegistry:
 
 def validate_ogc_api(
     document: dict[str, Any],
-    conformance_classes: list[ConformanceClass] | list[str] | dict[str, Any] | None = None,
+    conformance_classes: list[ConformanceClass]
+    | list[str]
+    | dict[str, Any]
+    | None = None,
 ) -> ValidationResult:
     """Validate an OpenAPI document as an OGC API implementation.
 

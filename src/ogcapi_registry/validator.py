@@ -8,7 +8,6 @@ from openapi_pydantic import OpenAPI
 from pydantic import ValidationError as PydanticValidationError
 
 from .exceptions import ParseError
-from .exceptions import ValidationError as OpenAPIValidationError
 from .models import (
     RegisteredSpecification,
     SpecificationKey,
@@ -16,7 +15,6 @@ from .models import (
     ValidationResult,
 )
 from .registry import SpecificationRegistry
-
 
 # OpenAPI 3.0 JSON Schema (simplified core structure)
 # For full validation, use the official OpenAPI JSON Schema
@@ -141,39 +139,47 @@ def validate_openapi_structure(
 
     # Check for openapi field
     if "openapi" not in document:
-        errors.append({
-            "path": "openapi",
-            "message": "Missing required 'openapi' field",
-            "type": "missing_required",
-        })
+        errors.append(
+            {
+                "path": "openapi",
+                "message": "Missing required 'openapi' field",
+                "type": "missing_required",
+            }
+        )
         return ValidationResult.failure(errors)
 
     openapi_version = document["openapi"]
     if not isinstance(openapi_version, str):
-        errors.append({
-            "path": "openapi",
-            "message": "'openapi' field must be a string",
-            "type": "invalid_type",
-        })
+        errors.append(
+            {
+                "path": "openapi",
+                "message": "'openapi' field must be a string",
+                "type": "invalid_type",
+            }
+        )
         return ValidationResult.failure(errors)
 
     # Determine target version
     try:
         detected_type = SpecificationType.from_version(openapi_version)
     except ValueError:
-        errors.append({
-            "path": "openapi",
-            "message": f"Unsupported OpenAPI version: {openapi_version}",
-            "type": "unsupported_version",
-        })
+        errors.append(
+            {
+                "path": "openapi",
+                "message": f"Unsupported OpenAPI version: {openapi_version}",
+                "type": "unsupported_version",
+            }
+        )
         return ValidationResult.failure(errors)
 
     if target_version and detected_type != target_version:
-        warnings.append({
-            "path": "openapi",
-            "message": f"Expected {target_version.value} but found {detected_type.value}",
-            "type": "version_mismatch",
-        })
+        warnings.append(
+            {
+                "path": "openapi",
+                "message": f"Expected {target_version.value} but found {detected_type.value}",
+                "type": "version_mismatch",
+            }
+        )
 
     # Select appropriate schema
     if detected_type == SpecificationType.OPENAPI_3_0:
@@ -184,12 +190,14 @@ def validate_openapi_structure(
     # Validate against JSON Schema
     validator = jsonschema.Draft7Validator(schema)
     for error in validator.iter_errors(document):
-        errors.append({
-            "path": "/".join(str(p) for p in error.absolute_path) or "/",
-            "message": error.message,
-            "type": "schema_error",
-            "schema_path": list(error.schema_path),
-        })
+        errors.append(
+            {
+                "path": "/".join(str(p) for p in error.absolute_path) or "/",
+                "message": error.message,
+                "type": "schema_error",
+                "schema_path": list(error.schema_path),
+            }
+        )
 
     key = SpecificationKey(spec_type=detected_type, version=openapi_version)
 
@@ -197,10 +205,14 @@ def validate_openapi_structure(
         return ValidationResult.failure(
             errors, validated_against=key, warnings=tuple(warnings)
         )
-    return ValidationResult.success(validated_against=key, warnings=tuple(warnings))
+    return ValidationResult.success(
+        validated_against=key, warnings=tuple(warnings)
+    )
 
 
-def validate_openapi_with_pydantic(document: dict[str, Any]) -> ValidationResult:
+def validate_openapi_with_pydantic(
+    document: dict[str, Any],
+) -> ValidationResult:
     """Validate an OpenAPI document using Pydantic models.
 
     This provides stricter validation using the openapi-pydantic library.
@@ -234,11 +246,13 @@ def validate_openapi_with_pydantic(document: dict[str, Any]) -> ValidationResult
     except PydanticValidationError as e:
         for error in e.errors():
             loc = "/".join(str(p) for p in error["loc"]) or "/"
-            errors.append({
-                "path": loc,
-                "message": error["msg"],
-                "type": error["type"],
-            })
+            errors.append(
+                {
+                    "path": loc,
+                    "message": error["msg"],
+                    "type": error["type"],
+                }
+            )
 
     if errors:
         return ValidationResult.failure(errors, validated_against=key)
@@ -272,11 +286,13 @@ def validate_against_reference(
     ref_version = reference.openapi_version
 
     if not doc_version:
-        errors.append({
-            "path": "openapi",
-            "message": "Missing 'openapi' version field",
-            "type": "missing_required",
-        })
+        errors.append(
+            {
+                "path": "openapi",
+                "message": "Missing 'openapi' version field",
+                "type": "missing_required",
+            }
+        )
         return ValidationResult.failure(errors, validated_against=reference.key)
 
     try:
@@ -284,23 +300,29 @@ def validate_against_reference(
         ref_type = reference.key.spec_type
 
         if strict and doc_version != ref_version:
-            errors.append({
-                "path": "openapi",
-                "message": f"Version mismatch: expected {ref_version}, got {doc_version}",
-                "type": "version_mismatch",
-            })
+            errors.append(
+                {
+                    "path": "openapi",
+                    "message": f"Version mismatch: expected {ref_version}, got {doc_version}",
+                    "type": "version_mismatch",
+                }
+            )
         elif doc_type != ref_type:
-            errors.append({
-                "path": "openapi",
-                "message": f"Incompatible OpenAPI type: expected {ref_type.value}, got {doc_type.value}",
-                "type": "type_mismatch",
-            })
+            errors.append(
+                {
+                    "path": "openapi",
+                    "message": f"Incompatible OpenAPI type: expected {ref_type.value}, got {doc_type.value}",
+                    "type": "type_mismatch",
+                }
+            )
     except ValueError as e:
-        errors.append({
-            "path": "openapi",
-            "message": str(e),
-            "type": "unsupported_version",
-        })
+        errors.append(
+            {
+                "path": "openapi",
+                "message": str(e),
+                "type": "unsupported_version",
+            }
+        )
 
     if errors:
         return ValidationResult.failure(
@@ -308,7 +330,9 @@ def validate_against_reference(
         )
 
     # Perform structural validation
-    structure_result = validate_openapi_structure(document, reference.key.spec_type)
+    structure_result = validate_openapi_structure(
+        document, reference.key.spec_type
+    )
 
     if not structure_result.is_valid:
         return ValidationResult.failure(
@@ -328,9 +352,13 @@ def validate_against_reference(
         )
 
     all_warnings = tuple(
-        list(structure_result.warnings) + list(pydantic_result.warnings) + warnings
+        list(structure_result.warnings)
+        + list(pydantic_result.warnings)
+        + warnings
     )
-    return ValidationResult.success(validated_against=reference.key, warnings=all_warnings)
+    return ValidationResult.success(
+        validated_against=reference.key, warnings=all_warnings
+    )
 
 
 def validate_document(
@@ -352,11 +380,15 @@ def validate_document(
         try:
             document = parse_openapi_content(document, format_hint)
         except ParseError as e:
-            return ValidationResult.failure([{
-                "path": "/",
-                "message": str(e),
-                "type": "parse_error",
-            }])
+            return ValidationResult.failure(
+                [
+                    {
+                        "path": "/",
+                        "message": str(e),
+                        "type": "parse_error",
+                    }
+                ]
+            )
 
     # First validate structure
     structure_result = validate_openapi_structure(document)
@@ -374,7 +406,9 @@ def validate_document(
 
     return ValidationResult.success(
         validated_against=structure_result.validated_against,
-        warnings=tuple(list(structure_result.warnings) + list(pydantic_result.warnings)),
+        warnings=tuple(
+            list(structure_result.warnings) + list(pydantic_result.warnings)
+        ),
     )
 
 
@@ -441,11 +475,15 @@ class OpenAPIValidator:
             try:
                 document = parse_openapi_content(document, format_hint)
             except ParseError as e:
-                return ValidationResult.failure([{
-                    "path": "/",
-                    "message": str(e),
-                    "type": "parse_error",
-                }])
+                return ValidationResult.failure(
+                    [
+                        {
+                            "path": "/",
+                            "message": str(e),
+                            "type": "parse_error",
+                        }
+                    ]
+                )
 
         reference = self._registry.get(spec_type, version)
         return validate_against_reference(document, reference, strict=strict)
@@ -473,12 +511,14 @@ class OpenAPIValidator:
         """
         # Find latest version for this type
         specs = [
-            s for s in self._registry.list_specifications()
+            s
+            for s in self._registry.list_specifications()
             if s.key.spec_type == spec_type
         ]
 
         if not specs:
             from .exceptions import SpecificationNotFoundError
+
             raise SpecificationNotFoundError(spec_type.value, "any")
 
         # Sort by version and get latest
@@ -489,11 +529,15 @@ class OpenAPIValidator:
             try:
                 document = parse_openapi_content(document, format_hint)
             except ParseError as e:
-                return ValidationResult.failure([{
-                    "path": "/",
-                    "message": str(e),
-                    "type": "parse_error",
-                }])
+                return ValidationResult.failure(
+                    [
+                        {
+                            "path": "/",
+                            "message": str(e),
+                            "type": "parse_error",
+                        }
+                    ]
+                )
 
         return validate_against_reference(document, latest, strict=strict)
 

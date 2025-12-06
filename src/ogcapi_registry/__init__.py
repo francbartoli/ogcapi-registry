@@ -1,9 +1,10 @@
-"""OpenAPI Registry Validator - A library for validating OpenAPI v3 documents.
+"""OGC API Registry - A library for validating OGC API OpenAPI documents.
 
 This library provides:
 - HTTP client for fetching remote OpenAPI specifications (JSON/YAML)
 - In-memory registry for storing specifications as immutable Pydantic objects
 - Validation functions for validating OpenAPI documents
+- Strategy pattern for OGC API-specific validation based on conformance classes
 """
 
 from .client import AsyncOpenAPIClient, OpenAPIClient
@@ -23,7 +24,34 @@ from .models import (
     SpecificationType,
     ValidationResult,
 )
+from .ogc_types import (
+    CONFORMANCE_PATTERNS,
+    ConformanceClass,
+    OGCAPIType,
+    detect_api_types,
+    get_primary_api_type,
+    parse_conformance_classes,
+)
 from .registry import AsyncSpecificationRegistry, SpecificationRegistry
+from .strategies import (
+    CommonStrategy,
+    CompositeValidationStrategy,
+    CoveragesStrategy,
+    EDRStrategy,
+    FeaturesStrategy,
+    MapsStrategy,
+    ProcessesStrategy,
+    RecordsStrategy,
+    RoutesStrategy,
+    StylesStrategy,
+    TilesStrategy,
+    ValidationStrategy,
+)
+from .strategy_registry import (
+    StrategyRegistry,
+    get_default_registry,
+    validate_ogc_api,
+)
 from .validator import (
     OpenAPIValidator,
     create_validator_with_specs,
@@ -51,6 +79,30 @@ __all__ = [
     "SpecificationMetadata",
     "RegisteredSpecification",
     "ValidationResult",
+    # OGC Types
+    "OGCAPIType",
+    "ConformanceClass",
+    "CONFORMANCE_PATTERNS",
+    "parse_conformance_classes",
+    "detect_api_types",
+    "get_primary_api_type",
+    # Strategies
+    "ValidationStrategy",
+    "CompositeValidationStrategy",
+    "CommonStrategy",
+    "FeaturesStrategy",
+    "TilesStrategy",
+    "ProcessesStrategy",
+    "RecordsStrategy",
+    "CoveragesStrategy",
+    "EDRStrategy",
+    "MapsStrategy",
+    "StylesStrategy",
+    "RoutesStrategy",
+    # Strategy Registry
+    "StrategyRegistry",
+    "get_default_registry",
+    "validate_ogc_api",
     # Validator
     "OpenAPIValidator",
     "validate_document",

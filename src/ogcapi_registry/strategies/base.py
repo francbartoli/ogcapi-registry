@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Any, ClassVar
 
 from ..models import ValidationResult
-from ..ogc_types import ConformanceClass, OGCAPIType
+from ..ogc_types import ConformanceClass, OGCAPIType, OGCSpecificationKey
 
 
 class ValidationStrategy(ABC):
@@ -19,6 +19,9 @@ class ValidationStrategy(ABC):
     api_type: ClassVar[OGCAPIType]
     required_conformance_patterns: ClassVar[list[str]] = []
     optional_conformance_patterns: ClassVar[list[str]] = []
+    # Supported specification versions (e.g., ["1.0", "1.1"])
+    # Empty list means all versions are supported
+    supported_versions: ClassVar[list[str]] = []
 
     @abstractmethod
     def validate(
@@ -130,6 +133,69 @@ class ValidationStrategy(ABC):
                     score += 1  # Optional patterns worth less
 
         return score
+
+    def supports_version(self, spec_version: str) -> bool:
+        """Check if this strategy supports a specific specification version.
+
+        Args:
+            spec_version: The specification version to check (e.g., "1.0", "1.1")
+
+        Returns:
+            True if the version is supported
+        """
+        if not self.supported_versions:
+            return True  # Empty list means all versions supported
+
+        # Check for exact match or major.minor match
+        for supported in self.supported_versions:
+            if spec_version == supported:
+                return True
+            # Check major.minor match
+            spec_parts = spec_version.split(".")[:2]
+            supported_parts = supported.split(".")[:2]
+            if spec_parts == supported_parts:
+                return True
+
+        return False
+
+    def get_spec_version_from_conformance(
+        self,
+        conformance_classes: list[ConformanceClass],
+    ) -> str | None:
+        """Extract the specification version from conformance classes.
+
+        Looks for conformance classes that match this strategy's API type
+        and extracts the version.
+
+        Args:
+            conformance_classes: Conformance classes to extract version from
+
+        Returns:
+            Version string or None if not found
+        """
+        for cc in conformance_classes:
+            if cc.api_type == self.api_type and cc.spec_version:
+                return cc.spec_version
+        return None
+
+    def get_specification_key(
+        self,
+        conformance_classes: list[ConformanceClass],
+    ) -> OGCSpecificationKey | None:
+        """Get the OGC specification key for validation.
+
+        Args:
+            conformance_classes: Conformance classes to extract key from
+
+        Returns:
+            OGCSpecificationKey or None if cannot be determined
+        """
+        for cc in conformance_classes:
+            if cc.api_type == self.api_type:
+                key = cc.specification_key
+                if key:
+                    return key
+        return None
 
     def validate_paths_exist(
         self,

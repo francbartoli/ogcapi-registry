@@ -21,6 +21,7 @@ graph TB
     subgraph "Registry Layer"
         SR[SpecificationRegistry]
         ASR[AsyncSpecificationRegistry]
+        OGCR[OGCSpecificationRegistry]
     end
 
     subgraph "Validation Layer"
@@ -37,9 +38,17 @@ graph TB
         OS[Other Strategies...]
     end
 
+    subgraph "OGC Types"
+        SK[OGCSpecificationKey]
+        CC[ConformanceClass]
+        AT[OGCAPIType]
+    end
+
     OC --> SR
+    OC --> OGCR
     AOC --> ASR
     SR --> OV
+    OGCR --> STR
     STR --> VS
     VS --> CS
     VS --> FS
@@ -47,6 +56,9 @@ graph TB
     VS --> PS
     VS --> OS
     OV --> STR
+    CC --> SK
+    SK --> OGCR
+    AT --> SK
 ```
 
 ## Strategy Pattern Implementation
@@ -289,6 +301,81 @@ The `SpecificationRegistry` uses a reentrant lock (`threading.RLock`) to ensure 
 - All read/write operations acquire the lock
 - Iteration returns a copy of the data to avoid modification during iteration
 - Immutable models prevent accidental modifications
+
+## OGC Specification Registry
+
+The `OGCSpecificationRegistry` stores reference OGC API specifications indexed by API type, version, and part number.
+
+### Class Diagram
+
+```mermaid
+classDiagram
+    class OGCSpecificationKey {
+        <<frozen>>
+        +api_type: OGCAPIType
+        +spec_version: str
+        +part: int | None
+        +matches(other, strict) bool
+        +__hash__() int
+        +__str__() str
+    }
+
+    class OGCRegisteredSpecification {
+        +key: OGCSpecificationKey
+        +raw_content: dict
+        +metadata: SpecificationMetadata
+        +openapi_version: str
+        +info_title: str
+        +paths: dict
+    }
+
+    class OGCSpecificationRegistry {
+        -specs: dict
+        -lock: RLock
+        +register(api_type, version, content) OGCRegisteredSpecification
+        +register_from_url(api_type, version, url) OGCRegisteredSpecification
+        +get(api_type, version, part) OGCRegisteredSpecification
+        +get_latest(api_type) OGCRegisteredSpecification
+        +list_versions(api_type) list
+        +list_by_type(api_type) list
+    }
+
+    OGCSpecificationRegistry o-- OGCRegisteredSpecification
+    OGCRegisteredSpecification --> OGCSpecificationKey
+```
+
+### Version-Aware Validation Flow
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant StrategyRegistry
+    participant OGCRegistry as OGCSpecificationRegistry
+    participant Strategy
+
+    Client->>StrategyRegistry: validate_against_spec(doc, spec_key, ogc_registry)
+    StrategyRegistry->>StrategyRegistry: get(spec_key.api_type)
+    StrategyRegistry->>Strategy: supports_version(spec_key.spec_version)
+    Strategy-->>StrategyRegistry: true
+
+    StrategyRegistry->>Strategy: validate(doc, conformance_classes)
+    Strategy-->>StrategyRegistry: ValidationResult
+
+    StrategyRegistry->>OGCRegistry: get(api_type, version, part)
+    OGCRegistry-->>StrategyRegistry: OGCRegisteredSpecification
+
+    StrategyRegistry->>StrategyRegistry: Compare paths with reference
+    StrategyRegistry-->>Client: ValidationResult with warnings
+```
+
+### Specification Key Matching
+
+The `OGCSpecificationKey` supports two matching modes:
+
+| Mode | Description | Example |
+|------|-------------|---------|
+| Strict | Exact version and part match | `1.0` matches `1.0` only |
+| Non-strict | Major.minor version match | `1.0` matches `1.0.1` |
 
 ## Extension Points
 

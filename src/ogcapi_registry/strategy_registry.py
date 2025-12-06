@@ -1,11 +1,14 @@
 """Registry for validation strategies with auto-detection."""
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from .models import ValidationResult
 from .ogc_types import (
     ConformanceClass,
     OGCAPIType,
+    OGCSpecificationKey,
+    detect_api_types,
+    get_specification_keys,
     parse_conformance_classes,
 )
 from .strategies import (
@@ -22,6 +25,9 @@ from .strategies import (
     TilesStrategy,
     ValidationStrategy,
 )
+
+if TYPE_CHECKING:
+    from .ogc_registry import OGCSpecificationRegistry
 
 
 class StrategyRegistry:
@@ -319,6 +325,129 @@ class StrategyRegistry:
             List of all registered API types
         """
         return list(self._strategies.keys())
+
+    def validate_against_spec(
+        self,
+        document: dict[str, Any],
+        spec_key: OGCSpecificationKey,
+        ogc_registry: "OGCSpecificationRegistry",
+        conformance_classes: list[ConformanceClass] | list[str] | dict[str, Any] | None = None,
+    ) -> ValidationResult:
+        """Validate a document against a specific OGC specification version.
+
+        This method validates the document using:
+        1. The appropriate strategy for the spec's API type
+        2. Comparison with the reference specification from the OGC registry
+
+        Args:
+            document: The OpenAPI document to validate
+            spec_key: The OGC specification key to validate against
+            ogc_registry: Registry containing reference specifications
+            conformance_classes: Optional conformance classes
+
+        Returns:
+            ValidationResult with validation outcome
+        """
+        from .ogc_registry import OGCSpecificationRegistry
+
+        # Parse conformance classes if needed
+        cc_list: list[ConformanceClass]
+        if conformance_classes is None:
+            cc_list = self._extract_conformance_from_document(document)
+        elif isinstance(conformance_classes, dict):
+            cc_list = parse_conformance_classes(conformance_classes)
+        elif conformance_classes and isinstance(conformance_classes[0], str):
+            cc_list = parse_conformance_classes(conformance_classes)  # type: ignore
+        else:
+            cc_list = conformance_classes  # type: ignore
+
+        # Get the strategy for the API type
+        strategy = self.get(spec_key.api_type)
+        if strategy is None:
+            strategy = CommonStrategy()
+
+        # Check version support
+        if not strategy.supports_version(spec_key.spec_version):
+            return ValidationResult.failure([{
+                "path": "",
+                "message": f"Strategy does not support version {spec_key.spec_version}",
+                "type": "unsupported_version",
+            }])
+
+        # Validate using strategy
+        result = strategy.validate(document, cc_list)
+
+        # If reference spec is available, do additional path comparison
+        try:
+            ref_spec = ogc_registry.get(
+                api_type=spec_key.api_type,
+                spec_version=spec_key.spec_version,
+                part=spec_key.part,
+            )
+
+            # Compare paths with reference
+            ref_paths = set(ref_spec.paths.keys())
+            doc_paths = set(document.get("paths", {}).keys())
+
+            # Check for paths in ref that are not in document (potential missing required paths)
+            additional_warnings = []
+            for ref_path in ref_paths:
+                # Only warn for paths that look like they might be required
+                # (not template paths or obviously optional)
+                if ref_path not in doc_paths and "{" not in ref_path:
+                    additional_warnings.append({
+                        "path": f"paths/{ref_path}",
+                        "message": f"Path '{ref_path}' from reference spec not found",
+                        "type": "missing_reference_path",
+                    })
+
+            # Add warnings to result if any
+            if additional_warnings:
+                all_warnings = list(result.warnings) + additional_warnings
+                if result.is_valid:
+                    return ValidationResult.success(
+                        warnings=tuple(all_warnings),
+                        validated_against=result.validated_against,
+                    )
+                else:
+                    return ValidationResult.failure(
+                        errors=list(result.errors),
+                        warnings=tuple(all_warnings),
+                        validated_against=result.validated_against,
+                    )
+
+        except Exception:
+            # Reference spec not available, just return strategy result
+            pass
+
+        return result
+
+    def get_detected_spec_keys(
+        self,
+        document: dict[str, Any],
+        conformance_classes: list[ConformanceClass] | list[str] | dict[str, Any] | None = None,
+    ) -> set[OGCSpecificationKey]:
+        """Detect OGC specification keys from a document's conformance classes.
+
+        Args:
+            document: The OpenAPI document
+            conformance_classes: Optional conformance classes
+
+        Returns:
+            Set of detected OGCSpecificationKey objects
+        """
+        # Parse conformance classes if needed
+        cc_list: list[ConformanceClass]
+        if conformance_classes is None:
+            cc_list = self._extract_conformance_from_document(document)
+        elif isinstance(conformance_classes, dict):
+            cc_list = parse_conformance_classes(conformance_classes)
+        elif conformance_classes and isinstance(conformance_classes[0], str):
+            cc_list = parse_conformance_classes(conformance_classes)  # type: ignore
+        else:
+            cc_list = conformance_classes  # type: ignore
+
+        return get_specification_keys(cc_list)
 
 
 # Global default registry instance

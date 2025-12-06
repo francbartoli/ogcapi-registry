@@ -24,12 +24,23 @@ from .models import (
     SpecificationType,
     ValidationResult,
 )
+from .ogc_registry import (
+    OGC_SPEC_URLS,
+    OGCRegisteredSpecification,
+    OGCSpecificationRegistry,
+    create_default_ogc_registry,
+    populate_ogc_registry,
+)
 from .ogc_types import (
     CONFORMANCE_PATTERNS,
     ConformanceClass,
     OGCAPIType,
+    OGCSpecificationKey,
     detect_api_types,
     get_primary_api_type,
+    get_specification_keys,
+    get_specification_versions,
+    group_conformance_by_spec,
     parse_conformance_classes,
 )
 from .registry import AsyncSpecificationRegistry, SpecificationRegistry
@@ -81,11 +92,21 @@ __all__ = [
     "ValidationResult",
     # OGC Types
     "OGCAPIType",
+    "OGCSpecificationKey",
     "ConformanceClass",
     "CONFORMANCE_PATTERNS",
     "parse_conformance_classes",
     "detect_api_types",
     "get_primary_api_type",
+    "get_specification_keys",
+    "get_specification_versions",
+    "group_conformance_by_spec",
+    # OGC Registry
+    "OGCSpecificationRegistry",
+    "OGCRegisteredSpecification",
+    "OGC_SPEC_URLS",
+    "create_default_ogc_registry",
+    "populate_ogc_registry",
     # Strategies
     "ValidationStrategy",
     "CompositeValidationStrategy",

@@ -523,3 +523,193 @@ if not registry.exists(SpecificationType.OPENAPI_3_0, "3.0.3"):
 # Use cached version
 spec = registry.get(SpecificationType.OPENAPI_3_0, "3.0.3")
 ```
+
+## OGC Specification Registry
+
+The library includes a dedicated registry for OGC API reference specifications, indexed by API type, version, and part number.
+
+### OGC Specification Keys
+
+Each OGC API specification is identified by a unique key:
+
+```python
+from ogcapi_registry import OGCSpecificationKey, OGCAPIType
+
+# Create a specification key
+key = OGCSpecificationKey(
+    api_type=OGCAPIType.FEATURES,
+    spec_version="1.0",
+    part=1,  # Part 1 of OGC API - Features
+)
+
+print(key)  # "OGC API - Features Part 1 v1.0"
+
+# Keys are hashable and can be used in sets/dicts
+keys = {key}
+
+# Check version compatibility
+key.matches(other_key, strict=False)  # Matches major.minor only
+key.matches(other_key, strict=True)   # Exact match required
+```
+
+### Using the OGC Specification Registry
+
+```python
+from ogcapi_registry import (
+    OGCSpecificationRegistry,
+    OGCAPIType,
+    create_default_ogc_registry,
+)
+
+# Create an empty registry
+registry = OGCSpecificationRegistry()
+
+# Register a specification manually
+spec = registry.register(
+    api_type=OGCAPIType.EDR,
+    spec_version="1.1",
+    raw_content={
+        "openapi": "3.0.3",
+        "info": {"title": "OGC API - EDR", "version": "1.1.0"},
+        "paths": {"/": {}, "/collections": {}},
+    },
+    part=1,
+)
+
+# Register from a URL
+spec = registry.register_from_url(
+    api_type=OGCAPIType.FEATURES,
+    spec_version="1.0",
+    url="https://schemas.opengis.net/ogcapi/features/part1/1.0/openapi/ogcapi-features-1.yaml",
+    part=1,
+)
+
+# Retrieve a specification
+spec = registry.get(
+    api_type=OGCAPIType.FEATURES,
+    spec_version="1.0",
+    part=1,
+)
+
+# Get the latest version of an API type
+latest = registry.get_latest(api_type=OGCAPIType.EDR)
+print(f"Latest EDR version: {latest.key.spec_version}")
+
+# List all versions of an API type
+versions = registry.list_versions(api_type=OGCAPIType.EDR)
+print(versions)  # ["1.1", "1.0"]
+
+# List all specifications of an API type
+edr_specs = registry.list_by_type(api_type=OGCAPIType.EDR)
+```
+
+### Extracting Specification Information from Conformance Classes
+
+```python
+from ogcapi_registry import (
+    ConformanceClass,
+    get_specification_keys,
+    get_specification_versions,
+    group_conformance_by_spec,
+    OGCAPIType,
+)
+
+# Parse conformance classes
+ccs = [
+    ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"),
+    ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"),
+    ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/core"),
+]
+
+# Extract specification keys
+keys = get_specification_keys(ccs)
+# {OGCSpecificationKey(FEATURES, "1.0", 1), OGCSpecificationKey(EDR, "1.1", 1)}
+
+# Get versions for a specific API type
+edr_versions = get_specification_versions(ccs, OGCAPIType.EDR)
+# {"1.1"}
+
+# Group conformance classes by specification
+groups = group_conformance_by_spec(ccs)
+# {
+#   OGCSpecificationKey(FEATURES, "1.0", 1): [cc1, cc2],
+#   OGCSpecificationKey(EDR, "1.1", 1): [cc3],
+# }
+
+# Access specification info from a conformance class
+cc = ccs[0]
+print(cc.spec_version)           # "1.0"
+print(cc.part)                   # 1
+print(cc.conformance_class_name) # "core"
+print(cc.specification_key)      # OGCSpecificationKey(FEATURES, "1.0", 1)
+```
+
+### Version-Aware Validation
+
+Validate a document against a specific OGC API specification version:
+
+```python
+from ogcapi_registry import (
+    StrategyRegistry,
+    OGCSpecificationRegistry,
+    OGCSpecificationKey,
+    OGCAPIType,
+)
+
+# Create registries
+strategy_registry = StrategyRegistry()
+ogc_registry = OGCSpecificationRegistry()
+
+# Register reference specifications
+ogc_registry.register_from_url(
+    api_type=OGCAPIType.FEATURES,
+    spec_version="1.0",
+    url="https://schemas.opengis.net/ogcapi/features/part1/1.0/openapi/ogcapi-features-1.yaml",
+    part=1,
+)
+
+# Create a specification key for validation target
+spec_key = OGCSpecificationKey(
+    api_type=OGCAPIType.FEATURES,
+    spec_version="1.0",
+    part=1,
+)
+
+# Validate against the specific version
+result = strategy_registry.validate_against_spec(
+    document=my_openapi_document,
+    spec_key=spec_key,
+    ogc_registry=ogc_registry,
+    conformance_classes=[
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
+    ],
+)
+
+if result.is_valid:
+    print("Document conforms to OGC API - Features v1.0!")
+else:
+    for error in result.errors:
+        print(f"Error: {error['message']}")
+```
+
+### Detecting Specification Keys from Documents
+
+```python
+from ogcapi_registry import StrategyRegistry
+
+registry = StrategyRegistry()
+
+# Detect which OGC specifications a document claims to implement
+spec_keys = registry.get_detected_spec_keys(
+    document,
+    conformance_classes=[
+        "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
+        "http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/core",
+    ],
+)
+
+for key in spec_keys:
+    print(f"Implements: {key}")
+    # Implements: OGC API - Features Part 1 v1.0
+    # Implements: OGC API - Tiles Part 1 v1.0
+```

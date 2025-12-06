@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from openapi_registry_validator.models import (
+from ogcapi_registry.models import (
     RegisteredSpecification,
     SpecificationKey,
     SpecificationMetadata,
@@ -17,13 +17,25 @@ class TestSpecificationType:
 
     def test_from_version_3_0(self):
         """Test parsing OpenAPI 3.0.x versions."""
-        assert SpecificationType.from_version("3.0.0") == SpecificationType.OPENAPI_3_0
-        assert SpecificationType.from_version("3.0.3") == SpecificationType.OPENAPI_3_0
+        assert (
+            SpecificationType.from_version("3.0.0")
+            == SpecificationType.OPENAPI_3_0
+        )
+        assert (
+            SpecificationType.from_version("3.0.3")
+            == SpecificationType.OPENAPI_3_0
+        )
 
     def test_from_version_3_1(self):
         """Test parsing OpenAPI 3.1.x versions."""
-        assert SpecificationType.from_version("3.1.0") == SpecificationType.OPENAPI_3_1
-        assert SpecificationType.from_version("3.1.1") == SpecificationType.OPENAPI_3_1
+        assert (
+            SpecificationType.from_version("3.1.0")
+            == SpecificationType.OPENAPI_3_1
+        )
+        assert (
+            SpecificationType.from_version("3.1.1")
+            == SpecificationType.OPENAPI_3_1
+        )
 
     def test_from_version_unsupported(self):
         """Test that unsupported versions raise ValueError."""

@@ -1,10 +1,11 @@
 [project]
-name = "openapi-registry-validator"
+name = "ogcapi-registry"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 authors = [
-    { name = "Claude", email = "noreply@anthropic.com" }
+    { name = "Claude", email = "noreply@anthropic.com" },
+    { name = "Francesco Bartoli", email = "xbartolone@gmail.com" }
 ]
 requires-python = ">=3.11"
 dependencies = [

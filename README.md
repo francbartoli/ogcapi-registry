@@ -25,7 +25,7 @@ pip install openapi-registry-validator
 ### Fetching and Registering Specifications
 
 ```python
-from openapi_registry_validator import SpecificationRegistry, SpecificationType
+from ogcapi_registry import SpecificationRegistry, SpecificationType
 
 # Create a registry
 registry = SpecificationRegistry()
@@ -49,7 +49,7 @@ registry.register(
 ### Validating Documents
 
 ```python
-from openapi_registry_validator import validate_document, OpenAPIValidator
+from ogcapi_registry import validate_document, OpenAPIValidator
 
 # Simple validation
 result = validate_document({
@@ -77,7 +77,7 @@ result = validator.validate_against(
 
 ```python
 import asyncio
-from openapi_registry_validator import AsyncSpecificationRegistry
+from ogcapi_registry import AsyncSpecificationRegistry
 
 async def main():
     registry = AsyncSpecificationRegistry()
@@ -129,7 +129,7 @@ uv sync
 uv run pytest -v
 
 # Run tests with coverage
-uv run pytest --cov=openapi_registry_validator
+uv run pytest --cov=ogcapi_registry
 ```
 
 ## License

@@ -5,8 +5,8 @@ import json
 import pytest
 import yaml
 
-from openapi_registry_validator.client import AsyncOpenAPIClient, OpenAPIClient
-from openapi_registry_validator.exceptions import FetchError, ParseError
+from ogcapi_registry.client import AsyncOpenAPIClient, OpenAPIClient
+from ogcapi_registry.exceptions import FetchError, ParseError
 
 
 class TestOpenAPIClient:
@@ -20,24 +20,30 @@ class TestOpenAPIClient:
     @pytest.fixture
     def valid_openapi_json(self):
         """Return valid OpenAPI JSON content."""
-        return json.dumps({
-            "openapi": "3.0.3",
-            "info": {"title": "Test API", "version": "1.0.0"},
-            "paths": {},
-        })
+        return json.dumps(
+            {
+                "openapi": "3.0.3",
+                "info": {"title": "Test API", "version": "1.0.0"},
+                "paths": {},
+            }
+        )
 
     @pytest.fixture
     def valid_openapi_yaml(self):
         """Return valid OpenAPI YAML content."""
-        return yaml.dump({
-            "openapi": "3.0.3",
-            "info": {"title": "Test API", "version": "1.0.0"},
-            "paths": {},
-        })
+        return yaml.dump(
+            {
+                "openapi": "3.0.3",
+                "info": {"title": "Test API", "version": "1.0.0"},
+                "paths": {},
+            }
+        )
 
     def test_parse_json_content(self, client):
         """Test parsing JSON content."""
-        content = b'{"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0"}}'
+        content = (
+            b'{"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0"}}'
+        )
         result = client._parse_content(content, "application/json", "test.json")
         assert result["openapi"] == "3.0.3"
 
@@ -50,7 +56,9 @@ class TestOpenAPIClient:
     def test_parse_content_from_url_extension(self, client):
         """Test inferring format from URL extension."""
         content = b"openapi: '3.0.3'\ninfo:\n  title: Test\n  version: '1.0'"
-        result = client._parse_content(content, None, "https://example.com/api.yaml")
+        result = client._parse_content(
+            content, None, "https://example.com/api.yaml"
+        )
         assert result["openapi"] == "3.0.3"
 
     def test_parse_invalid_content(self, client):
@@ -122,7 +130,9 @@ class TestOpenAPIClient:
         )
         assert content["openapi"] == "3.0.3"
 
-    def test_fetch_and_validate_structure_missing_openapi(self, httpx_mock, client):
+    def test_fetch_and_validate_structure_missing_openapi(
+        self, httpx_mock, client
+    ):
         """Test that missing openapi field raises ParseError."""
         invalid = json.dumps({"info": {"title": "Test", "version": "1.0"}})
         httpx_mock.add_response(
@@ -131,17 +141,23 @@ class TestOpenAPIClient:
             headers={"content-type": "application/json"},
         )
 
-        with pytest.raises(ParseError, match="Missing required 'openapi' field"):
-            client.fetch_and_validate_structure("https://example.com/openapi.json")
+        with pytest.raises(
+            ParseError, match="Missing required 'openapi' field"
+        ):
+            client.fetch_and_validate_structure(
+                "https://example.com/openapi.json"
+            )
 
     def test_fetch_and_validate_structure_unsupported_version(
         self, httpx_mock, client
     ):
         """Test that unsupported version raises ParseError."""
-        invalid = json.dumps({
-            "openapi": "2.0",
-            "info": {"title": "Test", "version": "1.0"},
-        })
+        invalid = json.dumps(
+            {
+                "openapi": "2.0",
+                "info": {"title": "Test", "version": "1.0"},
+            }
+        )
         httpx_mock.add_response(
             url="https://example.com/openapi.json",
             content=invalid.encode(),
@@ -149,7 +165,9 @@ class TestOpenAPIClient:
         )
 
         with pytest.raises(ParseError, match="Unsupported OpenAPI version"):
-            client.fetch_and_validate_structure("https://example.com/openapi.json")
+            client.fetch_and_validate_structure(
+                "https://example.com/openapi.json"
+            )
 
 
 class TestAsyncOpenAPIClient:
@@ -163,11 +181,13 @@ class TestAsyncOpenAPIClient:
     @pytest.fixture
     def valid_openapi_json(self):
         """Return valid OpenAPI JSON content."""
-        return json.dumps({
-            "openapi": "3.0.3",
-            "info": {"title": "Test API", "version": "1.0.0"},
-            "paths": {},
-        })
+        return json.dumps(
+            {
+                "openapi": "3.0.3",
+                "info": {"title": "Test API", "version": "1.0.0"},
+                "paths": {},
+            }
+        )
 
     @pytest.mark.asyncio
     async def test_fetch_json(self, httpx_mock, client, valid_openapi_json):
@@ -178,7 +198,9 @@ class TestAsyncOpenAPIClient:
             headers={"content-type": "application/json"},
         )
 
-        content, metadata = await client.fetch("https://example.com/openapi.json")
+        content, metadata = await client.fetch(
+            "https://example.com/openapi.json"
+        )
         assert content["openapi"] == "3.0.3"
         assert metadata.source_url == "https://example.com/openapi.json"
 

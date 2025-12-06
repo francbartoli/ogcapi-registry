@@ -4,16 +4,16 @@ import json
 
 import pytest
 
-from openapi_registry_validator.exceptions import (
+from ogcapi_registry.exceptions import (
     SpecificationAlreadyExistsError,
     SpecificationNotFoundError,
 )
-from openapi_registry_validator.models import (
+from ogcapi_registry.models import (
     SpecificationKey,
     SpecificationMetadata,
     SpecificationType,
 )
-from openapi_registry_validator.registry import (
+from ogcapi_registry.registry import (
     AsyncSpecificationRegistry,
     SpecificationRegistry,
 )
@@ -83,7 +83,10 @@ class TestSpecificationRegistry:
             version="3.0.3",
         )
 
-        updated_content = {**sample_content, "info": {"title": "Updated", "version": "2.0"}}
+        updated_content = {
+            **sample_content,
+            "info": {"title": "Updated", "version": "2.0"},
+        }
         spec = registry.register(
             content=updated_content,
             spec_type=SpecificationType.OPENAPI_3_0,
@@ -232,11 +235,13 @@ class TestSpecificationRegistry:
 
     def test_register_from_url(self, httpx_mock, registry):
         """Test registering from a URL."""
-        content = json.dumps({
-            "openapi": "3.0.3",
-            "info": {"title": "Test API", "version": "1.0.0"},
-            "paths": {},
-        })
+        content = json.dumps(
+            {
+                "openapi": "3.0.3",
+                "info": {"title": "Test API", "version": "1.0.0"},
+                "paths": {},
+            }
+        )
         httpx_mock.add_response(
             url="https://example.com/openapi.json",
             content=content.encode(),
@@ -250,11 +255,13 @@ class TestSpecificationRegistry:
 
     def test_register_from_url_infer_version(self, httpx_mock, registry):
         """Test that version is inferred from content."""
-        content = json.dumps({
-            "openapi": "3.1.0",
-            "info": {"title": "Test API", "version": "1.0.0"},
-            "paths": {},
-        })
+        content = json.dumps(
+            {
+                "openapi": "3.1.0",
+                "info": {"title": "Test API", "version": "1.0.0"},
+                "paths": {},
+            }
+        )
         httpx_mock.add_response(
             url="https://example.com/openapi.json",
             content=content.encode(),
@@ -295,18 +302,22 @@ class TestAsyncSpecificationRegistry:
     @pytest.mark.asyncio
     async def test_register_from_url(self, httpx_mock, registry):
         """Test registering from a URL asynchronously."""
-        content = json.dumps({
-            "openapi": "3.0.3",
-            "info": {"title": "Test API", "version": "1.0.0"},
-            "paths": {},
-        })
+        content = json.dumps(
+            {
+                "openapi": "3.0.3",
+                "info": {"title": "Test API", "version": "1.0.0"},
+                "paths": {},
+            }
+        )
         httpx_mock.add_response(
             url="https://example.com/openapi.json",
             content=content.encode(),
             headers={"content-type": "application/json"},
         )
 
-        spec = await registry.register_from_url("https://example.com/openapi.json")
+        spec = await registry.register_from_url(
+            "https://example.com/openapi.json"
+        )
         assert spec.key.spec_type == SpecificationType.OPENAPI_3_0
         assert spec.metadata.source_url == "https://example.com/openapi.json"
 

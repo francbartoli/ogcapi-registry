@@ -4,15 +4,15 @@ import json
 
 import pytest
 
-from openapi_registry_validator.exceptions import SpecificationNotFoundError
-from openapi_registry_validator.models import (
+from ogcapi_registry.exceptions import SpecificationNotFoundError
+from ogcapi_registry.models import (
     RegisteredSpecification,
     SpecificationKey,
     SpecificationMetadata,
     SpecificationType,
 )
-from openapi_registry_validator.registry import SpecificationRegistry
-from openapi_registry_validator.validator import (
+from ogcapi_registry.registry import SpecificationRegistry
+from ogcapi_registry.validator import (
     OpenAPIValidator,
     create_validator_with_specs,
     parse_openapi_content,
@@ -28,7 +28,9 @@ class TestParseOpenAPIContent:
 
     def test_parse_json(self):
         """Test parsing JSON content."""
-        content = '{"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0"}}'
+        content = (
+            '{"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0"}}'
+        )
         result = parse_openapi_content(content)
         assert result["openapi"] == "3.0.3"
 
@@ -69,7 +71,9 @@ class TestValidateOpenAPIStructure:
         }
         result = validate_openapi_structure(doc)
         assert result.is_valid
-        assert result.validated_against.spec_type == SpecificationType.OPENAPI_3_0
+        assert (
+            result.validated_against.spec_type == SpecificationType.OPENAPI_3_0
+        )
 
     def test_valid_3_1_spec(self):
         """Test validating a valid OpenAPI 3.1 spec."""
@@ -79,7 +83,9 @@ class TestValidateOpenAPIStructure:
         }
         result = validate_openapi_structure(doc)
         assert result.is_valid
-        assert result.validated_against.spec_type == SpecificationType.OPENAPI_3_1
+        assert (
+            result.validated_against.spec_type == SpecificationType.OPENAPI_3_1
+        )
 
     def test_missing_openapi_field(self):
         """Test that missing openapi field fails validation."""
@@ -108,7 +114,9 @@ class TestValidateOpenAPIStructure:
             "info": {"title": "Test", "version": "1.0"},
             "paths": {},
         }
-        result = validate_openapi_structure(doc, target_version=SpecificationType.OPENAPI_3_1)
+        result = validate_openapi_structure(
+            doc, target_version=SpecificationType.OPENAPI_3_1
+        )
         # Should be valid but with a warning
         assert len(result.warnings) > 0
 
@@ -135,7 +143,9 @@ class TestValidateOpenAPIWithPydantic:
         result = validate_openapi_with_pydantic(doc)
         # Should succeed because Pydantic validation is skipped for 3.0
         assert result.is_valid
-        assert result.validated_against.spec_type == SpecificationType.OPENAPI_3_0
+        assert (
+            result.validated_against.spec_type == SpecificationType.OPENAPI_3_0
+        )
 
     def test_invalid_info_3_1(self):
         """Test that invalid info fails Pydantic validation for 3.1."""
@@ -220,11 +230,13 @@ class TestValidateDocument:
 
     def test_validate_json_string(self):
         """Test validating a JSON string."""
-        doc = json.dumps({
-            "openapi": "3.0.3",
-            "info": {"title": "Test API", "version": "1.0.0"},
-            "paths": {},
-        })
+        doc = json.dumps(
+            {
+                "openapi": "3.0.3",
+                "info": {"title": "Test API", "version": "1.0.0"},
+                "paths": {},
+            }
+        )
         result = validate_document(doc)
         assert result.is_valid
 
@@ -306,7 +318,9 @@ class TestOpenAPIValidator:
             "paths": {},
         }
         with pytest.raises(SpecificationNotFoundError):
-            validator.validate_against(doc, SpecificationType.OPENAPI_3_0, "3.0.3")
+            validator.validate_against(
+                doc, SpecificationType.OPENAPI_3_0, "3.0.3"
+            )
 
     def test_validate_against_latest(self, validator_with_spec):
         """Test validation against the latest spec of a type."""
@@ -328,7 +342,9 @@ class TestOpenAPIValidator:
             "paths": {},
         }
         with pytest.raises(SpecificationNotFoundError):
-            validator.validate_against_latest(doc, SpecificationType.OPENAPI_3_0)
+            validator.validate_against_latest(
+                doc, SpecificationType.OPENAPI_3_0
+            )
 
     def test_registry_property(self, validator):
         """Test accessing the registry property."""
@@ -340,31 +356,39 @@ class TestCreateValidatorWithSpecs:
 
     def test_create_with_url(self, httpx_mock):
         """Test creating a validator with a URL."""
-        content = json.dumps({
-            "openapi": "3.0.3",
-            "info": {"title": "Test API", "version": "1.0.0"},
-            "paths": {},
-        })
+        content = json.dumps(
+            {
+                "openapi": "3.0.3",
+                "info": {"title": "Test API", "version": "1.0.0"},
+                "paths": {},
+            }
+        )
         httpx_mock.add_response(
             url="https://example.com/openapi.json",
             content=content.encode(),
             headers={"content-type": "application/json"},
         )
 
-        validator = create_validator_with_specs("https://example.com/openapi.json")
+        validator = create_validator_with_specs(
+            "https://example.com/openapi.json"
+        )
         assert len(validator.registry) == 1
 
     def test_create_with_multiple_urls(self, httpx_mock):
         """Test creating a validator with multiple URLs."""
-        content_3_0 = json.dumps({
-            "openapi": "3.0.3",
-            "info": {"title": "API 3.0", "version": "1.0.0"},
-            "paths": {},
-        })
-        content_3_1 = json.dumps({
-            "openapi": "3.1.0",
-            "info": {"title": "API 3.1", "version": "1.0.0"},
-        })
+        content_3_0 = json.dumps(
+            {
+                "openapi": "3.0.3",
+                "info": {"title": "API 3.0", "version": "1.0.0"},
+                "paths": {},
+            }
+        )
+        content_3_1 = json.dumps(
+            {
+                "openapi": "3.1.0",
+                "info": {"title": "API 3.1", "version": "1.0.0"},
+            }
+        )
 
         httpx_mock.add_response(
             url="https://example.com/api-3.0.json",

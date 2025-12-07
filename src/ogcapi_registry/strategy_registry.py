@@ -11,6 +11,7 @@ from .ogc_types import (
     get_specification_keys,
     parse_conformance_classes,
 )
+from .protocols import ValidationStrategyProtocol
 from .strategies import (
     CommonStrategy,
     CompositeValidationStrategy,
@@ -35,11 +36,33 @@ class StrategyRegistry:
 
     This registry maintains a collection of validation strategies and
     provides auto-detection based on conformance classes.
+
+    Supports duck typing: any object implementing ValidationStrategyProtocol
+    can be registered, not just subclasses of ValidationStrategy.
+
+    Example:
+        class CustomStrategy:
+            api_type = OGCAPIType.FEATURES
+
+            def validate(self, document, conformance_classes):
+                return ValidationResult.success()
+
+            def get_required_paths(self, conformance_classes):
+                return ["/collections"]
+
+            def get_required_operations(self, conformance_classes):
+                return {}
+
+            def matches_conformance(self, conformance_classes):
+                return True
+
+        registry = StrategyRegistry()
+        registry.register(CustomStrategy())  # Works without inheritance!
     """
 
     def __init__(self) -> None:
         """Initialize the registry with default strategies."""
-        self._strategies: dict[OGCAPIType, ValidationStrategy] = {}
+        self._strategies: dict[OGCAPIType, ValidationStrategyProtocol] = {}
         self._register_default_strategies()
 
     def _register_default_strategies(self) -> None:
@@ -55,15 +78,16 @@ class StrategyRegistry:
         self.register(StylesStrategy())
         self.register(RoutesStrategy())
 
-    def register(self, strategy: ValidationStrategy) -> None:
+    def register(self, strategy: ValidationStrategyProtocol) -> None:
         """Register a validation strategy.
 
         Args:
-            strategy: The strategy to register
+            strategy: The strategy to register. Can be any object implementing
+                     ValidationStrategyProtocol (duck typing supported).
         """
         self._strategies[strategy.api_type] = strategy
 
-    def get(self, api_type: OGCAPIType) -> ValidationStrategy | None:
+    def get(self, api_type: OGCAPIType) -> ValidationStrategyProtocol | None:
         """Get a strategy by API type.
 
         Args:
@@ -77,7 +101,7 @@ class StrategyRegistry:
     def get_for_conformance(
         self,
         conformance_classes: list[ConformanceClass],
-    ) -> ValidationStrategy:
+    ) -> ValidationStrategyProtocol:
         """Get the best strategy for the given conformance classes.
 
         If multiple strategies match, returns a CompositeValidationStrategy
@@ -89,7 +113,7 @@ class StrategyRegistry:
         Returns:
             The best matching strategy (may be composite)
         """
-        matching_strategies: list[tuple[int, ValidationStrategy]] = []
+        matching_strategies: list[tuple[int, ValidationStrategyProtocol]] = []
 
         for strategy in self._strategies.values():
             if strategy.matches_conformance(conformance_classes):
@@ -310,7 +334,7 @@ class StrategyRegistry:
 
         return inferred
 
-    def list_strategies(self) -> list[ValidationStrategy]:
+    def list_strategies(self) -> list[ValidationStrategyProtocol]:
         """List all registered strategies.
 
         Returns:

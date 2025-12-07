@@ -43,6 +43,15 @@ from .ogc_types import (
     group_conformance_by_spec,
     parse_conformance_classes,
 )
+from .protocols import (
+    AsyncOpenAPIClientProtocol,
+    ConformanceClassProtocol,
+    OpenAPIClientProtocol,
+    RegistryProtocol,
+    SpecificationKeyProtocol,
+    ValidationStrategyProtocol,
+    VersionAwareStrategyProtocol,
+)
 from .registry import AsyncSpecificationRegistry, SpecificationRegistry
 from .strategies import (
     CommonStrategy,
@@ -140,4 +149,12 @@ __all__ = [
     "SpecificationNotFoundError",
     "SpecificationAlreadyExistsError",
     "ValidationError",
+    # Protocols (for duck typing)
+    "ValidationStrategyProtocol",
+    "VersionAwareStrategyProtocol",
+    "RegistryProtocol",
+    "OpenAPIClientProtocol",
+    "AsyncOpenAPIClientProtocol",
+    "ConformanceClassProtocol",
+    "SpecificationKeyProtocol",
 ]

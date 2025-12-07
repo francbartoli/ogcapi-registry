@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, ClassVar
 
-from ..models import ValidationResult
+from ..models import ErrorSeverity, ValidationResult
 from ..ogc_types import ConformanceClass, OGCAPIType, OGCSpecificationKey
 
 
@@ -197,16 +197,48 @@ class ValidationStrategy(ABC):
                     return key
         return None
 
+    def create_error(
+        self,
+        path: str,
+        message: str,
+        error_type: str,
+        severity: ErrorSeverity = ErrorSeverity.CRITICAL,
+        conformance_class: str | None = None,
+    ) -> dict[str, Any]:
+        """Create a standardized error dict with severity.
+
+        Args:
+            path: The path in the document where the error occurred
+            message: Human-readable error message
+            error_type: Type of error (e.g., "missing_required_path")
+            severity: Error severity level (default: CRITICAL)
+            conformance_class: Optional conformance class URI related to this error
+
+        Returns:
+            Error dict with all fields populated
+        """
+        error: dict[str, Any] = {
+            "path": path,
+            "message": message,
+            "type": error_type,
+            "severity": severity.value,
+        }
+        if conformance_class:
+            error["conformance_class"] = conformance_class
+        return error
+
     def validate_paths_exist(
         self,
         document: dict[str, Any],
         required_paths: list[str],
+        severity: ErrorSeverity = ErrorSeverity.CRITICAL,
     ) -> list[dict[str, Any]]:
         """Check that required paths exist in the document.
 
         Args:
             document: The OpenAPI document
             required_paths: List of required path patterns
+            severity: Severity level for errors (default: CRITICAL)
 
         Returns:
             List of error dicts for missing paths
@@ -224,18 +256,20 @@ class ValidationStrategy(ABC):
                         pattern_found = True
                         break
                 if not pattern_found:
-                    errors.append({
-                        "path": f"paths/{required_path}",
-                        "message": f"Required path pattern '{required_path}' not found",
-                        "type": "missing_required_path",
-                    })
+                    errors.append(self.create_error(
+                        path=f"paths/{required_path}",
+                        message=f"Required path pattern '{required_path}' not found",
+                        error_type="missing_required_path",
+                        severity=severity,
+                    ))
             else:
                 if required_path not in paths:
-                    errors.append({
-                        "path": f"paths/{required_path}",
-                        "message": f"Required path '{required_path}' not found",
-                        "type": "missing_required_path",
-                    })
+                    errors.append(self.create_error(
+                        path=f"paths/{required_path}",
+                        message=f"Required path '{required_path}' not found",
+                        error_type="missing_required_path",
+                        severity=severity,
+                    ))
 
         return errors
 
@@ -243,12 +277,14 @@ class ValidationStrategy(ABC):
         self,
         document: dict[str, Any],
         required_operations: dict[str, list[str]],
+        severity: ErrorSeverity = ErrorSeverity.CRITICAL,
     ) -> list[dict[str, Any]]:
         """Check that required operations exist for paths.
 
         Args:
             document: The OpenAPI document
             required_operations: Dict mapping paths to required methods
+            severity: Severity level for errors (default: CRITICAL)
 
         Returns:
             List of error dicts for missing operations
@@ -270,11 +306,12 @@ class ValidationStrategy(ABC):
                 path_item = paths.get(path, {})
                 for method in methods:
                     if method.lower() not in path_item:
-                        errors.append({
-                            "path": f"paths/{path}/{method}",
-                            "message": f"Required operation '{method.upper()}' not found for path '{path}'",
-                            "type": "missing_required_operation",
-                        })
+                        errors.append(self.create_error(
+                            path=f"paths/{path}/{method}",
+                            message=f"Required operation '{method.upper()}' not found for path '{path}'",
+                            error_type="missing_required_operation",
+                            severity=severity,
+                        ))
 
         return errors
 

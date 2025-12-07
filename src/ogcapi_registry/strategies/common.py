@@ -2,7 +2,7 @@
 
 from typing import Any, ClassVar
 
-from ..models import ValidationResult
+from ..models import ErrorSeverity, ValidationResult
 from ..ogc_types import ConformanceClass, OGCAPIType
 from .base import ValidationStrategy
 
@@ -131,11 +131,12 @@ class CommonStrategy(ValidationStrategy):
         # Check for 200 response
         responses = get_op.get("responses", {})
         if "200" not in responses and "2XX" not in responses:
-            errors.append({
-                "path": "paths//.get.responses",
-                "message": "Landing page GET should have a 200 response",
-                "type": "missing_response",
-            })
+            errors.append(self.create_error(
+                path="paths//.get.responses",
+                message="Landing page GET should have a 200 response",
+                error_type="missing_response",
+                severity=ErrorSeverity.CRITICAL,
+            ))
 
         return errors
 
@@ -162,11 +163,12 @@ class CommonStrategy(ValidationStrategy):
         # Check for 200 response
         responses = get_op.get("responses", {})
         if "200" not in responses and "2XX" not in responses:
-            errors.append({
-                "path": "paths//conformance.get.responses",
-                "message": "Conformance GET should have a 200 response",
-                "type": "missing_response",
-            })
+            errors.append(self.create_error(
+                path="paths//conformance.get.responses",
+                message="Conformance GET should have a 200 response",
+                error_type="missing_response",
+                severity=ErrorSeverity.CRITICAL,
+            ))
 
         return errors
 

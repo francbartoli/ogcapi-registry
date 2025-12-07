@@ -18,6 +18,7 @@ from .exceptions import (
     ValidationError,
 )
 from .models import (
+    ErrorSeverity,
     RegisteredSpecification,
     SpecificationKey,
     SpecificationMetadata,
@@ -94,6 +95,7 @@ __all__ = [
     "SpecificationRegistry",
     "AsyncSpecificationRegistry",
     # Models
+    "ErrorSeverity",
     "SpecificationType",
     "SpecificationKey",
     "SpecificationMetadata",

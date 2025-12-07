@@ -270,6 +270,59 @@ if result.validated_against:
     print(f"Validated as: {result.validated_against.spec_type}")
 ```
 
+### Error Severity Levels
+
+The library distinguishes between different error severities to help prioritize issues:
+
+| Severity | Description | Example |
+|----------|-------------|---------|
+| **CRITICAL** | Must be fixed for OGC compliance | Missing required path `/collections` |
+| **WARNING** | Optional conformance class issues | Missing `bbox` parameter (recommended) |
+| **INFO** | Best practices and recommendations | Missing `filter` parameter for filter conformance |
+
+```python
+from ogcapi_registry import validate_ogc_api, ErrorSeverity
+
+result = validate_ogc_api(document, conformance_classes)
+
+# Get error summary by severity
+summary = result.get_summary()
+print(f"Critical: {summary['critical']}, Warnings: {summary['warning']}, Info: {summary['info']}")
+
+# Filter errors by severity
+critical_errors = result.critical_errors
+warning_errors = result.warning_errors
+info_errors = result.info_errors
+
+# Or use the generic method
+critical = result.get_errors_by_severity(ErrorSeverity.CRITICAL)
+
+# Check compliance vs validity
+# is_valid: No errors at all
+# is_compliant: No CRITICAL errors (warnings/info are acceptable)
+if result.is_compliant:
+    print("Document is OGC compliant (no critical errors)")
+    if not result.is_valid:
+        print(f"  But has {len(result.warning_errors)} warnings to review")
+else:
+    print("Document has critical compliance issues:")
+    for error in result.critical_errors:
+        print(f"  - {error['message']}")
+```
+
+### Understanding Compliance vs Validity
+
+The distinction between `is_valid` and `is_compliant` helps you decide what to fix:
+
+- **`is_valid`**: `True` only if there are zero errors of any severity
+- **`is_compliant`**: `True` if there are no CRITICAL errors (warnings and info are acceptable)
+
+This is useful because:
+
+1. A document can be **compliant but not valid** - it meets required OGC specs but has optional issues
+2. A document with only warnings may be perfectly acceptable for production use
+3. Focus on fixing CRITICAL errors first, then address warnings incrementally
+
 ### Using the Strategy Registry
 
 For more control over validation, use the `StrategyRegistry` directly:
@@ -894,7 +947,27 @@ A server can legitimately implement only a minimal subset. For example, a compli
 
 And completely ignore `html`, `geojson`, `gmlsf0`, etc.
 
-**Solution**: Prioritize errors on **required** classes. Optional classes can be implemented incrementally based on project needs. The library could be extended to visually distinguish between critical errors and informational warnings.
+**Solution**: Use the library's **severity filtering** to prioritize errors:
+
+```python
+result = validate_ogc_api(document, conformance_classes)
+
+# Focus on critical errors first
+if result.has_critical_errors:
+    print("Fix these critical issues:")
+    for error in result.critical_errors:
+        print(f"  - {error['message']}")
+else:
+    print("No critical errors! Review warnings if needed:")
+    for warning in result.warning_errors:
+        print(f"  - {warning['message']}")
+
+# Or use the summary
+summary = result.get_summary()
+print(f"Critical: {summary['critical']}, Warnings: {summary['warning']}")
+```
+
+Optional classes can be implemented incrementally based on project needs.
 
 ---
 

@@ -8,6 +8,26 @@ from openapi_pydantic import OpenAPI
 from pydantic import BaseModel, Field
 
 
+class ErrorSeverity(str, Enum):
+    """Severity levels for validation errors.
+
+    Used to distinguish between critical errors that must be fixed
+    and informational warnings that may be acceptable.
+    """
+
+    CRITICAL = "critical"
+    """Critical errors that violate required OGC conformance classes.
+    These must be fixed for the API to be considered compliant."""
+
+    WARNING = "warning"
+    """Warnings for optional conformance class violations.
+    The API may still be functional without addressing these."""
+
+    INFO = "info"
+    """Informational messages about best practices or recommendations.
+    These do not affect compliance status."""
+
+
 class SpecificationType(str, Enum):
     """Enumeration of supported OpenAPI specification types."""
 
@@ -184,3 +204,62 @@ class ValidationResult(BaseModel):
             warnings=warnings,
             validated_against=validated_against,
         )
+
+    def get_errors_by_severity(
+        self, severity: "ErrorSeverity"
+    ) -> tuple[dict[str, Any], ...]:
+        """Get errors filtered by severity level.
+
+        Args:
+            severity: The severity level to filter by
+
+        Returns:
+            Tuple of error dicts matching the severity
+        """
+        return tuple(
+            error for error in self.errors
+            if error.get("severity") == severity.value
+        )
+
+    @property
+    def critical_errors(self) -> tuple[dict[str, Any], ...]:
+        """Get only critical errors that must be fixed."""
+        return self.get_errors_by_severity(ErrorSeverity.CRITICAL)
+
+    @property
+    def warning_errors(self) -> tuple[dict[str, Any], ...]:
+        """Get only warning-level errors for optional conformance."""
+        return self.get_errors_by_severity(ErrorSeverity.WARNING)
+
+    @property
+    def info_errors(self) -> tuple[dict[str, Any], ...]:
+        """Get only informational errors."""
+        return self.get_errors_by_severity(ErrorSeverity.INFO)
+
+    @property
+    def has_critical_errors(self) -> bool:
+        """Check if there are any critical errors."""
+        return len(self.critical_errors) > 0
+
+    @property
+    def is_compliant(self) -> bool:
+        """Check if the document is compliant (no critical errors).
+
+        A document is considered compliant if it has no critical errors,
+        even if it has warnings or informational messages. This is different
+        from is_valid which requires zero errors of any kind.
+        """
+        return not self.has_critical_errors
+
+    def get_summary(self) -> dict[str, int]:
+        """Get a summary of errors by severity.
+
+        Returns:
+            Dict with counts for each severity level
+        """
+        return {
+            "critical": len(self.critical_errors),
+            "warning": len(self.warning_errors),
+            "info": len(self.info_errors),
+            "total": len(self.errors),
+        }

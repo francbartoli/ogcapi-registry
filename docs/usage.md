@@ -713,3 +713,140 @@ for key in spec_keys:
     # Implements: OGC API - Features Part 1 v1.0
     # Implements: OGC API - Tiles Part 1 v1.0
 ```
+
+## Protocols and Duck Typing
+
+The library supports **structural subtyping** (duck typing) through Python's `Protocol` classes. This means you can create custom implementations without inheriting from base classes.
+
+### Available Protocols
+
+| Protocol | Description |
+|----------|-------------|
+| `ValidationStrategyProtocol` | Interface for validation strategies |
+| `VersionAwareStrategyProtocol` | Extends with version support |
+| `RegistryProtocol` | Generic interface for registries |
+| `OpenAPIClientProtocol` | HTTP client interface (sync) |
+| `AsyncOpenAPIClientProtocol` | HTTP client interface (async) |
+| `ConformanceClassProtocol` | Conformance class interface |
+| `SpecificationKeyProtocol` | Specification key interface |
+
+### Creating a Custom Strategy (No Inheritance Required)
+
+```python
+from ogcapi_registry import (
+    OGCAPIType,
+    StrategyRegistry,
+    ValidationResult,
+    ValidationStrategyProtocol,
+)
+
+# Custom strategy WITHOUT inheriting from ValidationStrategy
+class MyCustomStrategy:
+    """A duck-typed strategy - no inheritance needed!"""
+
+    api_type = OGCAPIType.FEATURES
+
+    def validate(self, document, conformance_classes):
+        # Custom validation logic
+        paths = document.get("paths", {})
+        if "/my-custom-endpoint" not in paths:
+            return ValidationResult.failure([{
+                "path": "paths",
+                "message": "Missing /my-custom-endpoint",
+                "type": "missing_path",
+            }])
+        return ValidationResult.success()
+
+    def get_required_paths(self, conformance_classes):
+        return ["/my-custom-endpoint", "/collections"]
+
+    def get_required_operations(self, conformance_classes):
+        return {"/my-custom-endpoint": ["get", "post"]}
+
+    def matches_conformance(self, conformance_classes):
+        return any("features" in str(cc).lower() for cc in conformance_classes)
+
+# Register and use the custom strategy
+registry = StrategyRegistry()
+registry.register(MyCustomStrategy())
+
+# Verify it satisfies the protocol
+assert isinstance(MyCustomStrategy(), ValidationStrategyProtocol)
+```
+
+### Runtime Protocol Checking
+
+All protocols are decorated with `@runtime_checkable`, enabling `isinstance()` checks:
+
+```python
+from ogcapi_registry import (
+    CommonStrategy,
+    OpenAPIClient,
+    ValidationStrategyProtocol,
+    OpenAPIClientProtocol,
+)
+
+# Check if objects satisfy protocols
+strategy = CommonStrategy()
+assert isinstance(strategy, ValidationStrategyProtocol)
+
+client = OpenAPIClient()
+assert isinstance(client, OpenAPIClientProtocol)
+
+# Custom objects are also checkable
+class MyClient:
+    def fetch(self, url):
+        return {}, None
+
+    def fetch_and_validate_structure(self, url):
+        return {}, None
+
+# This will pass if all required methods are present
+assert isinstance(MyClient(), OpenAPIClientProtocol)
+```
+
+### Benefits of Duck Typing
+
+1. **No Inheritance Required**: Create strategies without subclassing
+2. **Testing**: Easy to create mock objects for unit tests
+3. **Flexibility**: External classes can satisfy interfaces
+4. **Decoupling**: Reduced dependencies between modules
+5. **Type Safety**: Full mypy/pyright support for static analysis
+
+### Example: Mock Strategy for Testing
+
+```python
+import pytest
+from ogcapi_registry import ValidationResult, OGCAPIType
+
+class MockStrategy:
+    """Mock strategy for testing - no inheritance needed."""
+
+    api_type = OGCAPIType.COMMON
+
+    def __init__(self, should_pass: bool = True):
+        self.should_pass = should_pass
+        self.validate_called = False
+
+    def validate(self, document, conformance_classes):
+        self.validate_called = True
+        if self.should_pass:
+            return ValidationResult.success()
+        return ValidationResult.failure([{"message": "Mock failure"}])
+
+    def get_required_paths(self, conformance_classes):
+        return []
+
+    def get_required_operations(self, conformance_classes):
+        return {}
+
+    def matches_conformance(self, conformance_classes):
+        return True
+
+def test_with_mock_strategy():
+    mock = MockStrategy(should_pass=True)
+    result = mock.validate({}, [])
+
+    assert mock.validate_called
+    assert result.is_valid
+```

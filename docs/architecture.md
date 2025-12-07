@@ -377,13 +377,74 @@ The `OGCSpecificationKey` supports two matching modes:
 | Strict | Exact version and part match | `1.0` matches `1.0` only |
 | Non-strict | Major.minor version match | `1.0` matches `1.0.1` |
 
+## Protocols and Duck Typing
+
+The library uses Python's `Protocol` classes to enable structural subtyping (duck typing). This allows custom implementations without inheritance.
+
+### Protocol Hierarchy
+
+```mermaid
+classDiagram
+    class ValidationStrategyProtocol {
+        <<protocol>>
+        +api_type: OGCAPIType
+        +validate(document, conformance_classes) ValidationResult
+        +get_required_paths(conformance_classes) list
+        +get_required_operations(conformance_classes) dict
+        +matches_conformance(conformance_classes) bool
+    }
+
+    class VersionAwareStrategyProtocol {
+        <<protocol>>
+        +supports_version(spec_version) bool
+        +get_spec_version_from_conformance(conformance_classes) str
+        +get_specification_key(conformance_classes) OGCSpecificationKey
+    }
+
+    class OpenAPIClientProtocol {
+        <<protocol>>
+        +fetch(url) tuple
+        +fetch_and_validate_structure(url) tuple
+    }
+
+    class RegistryProtocol~K, V~ {
+        <<protocol>>
+        +get_by_key(key) V
+        +exists_by_key(key) bool
+        +remove_by_key(key) bool
+        +list_keys() list~K~
+        +clear() None
+    }
+
+    ValidationStrategyProtocol <|-- VersionAwareStrategyProtocol
+    ValidationStrategy ..|> ValidationStrategyProtocol : implements
+    ValidationStrategy ..|> VersionAwareStrategyProtocol : implements
+```
+
+### Runtime Checkable Protocols
+
+All protocols are decorated with `@runtime_checkable`, enabling isinstance() checks:
+
+```python
+from ogcapi_registry import ValidationStrategyProtocol
+
+class MyStrategy:
+    api_type = OGCAPIType.FEATURES
+    # ... implement required methods ...
+
+# Works at runtime
+assert isinstance(MyStrategy(), ValidationStrategyProtocol)
+```
+
 ## Extension Points
 
 The architecture supports several extension points:
 
 ### Custom Strategies
 
-Implement the `ValidationStrategy` abstract class to add custom validation:
+You have two options for creating custom strategies:
+
+**Option 1: Inherit from ValidationStrategy (ABC)**
 
 ```python
 class CustomStrategy(ValidationStrategy):
@@ -399,6 +460,31 @@ class CustomStrategy(ValidationStrategy):
 
     def get_required_operations(self, conformance_classes):
         return {"/custom-endpoint": ["get", "post"]}
+```
+
+**Option 2: Duck Typing with Protocol (No Inheritance)**
+
+```python
+class CustomStrategy:
+    """No inheritance required - just implement the interface."""
+
+    api_type = OGCAPIType.FEATURES
+
+    def validate(self, document, conformance_classes):
+        return ValidationResult.success()
+
+    def get_required_paths(self, conformance_classes):
+        return ["/custom-endpoint"]
+
+    def get_required_operations(self, conformance_classes):
+        return {"/custom-endpoint": ["get", "post"]}
+
+    def matches_conformance(self, conformance_classes):
+        return True
+
+# Register without inheritance
+registry = StrategyRegistry()
+registry.register(CustomStrategy())  # Works!
 ```
 
 ### Custom Conformance Detection

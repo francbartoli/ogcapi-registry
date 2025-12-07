@@ -851,6 +851,94 @@ def test_with_mock_strategy():
     assert result.is_valid
 ```
 
+## Troubleshooting Common Issues
+
+### 1. "Validation passes but server doesn't work"
+
+**Problem**: The OpenAPI document passes validation, but the OGC API server doesn't work correctly when actually used.
+
+**Technical Explanation**:
+The `ogcapi-registry` library performs **static validation** of the OpenAPI document. This means it verifies:
+
+- The syntactic structure of the JSON/YAML document
+- The presence of paths required by OGC specifications
+- The correctness of declared HTTP methods
+- Compliance with OpenAPI v3 schemas
+
+However, it **does not test runtime behavior** of the server. For example:
+
+- The `/collections` path might be declared in the document but return a 500 error
+- Parameters might be documented but not implemented
+- Responses might not match the declared schemas
+
+**Solution**: Use the **OGC CITE Test Suite** (Compliance & Interoperability Testing & Evaluation), which executes real HTTP tests against the server to verify that implementations actually comply with the specifications. The CITE suite is the official OGC tool for compliance certification.
+
+---
+
+### 2. "Too many missing conformance class warnings"
+
+**Problem**: Validation generates many warnings for missing conformance classes, making it difficult to understand what is truly important.
+
+**Technical Explanation**:
+OGC API specifications define two types of conformance classes:
+
+| Type | Description | Example |
+|------|-------------|---------|
+| **Required** | Mandatory for base compliance | `core`, `oas30` |
+| **Optional** | Additional functionality | `html`, `geojson`, `crs` |
+
+A server can legitimately implement only a minimal subset. For example, a compliant OGC API - Features server might implement only:
+
+- `http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core`
+- `http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/oas30`
+
+And completely ignore `html`, `geojson`, `gmlsf0`, etc.
+
+**Solution**: Prioritize errors on **required** classes. Optional classes can be implemented incrementally based on project needs. The library could be extended to visually distinguish between critical errors and informational warnings.
+
+---
+
+### 3. "Cannot parse conformance classes"
+
+**Problem**: The library cannot interpret the conformance class URIs declared by the server.
+
+**Technical Explanation**:
+OGC conformance class URIs follow a standardized pattern:
+
+```
+http://www.opengis.net/spec/ogcapi-{type}-{part}/{version}/conf/{class}
+```
+
+Where:
+
+- `{type}` = API type (features, tiles, processes, etc.)
+- `{part}` = specification part number (1, 2, 3, etc.)
+- `{version}` = semantic version (1.0, 1.0.0, 2.0, etc.)
+- `{class}` = conformance class name (core, oas30, html, etc.)
+
+**Valid Examples**:
+```
+http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core
+http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tileset
+http://www.opengis.net/spec/ogcapi-processes-1/1.0/conf/ogc-process-description
+```
+
+**Problematic Examples**:
+```
+# Wrong prefix
+https://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core  # https instead of http
+
+# Non-standard format
+http://example.com/ogcapi/features/core  # custom URI
+
+# Malformed version
+http://www.opengis.net/spec/ogcapi-features-1/v1.0/conf/core  # "v1.0" instead of "1.0"
+```
+
+**Solution**: Verify that URIs in the server's `/conformance` document exactly follow the OGC pattern. If the server uses custom URIs, extending the library with custom parsers may be necessary.
+
+---
+
 ## Next Steps
 
 For complete examples of validating real OGC API servers, including:
@@ -858,6 +946,5 @@ For complete examples of validating real OGC API servers, including:
 - Step-by-step validation workflow
 - Detailed explanation of validation errors
 - Conformance class reference tables
-- Troubleshooting common issues
 
 See the [Examples and Validation Workflow](examples.md) documentation.

@@ -259,17 +259,72 @@ These are **optional** conformance classes, so their absence is not an error.
 ```
 5. Validation Result:
    Valid: False
-   Errors:
+   Compliant: False
+
+   Error Summary:
+     Critical: 2 (must fix)
+     Warnings: 5 (optional)
+     Info:     0 (recommendations)
+
+   CRITICAL ERRORS:
      - Collections GET should have a 200 response
      - Items endpoint should have 'limit' query parameter
+
+   WARNINGS:
      - Items endpoint should have 'bbox' query parameter for spatial filtering
-     - CRS conformance requires 'crs' query parameter
-     - CRS conformance requires 'bbox-crs' query parameter
+     - CRS conformance requires 'crs' query parameter (for crs)
+     - CRS conformance requires 'bbox-crs' query parameter (for crs)
+```
+
+### Understanding Error Severity
+
+The library categorizes validation errors by severity to help you prioritize fixes:
+
+| Severity | Meaning | Action Required |
+|----------|---------|-----------------|
+| **CRITICAL** | Violates required OGC conformance | Must fix for compliance |
+| **WARNING** | Violates optional conformance class | Should fix if you declared that conformance |
+| **INFO** | Best practice recommendation | Consider implementing |
+
+In the example above:
+
+- **`Valid: False`** - Document has errors of some kind
+- **`Compliant: False`** - Document has CRITICAL errors (not OGC compliant)
+
+If there were only warnings (no critical errors), you would see:
+```
+   Valid: False
+   Compliant: True    # No critical errors!
+```
+
+### Using Severity Filtering in Code
+
+```python
+from ogcapi_registry import validate_ogc_api, ErrorSeverity
+
+result = validate_ogc_api(document, conformance_classes)
+
+# Check compliance (ignores warnings)
+if result.is_compliant:
+    print("No critical errors - document is OGC compliant!")
+
+# Get summary
+summary = result.get_summary()
+print(f"Critical: {summary['critical']}, Warnings: {summary['warning']}")
+
+# Filter by severity
+for error in result.critical_errors:
+    print(f"MUST FIX: {error['message']}")
+
+for error in result.warning_errors:
+    print(f"SHOULD FIX: {error['message']}")
 ```
 
 **Explanation of Each Error**:
 
-### Error: "Collections GET should have a 200 response"
+### CRITICAL: "Collections GET should have a 200 response"
+
+**Severity**: CRITICAL (required for OGC compliance)
 
 **Cause**: The `/collections` endpoint in the OpenAPI document doesn't define a `200` response.
 
@@ -289,7 +344,9 @@ paths:
                 $ref: '#/components/schemas/Collections'
 ```
 
-### Error: "Items endpoint should have 'limit' query parameter"
+### CRITICAL: "Items endpoint should have 'limit' query parameter"
+
+**Severity**: CRITICAL (required for OGC compliance)
 
 **Cause**: The `/collections/{collectionId}/items` endpoint doesn't define the `limit` parameter.
 
@@ -311,11 +368,13 @@ paths:
             default: 10
 ```
 
-### Error: "Items endpoint should have 'bbox' query parameter"
+### WARNING: "Items endpoint should have 'bbox' query parameter"
+
+**Severity**: WARNING (recommended, but not strictly required for minimal compliance)
 
 **Cause**: The items endpoint doesn't define spatial filtering via `bbox`.
 
-**OGC Requirement**: OGC API - Features Part 1, Requirement 19 states that the items endpoint MUST support the `bbox` parameter for spatial filtering.
+**OGC Requirement**: OGC API - Features Part 1, Requirement 19 states that the items endpoint SHOULD support the `bbox` parameter for spatial filtering. While technically required by the specification, some minimal implementations may omit it.
 
 **Fix**: Add the bbox parameter:
 ```yaml
@@ -333,11 +392,15 @@ parameters:
       maxItems: 6
 ```
 
-### Error: "CRS conformance requires 'crs' query parameter"
+### WARNING: "CRS conformance requires 'crs' query parameter"
+
+**Severity**: WARNING (only required if you declared CRS conformance)
 
 **Cause**: The server declares CRS conformance (Features Part 2) but the items endpoint doesn't include the `crs` parameter.
 
 **OGC Requirement**: OGC API - Features Part 2, Requirement 4 states that when CRS conformance is declared, the `crs` parameter MUST be available.
+
+**Why WARNING**: CRS is an **optional** conformance class. If you don't need CRS support, remove it from your `/conformance` response instead of adding the parameter.
 
 **Fix**: Add the crs parameter:
 ```yaml
@@ -350,11 +413,15 @@ parameters:
       format: uri
 ```
 
-### Error: "CRS conformance requires 'bbox-crs' query parameter"
+### WARNING: "CRS conformance requires 'bbox-crs' query parameter"
+
+**Severity**: WARNING (only required if you declared CRS conformance)
 
 **Cause**: When CRS conformance is declared, `bbox-crs` must be available to specify the CRS of the bbox parameter.
 
 **OGC Requirement**: OGC API - Features Part 2, Requirement 5.
+
+**Why WARNING**: Same as above - CRS is an optional conformance class.
 
 **Fix**: Add the bbox-crs parameter:
 ```yaml

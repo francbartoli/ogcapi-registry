@@ -16,6 +16,7 @@ from typing import Any
 
 from ogcapi_registry import (
     ConformanceClass,
+    ErrorSeverity,
     OGCAPIType,
     OGCSpecificationKey,
     OGCSpecificationRegistry,
@@ -245,16 +246,26 @@ def validate_server(base_url: str) -> dict[str, Any]:
             conformance_classes if conformance_classes else None,
         )
 
+        # Get error summary by severity
+        summary = result.get_summary()
+
         report["validation_result"] = {
             "is_valid": result.is_valid,
-            "errors": [dict(e) for e in result.errors],
+            "is_compliant": result.is_compliant,
+            "summary": summary,
+            "critical_errors": [dict(e) for e in result.critical_errors],
+            "warning_errors": [dict(e) for e in result.warning_errors],
+            "info_errors": [dict(e) for e in result.info_errors],
             "warnings": [dict(w) for w in result.warnings],
         }
 
+        # Status based on compliance (not just validity)
         if result.is_valid:
             report["status"] = "valid"
+        elif result.is_compliant:
+            report["status"] = "compliant"  # No critical errors, but has warnings
         else:
-            report["status"] = "invalid"
+            report["status"] = "non-compliant"  # Has critical errors
 
     except Exception as e:
         report["errors"].append(f"Validation failed: {e}")
@@ -298,15 +309,46 @@ def print_report(report: dict[str, Any]) -> None:
 
     if report["validation_result"]:
         result = report["validation_result"]
-        print(f"\nValidation: {'PASSED' if result['is_valid'] else 'FAILED'}")
+        summary = result.get("summary", {})
 
-        if result["errors"]:
-            print("\n  Errors:")
-            for error in result["errors"]:
+        # Display overall status
+        if result["is_valid"]:
+            print("\nValidation: PASSED (no issues)")
+        elif result["is_compliant"]:
+            print("\nValidation: COMPLIANT (no critical errors, has warnings)")
+        else:
+            print("\nValidation: NON-COMPLIANT (has critical errors)")
+
+        # Display summary
+        print(f"\n  Summary:")
+        print(f"    Critical: {summary.get('critical', 0)}")
+        print(f"    Warnings: {summary.get('warning', 0)}")
+        print(f"    Info:     {summary.get('info', 0)}")
+        print(f"    Total:    {summary.get('total', 0)}")
+
+        # Display critical errors (must fix)
+        if result.get("critical_errors"):
+            print("\n  CRITICAL ERRORS (must fix for compliance):")
+            for error in result["critical_errors"]:
                 print(f"    - [{error.get('type', 'error')}] {error.get('message', '')}")
 
-        if result["warnings"]:
-            print("\n  Warnings:")
+        # Display warning errors (should fix)
+        if result.get("warning_errors"):
+            print("\n  WARNINGS (optional conformance issues):")
+            for error in result["warning_errors"]:
+                cc = error.get("conformance_class", "")
+                cc_info = f" [{cc.split('/')[-1]}]" if cc else ""
+                print(f"    - {error.get('message', '')}{cc_info}")
+
+        # Display info errors (recommendations)
+        if result.get("info_errors"):
+            print("\n  INFO (recommendations):")
+            for error in result["info_errors"]:
+                print(f"    - {error.get('message', '')}")
+
+        # Display other warnings
+        if result.get("warnings"):
+            print("\n  Additional Warnings:")
             for warning in result["warnings"]:
                 print(f"    - {warning.get('message', '')}")
 
@@ -397,15 +439,39 @@ def demo_with_simulated_data():
     # Validate
     print("\n5. Validation Result:")
     result = validate_ogc_api(simulated_openapi, conformance_classes)
-    print(f"   Valid: {result.is_valid}")
 
-    if result.errors:
-        print("   Errors:")
-        for error in result.errors:
+    # Show compliance status (distinguishes critical from non-critical)
+    print(f"   Valid: {result.is_valid}")
+    print(f"   Compliant: {result.is_compliant}")
+
+    # Show error summary by severity
+    summary = result.get_summary()
+    print(f"\n   Error Summary:")
+    print(f"     Critical: {summary['critical']} (must fix)")
+    print(f"     Warnings: {summary['warning']} (optional)")
+    print(f"     Info:     {summary['info']} (recommendations)")
+
+    # Show errors by severity level
+    if result.critical_errors:
+        print("\n   CRITICAL ERRORS:")
+        for error in result.critical_errors:
+            print(f"     - {error['message']}")
+
+    if result.warning_errors:
+        print("\n   WARNINGS:")
+        for error in result.warning_errors:
+            cc = error.get("conformance_class", "")
+            cc_short = cc.split("/")[-1] if cc else ""
+            suffix = f" (for {cc_short})" if cc_short else ""
+            print(f"     - {error['message']}{suffix}")
+
+    if result.info_errors:
+        print("\n   INFO:")
+        for error in result.info_errors:
             print(f"     - {error['message']}")
 
     if result.warnings:
-        print("   Warnings:")
+        print("\n   Additional Warnings:")
         for warning in result.warnings:
             print(f"     - {warning['message']}")
 

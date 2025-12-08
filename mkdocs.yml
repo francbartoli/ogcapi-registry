@@ -1,6 +1,6 @@
 site_name: OGC API Registry
 site_description: A Python library for validating OGC API OpenAPI documents
-site_url: https://github.com/francbartoli/ogcapi-registry
+site_url: https://francbartoli.github.io/ogcapi-registry/
 repo_url: https://github.com/francbartoli/ogcapi-registry
 repo_name: francbartoli/ogcapi-registry
 

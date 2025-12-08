@@ -24,7 +24,9 @@ if TYPE_CHECKING:
 
 # Type variables for generic protocols
 K = TypeVar("K")  # Key type (invariant - used in input and output)
-V_co = TypeVar("V_co", covariant=True)  # Value type (covariant - only in return positions)
+V_co = TypeVar(
+    "V_co", covariant=True
+)  # Value type (covariant - only in return positions)
 T = TypeVar("T", covariant=True)  # Covariant type for returns
 
 
@@ -50,6 +52,12 @@ class ValidationStrategyProtocol(Protocol):
                 return {"/collections": ["get"]}
 
             def matches_conformance(self, conformance_classes):
+                return True
+
+            def get_conformance_score(self, conformance_classes):
+                return 1
+
+            def supports_version(self, spec_version):
                 return True
 
         # CustomStrategy can be used anywhere ValidationStrategyProtocol is expected

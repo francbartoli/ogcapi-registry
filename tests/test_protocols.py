@@ -62,6 +62,12 @@ class TestValidationStrategyProtocol:
             def matches_conformance(self, conformance_classes: list) -> bool:
                 return True
 
+            def get_conformance_score(self, conformance_classes: list) -> int:
+                return 1
+
+            def supports_version(self, spec_version: str) -> bool:
+                return True
+
         custom = CustomStrategy()
 
         # Should satisfy the protocol
@@ -262,6 +268,12 @@ class TestProtocolDocumentation:
                 return {"/collections": ["get"]}
 
             def matches_conformance(self, conformance_classes):
+                return True
+
+            def get_conformance_score(self, conformance_classes):
+                return 1
+
+            def supports_version(self, spec_version):
                 return True
 
         # Should work as documented

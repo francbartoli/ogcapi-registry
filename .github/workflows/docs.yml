@@ -24,9 +24,10 @@ concurrency:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write  # Required for peaceiris/actions-gh-pages
   pages: write
   id-token: write
+  pull-requests: write  # Required for commenting on PRs
 
 jobs:
   build:

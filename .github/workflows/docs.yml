@@ -24,10 +24,9 @@ concurrency:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: write  # Required for peaceiris/actions-gh-pages
+  contents: read
   pages: write
   id-token: write
-  pull-requests: write  # Required for commenting on PRs
 
 jobs:
   build:
@@ -53,12 +52,13 @@ jobs:
         run: uv run mkdocs build --strict
 
       - name: Upload artifact for deployment
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: site/
 
-  # Deploy to production (root path) on push to main
-  deploy-production:
+  # Deploy to GitHub Pages on push to main
+  deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
@@ -70,109 +70,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  # Deploy to /dev path on pull requests
-  deploy-preview:
-    if: github.event_name == 'pull_request'
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v4
-        with:
-          enable-cache: true
-
-      - name: Set up Python
-        run: uv python install 3.11
-
-      - name: Install dependencies
-        run: uv sync --all-extras --dev
-
-      - name: Build documentation for dev
-        run: |
-          # Build with /dev base path for preview
-          uv run mkdocs build --strict
-        env:
-          MKDOCS_SITE_URL: ${{ github.event.repository.html_url }}/dev/
-
-      - name: Download current gh-pages
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
-          path: gh-pages-current
-        continue-on-error: true
-
-      - name: Prepare deployment directory
-        run: |
-          # Create deployment directory
-          mkdir -p deploy
-
-          # Copy existing gh-pages content (if exists)
-          if [ -d "gh-pages-current" ]; then
-            cp -r gh-pages-current/* deploy/ 2>/dev/null || true
-            rm -rf deploy/.git
-          fi
-
-          # Copy new dev docs
-          rm -rf deploy/dev
-          cp -r site deploy/dev
-
-      - name: Deploy to GitHub Pages (/dev)
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./deploy
-          destination_dir: ./
-          keep_files: true
-
-      - name: Comment PR with preview link
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const repoUrl = context.payload.repository.html_url;
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const prNumber = context.payload.pull_request.number;
-
-            // Get the GitHub Pages URL
-            const pagesUrl = `https://${owner}.github.io/${repo}/dev/`;
-
-            const body = `## Documentation Preview
-
-            The documentation preview is available at: ${pagesUrl}
-
-            > **Note**: It may take a few minutes for the deployment to complete.`;
-
-            // Check if comment already exists
-            const comments = await github.rest.issues.listComments({
-              owner,
-              repo,
-              issue_number: prNumber,
-            });
-
-            const botComment = comments.data.find(comment =>
-              comment.user.type === 'Bot' &&
-              comment.body.includes('Documentation Preview')
-            );
-
-            if (botComment) {
-              // Update existing comment
-              await github.rest.issues.updateComment({
-                owner,
-                repo,
-                comment_id: botComment.id,
-                body,
-              });
-            } else {
-              // Create new comment
-              await github.rest.issues.createComment({
-                owner,
-                repo,
-                issue_number: prNumber,
-                body,
-              });
-            }

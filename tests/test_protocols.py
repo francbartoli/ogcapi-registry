@@ -1,7 +1,5 @@
 """Tests for Protocol compliance and duck typing support."""
 
-import pytest
-
 from ogcapi_registry import (
     AsyncOpenAPIClient,
     CommonStrategy,
@@ -12,13 +10,11 @@ from ogcapi_registry import (
     SpecificationRegistry,
     StrategyRegistry,
     ValidationResult,
-    ValidationStrategy,
 )
 from ogcapi_registry.protocols import (
     AsyncOpenAPIClientProtocol,
     ConformanceClassProtocol,
     OpenAPIClientProtocol,
-    RegistryProtocol,
     ValidationStrategyProtocol,
     VersionAwareStrategyProtocol,
 )
@@ -93,11 +89,15 @@ class TestValidationStrategyProtocol:
             ) -> ValidationResult:
                 paths = document.get("paths", {})
                 if "/collections" not in paths:
-                    return ValidationResult.failure([{
-                        "path": "paths",
-                        "message": "Missing /collections path",
-                        "type": "missing_path",
-                    }])
+                    return ValidationResult.failure(
+                        [
+                            {
+                                "path": "paths",
+                                "message": "Missing /collections path",
+                                "type": "missing_path",
+                            }
+                        ]
+                    )
                 return ValidationResult.success()
 
             def get_required_paths(self, conformance_classes: list) -> list:
@@ -126,7 +126,9 @@ class TestValidationStrategyProtocol:
         }
 
         ccs = [
-            ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core")
+            ConformanceClass(
+                uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"
+            )
         ]
 
         # Get the strategy and validate

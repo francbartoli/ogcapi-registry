@@ -44,9 +44,7 @@ jobs:
 
       - name: Run tests with coverage
         if: matrix.python-version == '3.11'
-        run: |
-          uv add --dev pytest-cov
-          uv run pytest tests/ --cov=ogcapi_registry --cov-report=xml --cov-report=term-missing
+        run: uv run pytest tests/ --cov=ogcapi_registry --cov-report=xml --cov-report=term-missing
 
       - name: Upload coverage to Codecov
         if: matrix.python-version == '3.11'
@@ -75,14 +73,10 @@ jobs:
         run: uv sync --all-extras --dev
 
       - name: Run ruff check
-        run: |
-          uv add --dev ruff
-          uv run ruff check src/ tests/
+        run: uv run ruff check src/ tests/
 
       - name: Run ruff format check
         run: uv run ruff format --check src/ tests/
 
       - name: Run type checking with mypy
-        run: |
-          uv add --dev mypy types-PyYAML
-          uv run mypy src/ogcapi_registry --ignore-missing-imports
+        run: uv run mypy src/ogcapi_registry

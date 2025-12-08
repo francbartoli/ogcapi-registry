@@ -96,7 +96,9 @@ class OGCSpecificationKey(BaseModel):
         return self_major_minor == other_major_minor
 
     @classmethod
-    def from_conformance_class(cls, cc: "ConformanceClass") -> "OGCSpecificationKey | None":
+    def from_conformance_class(
+        cls, cc: "ConformanceClass"
+    ) -> "OGCSpecificationKey | None":
         """Create a specification key from a conformance class.
 
         Args:

@@ -256,20 +256,24 @@ class ValidationStrategy(ABC):
                         pattern_found = True
                         break
                 if not pattern_found:
-                    errors.append(self.create_error(
-                        path=f"paths/{required_path}",
-                        message=f"Required path pattern '{required_path}' not found",
-                        error_type="missing_required_path",
-                        severity=severity,
-                    ))
+                    errors.append(
+                        self.create_error(
+                            path=f"paths/{required_path}",
+                            message=f"Required path pattern '{required_path}' not found",
+                            error_type="missing_required_path",
+                            severity=severity,
+                        )
+                    )
             else:
                 if required_path not in paths:
-                    errors.append(self.create_error(
-                        path=f"paths/{required_path}",
-                        message=f"Required path '{required_path}' not found",
-                        error_type="missing_required_path",
-                        severity=severity,
-                    ))
+                    errors.append(
+                        self.create_error(
+                            path=f"paths/{required_path}",
+                            message=f"Required path '{required_path}' not found",
+                            error_type="missing_required_path",
+                            severity=severity,
+                        )
+                    )
 
         return errors
 
@@ -306,12 +310,14 @@ class ValidationStrategy(ABC):
                 path_item = paths.get(path, {})
                 for method in methods:
                     if method.lower() not in path_item:
-                        errors.append(self.create_error(
-                            path=f"paths/{path}/{method}",
-                            message=f"Required operation '{method.upper()}' not found for path '{path}'",
-                            error_type="missing_required_operation",
-                            severity=severity,
-                        ))
+                        errors.append(
+                            self.create_error(
+                                path=f"paths/{path}/{method}",
+                                message=f"Required operation '{method.upper()}' not found for path '{path}'",
+                                error_type="missing_required_operation",
+                                severity=severity,
+                            )
+                        )
 
         return errors
 
@@ -405,7 +411,9 @@ class CompositeValidationStrategy(ValidationStrategy):
         """Get combined required operations from all strategies."""
         operations: dict[str, set[str]] = {}
         for strategy in self._strategies:
-            for path, methods in strategy.get_required_operations(conformance_classes).items():
+            for path, methods in strategy.get_required_operations(
+                conformance_classes
+            ).items():
                 if path not in operations:
                     operations[path] = set()
                 operations[path].update(methods)

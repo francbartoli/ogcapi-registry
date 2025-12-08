@@ -347,9 +347,7 @@ class OGCSpecificationRegistry:
         """
         with self._lock:
             matching = [
-                spec
-                for spec in self._specs.values()
-                if spec.key.api_type == api_type
+                spec for spec in self._specs.values() if spec.key.api_type == api_type
             ]
 
             def version_key(spec: OGCRegisteredSpecification) -> tuple[int, ...]:

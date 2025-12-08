@@ -160,11 +160,13 @@ class ProcessesStrategy(ValidationStrategy):
 
         responses = get_op.get("responses", {})
         if "200" not in responses and "2XX" not in responses:
-            errors.append({
-                "path": "paths//processes.get.responses",
-                "message": "Processes GET should have a 200 response",
-                "type": "missing_response",
-            })
+            errors.append(
+                {
+                    "path": "paths//processes.get.responses",
+                    "message": "Processes GET should have a 200 response",
+                    "type": "missing_response",
+                }
+            )
 
         return errors
 
@@ -199,29 +201,29 @@ class ProcessesStrategy(ValidationStrategy):
         responses = post_op.get("responses", {})
 
         # Should have 200 (sync) or 201 (async) response
-        has_success = any(
-            code in responses for code in ["200", "201", "2XX"]
-        )
+        has_success = any(code in responses for code in ["200", "201", "2XX"])
         if not has_success:
-            errors.append({
-                "path": f"paths/{execution_path}.post.responses",
-                "message": "Execution POST should have 200 (sync) or 201 (async) response",
-                "type": "missing_response",
-            })
+            errors.append(
+                {
+                    "path": f"paths/{execution_path}.post.responses",
+                    "message": "Execution POST should have 200 (sync) or 201 (async) response",
+                    "type": "missing_response",
+                }
+            )
 
         # Check for request body
         if "requestBody" not in post_op:
-            errors.append({
-                "path": f"paths/{execution_path}.post",
-                "message": "Execution POST should have a requestBody for process inputs",
-                "type": "missing_request_body",
-            })
+            errors.append(
+                {
+                    "path": f"paths/{execution_path}.post",
+                    "message": "Execution POST should have a requestBody for process inputs",
+                    "type": "missing_request_body",
+                }
+            )
 
         return errors
 
-    def _validate_jobs_endpoint(
-        self, document: dict[str, Any]
-    ) -> list[dict[str, Any]]:
+    def _validate_jobs_endpoint(self, document: dict[str, Any]) -> list[dict[str, Any]]:
         """Validate the jobs list endpoint.
 
         Args:
@@ -241,11 +243,13 @@ class ProcessesStrategy(ValidationStrategy):
 
         responses = get_op.get("responses", {})
         if "200" not in responses and "2XX" not in responses:
-            errors.append({
-                "path": "paths//jobs.get.responses",
-                "message": "Jobs GET should have a 200 response",
-                "type": "missing_response",
-            })
+            errors.append(
+                {
+                    "path": "paths//jobs.get.responses",
+                    "message": "Jobs GET should have a 200 response",
+                    "type": "missing_response",
+                }
+            )
 
         return errors
 
@@ -275,23 +279,25 @@ class ProcessesStrategy(ValidationStrategy):
 
         delete_op = paths[job_path].get("delete", {})
         if not delete_op:
-            errors.append({
-                "path": f"paths/{job_path}",
-                "message": "Dismiss conformance requires DELETE operation on job endpoint",
-                "type": "missing_operation",
-            })
+            errors.append(
+                {
+                    "path": f"paths/{job_path}",
+                    "message": "Dismiss conformance requires DELETE operation on job endpoint",
+                    "type": "missing_operation",
+                }
+            )
             return errors
 
         responses = delete_op.get("responses", {})
-        has_success = any(
-            code in responses for code in ["200", "204", "2XX"]
-        )
+        has_success = any(code in responses for code in ["200", "204", "2XX"])
         if not has_success:
-            errors.append({
-                "path": f"paths/{job_path}.delete.responses",
-                "message": "Job DELETE should have 200 or 204 response",
-                "type": "missing_response",
-            })
+            errors.append(
+                {
+                    "path": f"paths/{job_path}.delete.responses",
+                    "message": "Job DELETE should have 200 or 204 response",
+                    "type": "missing_response",
+                }
+            )
 
         return errors
 

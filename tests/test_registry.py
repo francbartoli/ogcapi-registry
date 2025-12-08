@@ -49,9 +49,7 @@ class TestSpecificationRegistry:
 
     def test_register_with_metadata(self, registry, sample_content):
         """Test registering with custom metadata."""
-        metadata = SpecificationMetadata(
-            source_url="https://example.com/openapi.json"
-        )
+        metadata = SpecificationMetadata(source_url="https://example.com/openapi.json")
         spec = registry.register(
             content=sample_content,
             spec_type=SpecificationType.OPENAPI_3_0,
@@ -119,9 +117,7 @@ class TestSpecificationRegistry:
             version="3.0.3",
         )
 
-        key = SpecificationKey(
-            spec_type=SpecificationType.OPENAPI_3_0, version="3.0.3"
-        )
+        key = SpecificationKey(spec_type=SpecificationType.OPENAPI_3_0, version="3.0.3")
         spec = registry.get_by_key(key)
         assert spec.raw_content == sample_content
 
@@ -219,9 +215,7 @@ class TestSpecificationRegistry:
 
     def test_contains(self, registry, sample_content):
         """Test checking if key is in registry."""
-        key = SpecificationKey(
-            spec_type=SpecificationType.OPENAPI_3_0, version="3.0.3"
-        )
+        key = SpecificationKey(spec_type=SpecificationType.OPENAPI_3_0, version="3.0.3")
 
         assert key not in registry
 
@@ -315,9 +309,7 @@ class TestAsyncSpecificationRegistry:
             headers={"content-type": "application/json"},
         )
 
-        spec = await registry.register_from_url(
-            "https://example.com/openapi.json"
-        )
+        spec = await registry.register_from_url("https://example.com/openapi.json")
         assert spec.key.spec_type == SpecificationType.OPENAPI_3_0
         assert spec.metadata.source_url == "https://example.com/openapi.json"
 

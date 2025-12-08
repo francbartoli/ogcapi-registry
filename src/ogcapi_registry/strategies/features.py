@@ -144,12 +144,14 @@ class FeaturesStrategy(ValidationStrategy):
         # Check for 200 response
         responses = get_op.get("responses", {})
         if "200" not in responses and "2XX" not in responses:
-            errors.append(self.create_error(
-                path="paths//collections.get.responses",
-                message="Collections GET should have a 200 response",
-                error_type="missing_response",
-                severity=ErrorSeverity.CRITICAL,
-            ))
+            errors.append(
+                self.create_error(
+                    path="paths//collections.get.responses",
+                    message="Collections GET should have a 200 response",
+                    error_type="missing_response",
+                    severity=ErrorSeverity.CRITICAL,
+                )
+            )
 
         return errors
 
@@ -197,21 +199,25 @@ class FeaturesStrategy(ValidationStrategy):
 
         # Features Core requires limit parameter (CRITICAL)
         if "limit" not in param_names:
-            errors.append(self.create_error(
-                path=f"paths/{items_path}.get.parameters",
-                message="Items endpoint should have 'limit' query parameter",
-                error_type="missing_parameter",
-                severity=ErrorSeverity.CRITICAL,
-            ))
+            errors.append(
+                self.create_error(
+                    path=f"paths/{items_path}.get.parameters",
+                    message="Items endpoint should have 'limit' query parameter",
+                    error_type="missing_parameter",
+                    severity=ErrorSeverity.CRITICAL,
+                )
+            )
 
         # Check for bbox parameter (recommended, not required - WARNING)
         if "bbox" not in param_names:
-            errors.append(self.create_error(
-                path=f"paths/{items_path}.get.parameters",
-                message="Items endpoint should have 'bbox' query parameter for spatial filtering",
-                error_type="missing_parameter",
-                severity=ErrorSeverity.WARNING,
-            ))
+            errors.append(
+                self.create_error(
+                    path=f"paths/{items_path}.get.parameters",
+                    message="Items endpoint should have 'bbox' query parameter for spatial filtering",
+                    error_type="missing_parameter",
+                    severity=ErrorSeverity.WARNING,
+                )
+            )
 
         return errors
 
@@ -242,22 +248,26 @@ class FeaturesStrategy(ValidationStrategy):
                 # CRS Part 2 requires crs and bbox-crs parameters
                 # These are WARNING because CRS is an optional conformance class
                 if "crs" not in param_names:
-                    errors.append(self.create_error(
-                        path=f"paths/{path}.get.parameters",
-                        message="CRS conformance requires 'crs' query parameter",
-                        error_type="missing_parameter",
-                        severity=ErrorSeverity.WARNING,
-                        conformance_class="http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
-                    ))
+                    errors.append(
+                        self.create_error(
+                            path=f"paths/{path}.get.parameters",
+                            message="CRS conformance requires 'crs' query parameter",
+                            error_type="missing_parameter",
+                            severity=ErrorSeverity.WARNING,
+                            conformance_class="http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
+                        )
+                    )
 
                 if "bbox-crs" not in param_names:
-                    errors.append(self.create_error(
-                        path=f"paths/{path}.get.parameters",
-                        message="CRS conformance requires 'bbox-crs' query parameter",
-                        error_type="missing_parameter",
-                        severity=ErrorSeverity.WARNING,
-                        conformance_class="http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
-                    ))
+                    errors.append(
+                        self.create_error(
+                            path=f"paths/{path}.get.parameters",
+                            message="CRS conformance requires 'bbox-crs' query parameter",
+                            error_type="missing_parameter",
+                            severity=ErrorSeverity.WARNING,
+                            conformance_class="http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
+                        )
+                    )
 
         return errors
 
@@ -289,22 +299,26 @@ class FeaturesStrategy(ValidationStrategy):
 
                 # Check for filter parameter (INFO level - informational)
                 if "filter" not in param_names:
-                    warnings.append(self.create_error(
-                        path=f"paths/{path}.get.parameters",
-                        message="Filter conformance typically includes 'filter' query parameter",
-                        error_type="missing_optional_parameter",
-                        severity=ErrorSeverity.INFO,
-                        conformance_class="http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
-                    ))
+                    warnings.append(
+                        self.create_error(
+                            path=f"paths/{path}.get.parameters",
+                            message="Filter conformance typically includes 'filter' query parameter",
+                            error_type="missing_optional_parameter",
+                            severity=ErrorSeverity.INFO,
+                            conformance_class="http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
+                        )
+                    )
 
                 if "filter-lang" not in param_names:
-                    warnings.append(self.create_error(
-                        path=f"paths/{path}.get.parameters",
-                        message="Filter conformance typically includes 'filter-lang' query parameter",
-                        error_type="missing_optional_parameter",
-                        severity=ErrorSeverity.INFO,
-                        conformance_class="http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
-                    ))
+                    warnings.append(
+                        self.create_error(
+                            path=f"paths/{path}.get.parameters",
+                            message="Filter conformance typically includes 'filter-lang' query parameter",
+                            error_type="missing_optional_parameter",
+                            severity=ErrorSeverity.INFO,
+                            conformance_class="http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter",
+                        )
+                    )
 
         return warnings
 

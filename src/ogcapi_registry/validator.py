@@ -205,9 +205,7 @@ def validate_openapi_structure(
         return ValidationResult.failure(
             errors, validated_against=key, warnings=tuple(warnings)
         )
-    return ValidationResult.success(
-        validated_against=key, warnings=tuple(warnings)
-    )
+    return ValidationResult.success(validated_against=key, warnings=tuple(warnings))
 
 
 def validate_openapi_with_pydantic(
@@ -330,9 +328,7 @@ def validate_against_reference(
         )
 
     # Perform structural validation
-    structure_result = validate_openapi_structure(
-        document, reference.key.spec_type
-    )
+    structure_result = validate_openapi_structure(document, reference.key.spec_type)
 
     if not structure_result.is_valid:
         return ValidationResult.failure(
@@ -352,9 +348,7 @@ def validate_against_reference(
         )
 
     all_warnings = tuple(
-        list(structure_result.warnings)
-        + list(pydantic_result.warnings)
-        + warnings
+        list(structure_result.warnings) + list(pydantic_result.warnings) + warnings
     )
     return ValidationResult.success(
         validated_against=reference.key, warnings=all_warnings

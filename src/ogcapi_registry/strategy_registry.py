@@ -1,13 +1,13 @@
 """Registry for validation strategies with auto-detection."""
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from .models import ValidationResult
+from .strategies.base import ValidationStrategy
 from .ogc_types import (
     ConformanceClass,
     OGCAPIType,
     OGCSpecificationKey,
-    detect_api_types,
     get_specification_keys,
     parse_conformance_classes,
 )
@@ -24,7 +24,6 @@ from .strategies import (
     RoutesStrategy,
     StylesStrategy,
     TilesStrategy,
-    ValidationStrategy,
 )
 
 if TYPE_CHECKING:
@@ -142,7 +141,8 @@ class StrategyRegistry:
         if len(strategies) == 1:
             return strategies[0]
 
-        return CompositeValidationStrategy(strategies)
+        # Cast to satisfy CompositeValidationStrategy type requirements
+        return CompositeValidationStrategy(cast(list[ValidationStrategy], strategies))
 
     def detect_and_validate(
         self,
@@ -355,7 +355,10 @@ class StrategyRegistry:
         document: dict[str, Any],
         spec_key: OGCSpecificationKey,
         ogc_registry: "OGCSpecificationRegistry",
-        conformance_classes: list[ConformanceClass] | list[str] | dict[str, Any] | None = None,
+        conformance_classes: list[ConformanceClass]
+        | list[str]
+        | dict[str, Any]
+        | None = None,
     ) -> ValidationResult:
         """Validate a document against a specific OGC specification version.
 
@@ -372,7 +375,6 @@ class StrategyRegistry:
         Returns:
             ValidationResult with validation outcome
         """
-        from .ogc_registry import OGCSpecificationRegistry
 
         # Parse conformance classes if needed
         cc_list: list[ConformanceClass]
@@ -392,11 +394,15 @@ class StrategyRegistry:
 
         # Check version support
         if not strategy.supports_version(spec_key.spec_version):
-            return ValidationResult.failure([{
-                "path": "",
-                "message": f"Strategy does not support version {spec_key.spec_version}",
-                "type": "unsupported_version",
-            }])
+            return ValidationResult.failure(
+                [
+                    {
+                        "path": "",
+                        "message": f"Strategy does not support version {spec_key.spec_version}",
+                        "type": "unsupported_version",
+                    }
+                ]
+            )
 
         # Validate using strategy
         result = strategy.validate(document, cc_list)
@@ -419,11 +425,13 @@ class StrategyRegistry:
                 # Only warn for paths that look like they might be required
                 # (not template paths or obviously optional)
                 if ref_path not in doc_paths and "{" not in ref_path:
-                    additional_warnings.append({
-                        "path": f"paths/{ref_path}",
-                        "message": f"Path '{ref_path}' from reference spec not found",
-                        "type": "missing_reference_path",
-                    })
+                    additional_warnings.append(
+                        {
+                            "path": f"paths/{ref_path}",
+                            "message": f"Path '{ref_path}' from reference spec not found",
+                            "type": "missing_reference_path",
+                        }
+                    )
 
             # Add warnings to result if any
             if additional_warnings:
@@ -449,7 +457,10 @@ class StrategyRegistry:
     def get_detected_spec_keys(
         self,
         document: dict[str, Any],
-        conformance_classes: list[ConformanceClass] | list[str] | dict[str, Any] | None = None,
+        conformance_classes: list[ConformanceClass]
+        | list[str]
+        | dict[str, Any]
+        | None = None,
     ) -> set[OGCSpecificationKey]:
         """Detect OGC specification keys from a document's conformance classes.
 

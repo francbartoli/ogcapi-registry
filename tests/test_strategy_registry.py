@@ -6,7 +6,6 @@ from ogcapi_registry.ogc_types import ConformanceClass, OGCAPIType
 from ogcapi_registry.strategies import (
     CompositeValidationStrategy,
     FeaturesStrategy,
-    TilesStrategy,
 )
 from ogcapi_registry.strategy_registry import (
     StrategyRegistry,
@@ -83,9 +82,7 @@ class TestStrategyRegistry:
             "info": {"title": "Test API", "version": "1.0.0"},
             "paths": {
                 "/": {"get": {"responses": {"200": {"description": "OK"}}}},
-                "/conformance": {
-                    "get": {"responses": {"200": {"description": "OK"}}}
-                },
+                "/conformance": {"get": {"responses": {"200": {"description": "OK"}}}},
             },
         }
         ccs = [
@@ -103,9 +100,7 @@ class TestStrategyRegistry:
             "info": {"title": "Test API", "version": "1.0.0"},
             "paths": {
                 "/": {"get": {"responses": {"200": {"description": "OK"}}}},
-                "/conformance": {
-                    "get": {"responses": {"200": {"description": "OK"}}}
-                },
+                "/conformance": {"get": {"responses": {"200": {"description": "OK"}}}},
             },
         }
         ccs = [
@@ -121,9 +116,7 @@ class TestStrategyRegistry:
             "info": {"title": "Test API", "version": "1.0.0"},
             "paths": {
                 "/": {"get": {"responses": {"200": {"description": "OK"}}}},
-                "/conformance": {
-                    "get": {"responses": {"200": {"description": "OK"}}}
-                },
+                "/conformance": {"get": {"responses": {"200": {"description": "OK"}}}},
             },
         }
         ccs = {
@@ -141,12 +134,8 @@ class TestStrategyRegistry:
             "info": {"title": "Features API", "version": "1.0.0"},
             "paths": {
                 "/": {"get": {"responses": {"200": {"description": "OK"}}}},
-                "/conformance": {
-                    "get": {"responses": {"200": {"description": "OK"}}}
-                },
-                "/collections": {
-                    "get": {"responses": {"200": {"description": "OK"}}}
-                },
+                "/conformance": {"get": {"responses": {"200": {"description": "OK"}}}},
+                "/collections": {"get": {"responses": {"200": {"description": "OK"}}}},
                 "/collections/{collectionId}": {
                     "get": {"responses": {"200": {"description": "OK"}}}
                 },
@@ -166,7 +155,9 @@ class TestStrategyRegistry:
         }
         # No explicit conformance - should infer from paths
         result = registry.detect_and_validate(doc)
-        # The result depends on what gets inferred
+        # The result depends on what gets inferred, but should return a ValidationResult
+        assert result is not None
+        assert hasattr(result, "is_valid")
 
     def test_list_strategies(self, registry):
         """Test listing all strategies."""
@@ -200,9 +191,7 @@ class TestValidateOGCAPI:
             "info": {"title": "Test API", "version": "1.0.0"},
             "paths": {
                 "/": {"get": {"responses": {"200": {"description": "OK"}}}},
-                "/conformance": {
-                    "get": {"responses": {"200": {"description": "OK"}}}
-                },
+                "/conformance": {"get": {"responses": {"200": {"description": "OK"}}}},
             },
         }
         ccs = [
@@ -218,12 +207,8 @@ class TestValidateOGCAPI:
             "info": {"title": "Features API", "version": "1.0.0"},
             "paths": {
                 "/": {"get": {"responses": {"200": {"description": "OK"}}}},
-                "/conformance": {
-                    "get": {"responses": {"200": {"description": "OK"}}}
-                },
-                "/collections": {
-                    "get": {"responses": {"200": {"description": "OK"}}}
-                },
+                "/conformance": {"get": {"responses": {"200": {"description": "OK"}}}},
+                "/collections": {"get": {"responses": {"200": {"description": "OK"}}}},
                 "/collections/{collectionId}": {
                     "get": {"responses": {"200": {"description": "OK"}}}
                 },

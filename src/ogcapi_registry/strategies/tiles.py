@@ -84,19 +84,23 @@ class TilesStrategy(ValidationStrategy):
 
         # Dataset tilesets
         if self._has_conformance_class(conformance_classes, "/conf/dataset-tilesets"):
-            paths.extend([
-                "/tiles",
-                "/tiles/{tileMatrixSetId}",
-                "/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}",
-            ])
+            paths.extend(
+                [
+                    "/tiles",
+                    "/tiles/{tileMatrixSetId}",
+                    "/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}",
+                ]
+            )
 
         # Collection tilesets (geodata-tilesets)
         if self._has_conformance_class(conformance_classes, "/conf/geodata-tilesets"):
-            paths.extend([
-                "/collections/{collectionId}/tiles",
-                "/collections/{collectionId}/tiles/{tileMatrixSetId}",
-                "/collections/{collectionId}/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}",
-            ])
+            paths.extend(
+                [
+                    "/collections/{collectionId}/tiles",
+                    "/collections/{collectionId}/tiles/{tileMatrixSetId}",
+                    "/collections/{collectionId}/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}",
+                ]
+            )
 
         # Tilesets list
         if self._has_conformance_class(conformance_classes, "/conf/tilesets-list"):
@@ -124,12 +128,16 @@ class TilesStrategy(ValidationStrategy):
         if self._has_conformance_class(conformance_classes, "/conf/dataset-tilesets"):
             operations["/tiles"] = ["get"]
             operations["/tiles/{tileMatrixSetId}"] = ["get"]
-            operations["/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}"] = ["get"]
+            operations["/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}"] = [
+                "get"
+            ]
 
         if self._has_conformance_class(conformance_classes, "/conf/geodata-tilesets"):
             operations["/collections/{collectionId}/tiles"] = ["get"]
             operations["/collections/{collectionId}/tiles/{tileMatrixSetId}"] = ["get"]
-            operations["/collections/{collectionId}/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}"] = ["get"]
+            operations[
+                "/collections/{collectionId}/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}"
+            ] = ["get"]
 
         if self._has_conformance_class(conformance_classes, "/conf/tilesets-list"):
             operations["/tileMatrixSets"] = ["get"]
@@ -164,11 +172,13 @@ class TilesStrategy(ValidationStrategy):
 
                 responses = get_op.get("responses", {})
                 if "200" not in responses and "2XX" not in responses:
-                    errors.append({
-                        "path": f"paths/{tileset_path}.get.responses",
-                        "message": "Tileset endpoint should have a 200 response",
-                        "type": "missing_response",
-                    })
+                    errors.append(
+                        {
+                            "path": f"paths/{tileset_path}.get.responses",
+                            "message": "Tileset endpoint should have a 200 response",
+                            "type": "missing_response",
+                        }
+                    )
 
         return errors
 
@@ -186,8 +196,7 @@ class TilesStrategy(ValidationStrategy):
 
         # Find tile endpoints (contain tileMatrix, tileRow, tileCol)
         tile_paths = [
-            p for p in paths
-            if "tileMatrix" in p and "tileRow" in p and "tileCol" in p
+            p for p in paths if "tileMatrix" in p and "tileRow" in p and "tileCol" in p
         ]
 
         for tile_path in tile_paths:
@@ -199,19 +208,23 @@ class TilesStrategy(ValidationStrategy):
 
             # Should have 200 response
             if "200" not in responses and "2XX" not in responses:
-                errors.append({
-                    "path": f"paths/{tile_path}.get.responses",
-                    "message": "Tile endpoint should have a 200 response",
-                    "type": "missing_response",
-                })
+                errors.append(
+                    {
+                        "path": f"paths/{tile_path}.get.responses",
+                        "message": "Tile endpoint should have a 200 response",
+                        "type": "missing_response",
+                    }
+                )
 
             # Should have 404 response for not found tiles
             if "404" not in responses and "4XX" not in responses:
-                errors.append({
-                    "path": f"paths/{tile_path}.get.responses",
-                    "message": "Tile endpoint should have a 404 response for missing tiles",
-                    "type": "missing_response",
-                })
+                errors.append(
+                    {
+                        "path": f"paths/{tile_path}.get.responses",
+                        "message": "Tile endpoint should have a 404 response for missing tiles",
+                        "type": "missing_response",
+                    }
+                )
 
         return errors
 

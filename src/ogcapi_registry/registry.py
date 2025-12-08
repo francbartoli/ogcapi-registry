@@ -26,9 +26,7 @@ class SpecificationRegistry:
 
     def __init__(self) -> None:
         """Initialize an empty registry."""
-        self._specifications: dict[
-            SpecificationKey, RegisteredSpecification
-        ] = {}
+        self._specifications: dict[SpecificationKey, RegisteredSpecification] = {}
         self._lock = threading.RLock()
         self._client = OpenAPIClient()
 
@@ -151,9 +149,7 @@ class SpecificationRegistry:
         """
         with self._lock:
             if key not in self._specifications:
-                raise SpecificationNotFoundError(
-                    key.spec_type.value, key.version
-                )
+                raise SpecificationNotFoundError(key.spec_type.value, key.version)
             return self._specifications[key]
 
     def exists(self, spec_type: SpecificationType, version: str) -> bool:

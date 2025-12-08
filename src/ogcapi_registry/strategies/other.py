@@ -47,7 +47,9 @@ class EDRStrategy(ValidationStrategy):
             return ValidationResult.failure(errors, warnings=tuple(warnings))
         return ValidationResult.success(warnings=tuple(warnings))
 
-    def get_required_paths(self, conformance_classes: list[ConformanceClass]) -> list[str]:
+    def get_required_paths(
+        self, conformance_classes: list[ConformanceClass]
+    ) -> list[str]:
         paths = ["/", "/conformance", "/collections"]
 
         # Add query-specific paths based on conformance
@@ -58,7 +60,9 @@ class EDRStrategy(ValidationStrategy):
 
         return paths
 
-    def get_required_operations(self, conformance_classes: list[ConformanceClass]) -> dict[str, list[str]]:
+    def get_required_operations(
+        self, conformance_classes: list[ConformanceClass]
+    ) -> dict[str, list[str]]:
         operations: dict[str, list[str]] = {
             "/": ["get"],
             "/conformance": ["get"],
@@ -84,25 +88,27 @@ class EDRStrategy(ValidationStrategy):
         for query in query_types:
             if self._has_conformance_class(conformance_classes, f"/conf/{query}"):
                 # Find matching path
-                found = False
                 for path in paths:
                     if query in path and "{collectionId}" in path:
-                        found = True
                         get_op = paths[path].get("get", {})
                         if get_op:
                             responses = get_op.get("responses", {})
                             if "200" not in responses and "2XX" not in responses:
-                                errors.append({
-                                    "path": f"paths/{path}.get.responses",
-                                    "message": f"EDR {query} query should have 200 response",
-                                    "type": "missing_response",
-                                })
+                                errors.append(
+                                    {
+                                        "path": f"paths/{path}.get.responses",
+                                        "message": f"EDR {query} query should have 200 response",
+                                        "type": "missing_response",
+                                    }
+                                )
                         break
 
         return errors
 
     @staticmethod
-    def _has_conformance_class(conformance_classes: list[ConformanceClass], pattern: str) -> bool:
+    def _has_conformance_class(
+        conformance_classes: list[ConformanceClass], pattern: str
+    ) -> bool:
         pattern_lower = pattern.lower()
         return any(pattern_lower in cc.uri.lower() for cc in conformance_classes)
 
@@ -140,7 +146,9 @@ class CoveragesStrategy(ValidationStrategy):
             return ValidationResult.failure(errors, warnings=tuple(warnings))
         return ValidationResult.success(warnings=tuple(warnings))
 
-    def get_required_paths(self, conformance_classes: list[ConformanceClass]) -> list[str]:
+    def get_required_paths(
+        self, conformance_classes: list[ConformanceClass]
+    ) -> list[str]:
         paths = [
             "/",
             "/conformance",
@@ -150,7 +158,9 @@ class CoveragesStrategy(ValidationStrategy):
         ]
         return paths
 
-    def get_required_operations(self, conformance_classes: list[ConformanceClass]) -> dict[str, list[str]]:
+    def get_required_operations(
+        self, conformance_classes: list[ConformanceClass]
+    ) -> dict[str, list[str]]:
         return {
             "/": ["get"],
             "/conformance": ["get"],
@@ -193,7 +203,9 @@ class MapsStrategy(ValidationStrategy):
             return ValidationResult.failure(errors, warnings=tuple(warnings))
         return ValidationResult.success(warnings=tuple(warnings))
 
-    def get_required_paths(self, conformance_classes: list[ConformanceClass]) -> list[str]:
+    def get_required_paths(
+        self, conformance_classes: list[ConformanceClass]
+    ) -> list[str]:
         paths = [
             "/",
             "/conformance",
@@ -203,7 +215,9 @@ class MapsStrategy(ValidationStrategy):
         ]
         return paths
 
-    def get_required_operations(self, conformance_classes: list[ConformanceClass]) -> dict[str, list[str]]:
+    def get_required_operations(
+        self, conformance_classes: list[ConformanceClass]
+    ) -> dict[str, list[str]]:
         return {
             "/": ["get"],
             "/conformance": ["get"],
@@ -244,7 +258,9 @@ class StylesStrategy(ValidationStrategy):
             return ValidationResult.failure(errors, warnings=tuple(warnings))
         return ValidationResult.success(warnings=tuple(warnings))
 
-    def get_required_paths(self, conformance_classes: list[ConformanceClass]) -> list[str]:
+    def get_required_paths(
+        self, conformance_classes: list[ConformanceClass]
+    ) -> list[str]:
         paths = ["/", "/conformance", "/styles", "/styles/{styleId}"]
 
         if self._has_conformance_class(conformance_classes, "/conf/manage-styles"):
@@ -253,7 +269,9 @@ class StylesStrategy(ValidationStrategy):
 
         return paths
 
-    def get_required_operations(self, conformance_classes: list[ConformanceClass]) -> dict[str, list[str]]:
+    def get_required_operations(
+        self, conformance_classes: list[ConformanceClass]
+    ) -> dict[str, list[str]]:
         operations: dict[str, list[str]] = {
             "/": ["get"],
             "/conformance": ["get"],
@@ -268,7 +286,9 @@ class StylesStrategy(ValidationStrategy):
         return operations
 
     @staticmethod
-    def _has_conformance_class(conformance_classes: list[ConformanceClass], pattern: str) -> bool:
+    def _has_conformance_class(
+        conformance_classes: list[ConformanceClass], pattern: str
+    ) -> bool:
         pattern_lower = pattern.lower()
         return any(pattern_lower in cc.uri.lower() for cc in conformance_classes)
 
@@ -301,10 +321,14 @@ class RoutesStrategy(ValidationStrategy):
             return ValidationResult.failure(errors, warnings=tuple(warnings))
         return ValidationResult.success(warnings=tuple(warnings))
 
-    def get_required_paths(self, conformance_classes: list[ConformanceClass]) -> list[str]:
+    def get_required_paths(
+        self, conformance_classes: list[ConformanceClass]
+    ) -> list[str]:
         return ["/", "/conformance", "/routes"]
 
-    def get_required_operations(self, conformance_classes: list[ConformanceClass]) -> dict[str, list[str]]:
+    def get_required_operations(
+        self, conformance_classes: list[ConformanceClass]
+    ) -> dict[str, list[str]]:
         return {
             "/": ["get"],
             "/conformance": ["get"],

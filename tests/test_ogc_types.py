@@ -112,9 +112,7 @@ class TestConformanceClass:
         cc = ConformanceClass(
             uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"
         )
-        assert (
-            cc == "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"
-        )
+        assert cc == "http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"
 
     def test_immutability(self):
         """Test that conformance class is immutable."""

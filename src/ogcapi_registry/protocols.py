@@ -23,8 +23,8 @@ if TYPE_CHECKING:
     from .ogc_types import ConformanceClass, OGCAPIType, OGCSpecificationKey
 
 # Type variables for generic protocols
-K = TypeVar("K")  # Key type
-V = TypeVar("V")  # Value type
+K = TypeVar("K")  # Key type (invariant - used in input and output)
+V_co = TypeVar("V_co", covariant=True)  # Value type (covariant - only in return positions)
 T = TypeVar("T", covariant=True)  # Covariant type for returns
 
 
@@ -89,6 +89,17 @@ class ValidationStrategyProtocol(Protocol):
         """Check if this strategy matches the given conformance classes."""
         ...
 
+    def get_conformance_score(
+        self,
+        conformance_classes: list["ConformanceClass"],
+    ) -> int:
+        """Calculate a score indicating how well this strategy matches."""
+        ...
+
+    def supports_version(self, spec_version: str) -> bool:
+        """Check if this strategy supports a specific specification version."""
+        ...
+
 
 @runtime_checkable
 class VersionAwareStrategyProtocol(ValidationStrategyProtocol, Protocol):
@@ -117,9 +128,11 @@ class VersionAwareStrategyProtocol(ValidationStrategyProtocol, Protocol):
         ...
 
 
-@runtime_checkable
-class RegistryProtocol(Protocol[K, V]):
+class RegistryProtocol(Protocol[K, V_co]):
     """Generic protocol for specification registries.
+
+    Note: This protocol is not @runtime_checkable because generic protocols
+    with type variables cannot be reliably checked at runtime with isinstance().
 
     This protocol defines the common interface for all registry types,
     enabling duck typing for registry implementations.
@@ -144,7 +157,7 @@ class RegistryProtocol(Protocol[K, V]):
         # InMemoryRegistry can be used anywhere RegistryProtocol is expected
     """
 
-    def get_by_key(self, key: K) -> V:
+    def get_by_key(self, key: K) -> V_co:
         """Get a specification by its key."""
         ...
 

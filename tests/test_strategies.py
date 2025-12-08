@@ -52,21 +52,9 @@ class TestCommonStrategy:
             "openapi": "3.0.3",
             "info": {"title": "Test API", "version": "1.0.0"},
             "paths": {
-                "/": {
-                    "get": {
-                        "responses": {"200": {"description": "OK"}}
-                    }
-                },
-                "/conformance": {
-                    "get": {
-                        "responses": {"200": {"description": "OK"}}
-                    }
-                },
-                "/api": {
-                    "get": {
-                        "responses": {"200": {"description": "OK"}}
-                    }
-                },
+                "/": {"get": {"responses": {"200": {"description": "OK"}}}},
+                "/conformance": {"get": {"responses": {"200": {"description": "OK"}}}},
+                "/api": {"get": {"responses": {"200": {"description": "OK"}}}},
             },
         }
         result = strategy.validate(doc, conformance_classes)
@@ -78,11 +66,7 @@ class TestCommonStrategy:
             "openapi": "3.0.3",
             "info": {"title": "Test API", "version": "1.0.0"},
             "paths": {
-                "/conformance": {
-                    "get": {
-                        "responses": {"200": {"description": "OK"}}
-                    }
-                },
+                "/conformance": {"get": {"responses": {"200": {"description": "OK"}}}},
             },
         }
         result = strategy.validate(doc, conformance_classes)
@@ -138,12 +122,8 @@ class TestFeaturesStrategy:
             "info": {"title": "Features API", "version": "1.0.0"},
             "paths": {
                 "/": {"get": {"responses": {"200": {"description": "OK"}}}},
-                "/conformance": {
-                    "get": {"responses": {"200": {"description": "OK"}}}
-                },
-                "/collections": {
-                    "get": {"responses": {"200": {"description": "OK"}}}
-                },
+                "/conformance": {"get": {"responses": {"200": {"description": "OK"}}}},
+                "/collections": {"get": {"responses": {"200": {"description": "OK"}}}},
                 "/collections/{collectionId}": {
                     "get": {"responses": {"200": {"description": "OK"}}}
                 },
@@ -265,10 +245,12 @@ class TestCompositeValidationStrategy:
     @pytest.fixture
     def composite(self):
         """Create a composite strategy with Features and Tiles."""
-        return CompositeValidationStrategy([
-            FeaturesStrategy(),
-            TilesStrategy(),
-        ])
+        return CompositeValidationStrategy(
+            [
+                FeaturesStrategy(),
+                TilesStrategy(),
+            ]
+        )
 
     @pytest.fixture
     def conformance_classes(self):
@@ -296,9 +278,7 @@ class TestCompositeValidationStrategy:
     def test_strategies_property(self, composite):
         """Test accessing the strategies list."""
         assert len(composite.strategies) == 2
-        assert any(
-            isinstance(s, FeaturesStrategy) for s in composite.strategies
-        )
+        assert any(isinstance(s, FeaturesStrategy) for s in composite.strategies)
         assert any(isinstance(s, TilesStrategy) for s in composite.strategies)
 
 
@@ -317,19 +297,16 @@ class TestPathMatching:
     def test_parameter_match(self, strategy):
         """Test path with parameter matching."""
         assert strategy._path_matches_pattern(
-            "/collections/my-collection",
-            "/collections/{collectionId}"
+            "/collections/my-collection", "/collections/{collectionId}"
         )
 
     def test_multiple_parameters(self, strategy):
         """Test path with multiple parameters."""
         assert strategy._path_matches_pattern(
             "/collections/my-collection/items/feature-1",
-            "/collections/{collectionId}/items/{featureId}"
+            "/collections/{collectionId}/items/{featureId}",
         )
 
     def test_no_match(self, strategy):
         """Test non-matching paths."""
-        assert not strategy._path_matches_pattern(
-            "/other/path", "/collections"
-        )
+        assert not strategy._path_matches_pattern("/other/path", "/collections")

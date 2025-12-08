@@ -101,11 +101,13 @@ class RecordsStrategy(ValidationStrategy):
 
                 # Records should support q parameter for text search
                 if "q" not in param_names:
-                    errors.append({
-                        "path": f"paths/{path}.get.parameters",
-                        "message": "Records endpoint should have 'q' query parameter for text search",
-                        "type": "missing_parameter",
-                    })
+                    errors.append(
+                        {
+                            "path": f"paths/{path}.get.parameters",
+                            "message": "Records endpoint should have 'q' query parameter for text search",
+                            "type": "missing_parameter",
+                        }
+                    )
 
         return errors
 

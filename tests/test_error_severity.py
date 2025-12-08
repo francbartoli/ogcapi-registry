@@ -1,7 +1,5 @@
 """Tests for ErrorSeverity and ValidationResult severity filtering."""
 
-import pytest
-
 from ogcapi_registry import (
     ErrorSeverity,
     ValidationResult,

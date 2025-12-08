@@ -199,7 +199,10 @@ class TestOGCSpecificationRegistry:
     def test_register_duplicate_raises_error(self) -> None:
         """Test that registering a duplicate raises an error."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
         registry.register(
             api_type=OGCAPIType.FEATURES,
@@ -217,8 +220,14 @@ class TestOGCSpecificationRegistry:
     def test_register_overwrite(self) -> None:
         """Test overwriting an existing specification."""
         registry = OGCSpecificationRegistry()
-        raw_content1 = {"openapi": "3.0.3", "info": {"title": "Test 1", "version": "1.0.0"}}
-        raw_content2 = {"openapi": "3.0.3", "info": {"title": "Test 2", "version": "1.0.0"}}
+        raw_content1 = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test 1", "version": "1.0.0"},
+        }
+        raw_content2 = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test 2", "version": "1.0.0"},
+        }
 
         registry.register(
             api_type=OGCAPIType.FEATURES,
@@ -238,7 +247,10 @@ class TestOGCSpecificationRegistry:
     def test_get(self) -> None:
         """Test getting a specification by key components."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
         registry.register(
             api_type=OGCAPIType.EDR,
@@ -260,7 +272,10 @@ class TestOGCSpecificationRegistry:
     def test_get_latest(self) -> None:
         """Test getting the latest version of a specification."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
         registry.register(
             api_type=OGCAPIType.EDR,
@@ -291,7 +306,10 @@ class TestOGCSpecificationRegistry:
     def test_exists(self) -> None:
         """Test checking if a specification exists."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
         assert not registry.exists(api_type=OGCAPIType.FEATURES, spec_version="1.0")
 
@@ -306,7 +324,10 @@ class TestOGCSpecificationRegistry:
     def test_remove(self) -> None:
         """Test removing a specification."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
         registry.register(
             api_type=OGCAPIType.FEATURES,
@@ -325,11 +346,20 @@ class TestOGCSpecificationRegistry:
     def test_list_versions(self) -> None:
         """Test listing all versions of an API type."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
-        registry.register(api_type=OGCAPIType.EDR, spec_version="1.0", raw_content=raw_content)
-        registry.register(api_type=OGCAPIType.EDR, spec_version="1.1", raw_content=raw_content)
-        registry.register(api_type=OGCAPIType.EDR, spec_version="1.0.1", raw_content=raw_content)
+        registry.register(
+            api_type=OGCAPIType.EDR, spec_version="1.0", raw_content=raw_content
+        )
+        registry.register(
+            api_type=OGCAPIType.EDR, spec_version="1.1", raw_content=raw_content
+        )
+        registry.register(
+            api_type=OGCAPIType.EDR, spec_version="1.0.1", raw_content=raw_content
+        )
 
         versions = registry.list_versions(api_type=OGCAPIType.EDR)
         assert versions == ["1.1", "1.0.1", "1.0"]
@@ -337,11 +367,20 @@ class TestOGCSpecificationRegistry:
     def test_list_by_type(self) -> None:
         """Test listing specifications by API type."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
-        registry.register(api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content)
-        registry.register(api_type=OGCAPIType.EDR, spec_version="1.1", raw_content=raw_content)
-        registry.register(api_type=OGCAPIType.FEATURES, spec_version="1.1", raw_content=raw_content)
+        registry.register(
+            api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content
+        )
+        registry.register(
+            api_type=OGCAPIType.EDR, spec_version="1.1", raw_content=raw_content
+        )
+        registry.register(
+            api_type=OGCAPIType.FEATURES, spec_version="1.1", raw_content=raw_content
+        )
 
         features_specs = registry.list_by_type(api_type=OGCAPIType.FEATURES)
         assert len(features_specs) == 2
@@ -351,10 +390,17 @@ class TestOGCSpecificationRegistry:
     def test_list_keys(self) -> None:
         """Test listing all specification keys."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
-        registry.register(api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content)
-        registry.register(api_type=OGCAPIType.EDR, spec_version="1.1", raw_content=raw_content)
+        registry.register(
+            api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content
+        )
+        registry.register(
+            api_type=OGCAPIType.EDR, spec_version="1.1", raw_content=raw_content
+        )
 
         keys = registry.list_keys()
         assert len(keys) == 2
@@ -362,33 +408,50 @@ class TestOGCSpecificationRegistry:
     def test_len(self) -> None:
         """Test getting the number of specifications."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
         assert len(registry) == 0
 
-        registry.register(api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content)
+        registry.register(
+            api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content
+        )
         assert len(registry) == 1
 
     def test_contains(self) -> None:
         """Test checking if a key exists using 'in' operator."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
         key = OGCSpecificationKey(api_type=OGCAPIType.FEATURES, spec_version="1.0")
 
         assert key not in registry
 
-        registry.register(api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content)
+        registry.register(
+            api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content
+        )
 
         assert key in registry
 
     def test_iter(self) -> None:
         """Test iterating over specification keys."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
-        registry.register(api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content)
-        registry.register(api_type=OGCAPIType.EDR, spec_version="1.1", raw_content=raw_content)
+        registry.register(
+            api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content
+        )
+        registry.register(
+            api_type=OGCAPIType.EDR, spec_version="1.1", raw_content=raw_content
+        )
 
         keys = list(registry)
         assert len(keys) == 2
@@ -396,10 +459,17 @@ class TestOGCSpecificationRegistry:
     def test_clear(self) -> None:
         """Test clearing all specifications."""
         registry = OGCSpecificationRegistry()
-        raw_content = {"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0.0"}}
+        raw_content = {
+            "openapi": "3.0.3",
+            "info": {"title": "Test", "version": "1.0.0"},
+        }
 
-        registry.register(api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content)
-        registry.register(api_type=OGCAPIType.EDR, spec_version="1.1", raw_content=raw_content)
+        registry.register(
+            api_type=OGCAPIType.FEATURES, spec_version="1.0", raw_content=raw_content
+        )
+        registry.register(
+            api_type=OGCAPIType.EDR, spec_version="1.1", raw_content=raw_content
+        )
 
         assert len(registry) == 2
         registry.clear()
@@ -490,9 +560,15 @@ class TestOGCTypesHelperFunctions:
         from ogcapi_registry import ConformanceClass, get_specification_keys
 
         ccs = [
-            ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"),
-            ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"),
-            ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core"),
+            ConformanceClass(
+                uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"
+            ),
+            ConformanceClass(
+                uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"
+            ),
+            ConformanceClass(
+                uri="http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core"
+            ),
         ]
 
         keys = get_specification_keys(ccs)
@@ -503,9 +579,15 @@ class TestOGCTypesHelperFunctions:
         from ogcapi_registry import ConformanceClass, get_specification_versions
 
         ccs = [
-            ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core"),
-            ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/core"),
-            ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"),
+            ConformanceClass(
+                uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core"
+            ),
+            ConformanceClass(
+                uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/core"
+            ),
+            ConformanceClass(
+                uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"
+            ),
         ]
 
         versions = get_specification_versions(ccs, OGCAPIType.EDR)
@@ -516,9 +598,15 @@ class TestOGCTypesHelperFunctions:
         from ogcapi_registry import ConformanceClass, group_conformance_by_spec
 
         ccs = [
-            ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"),
-            ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"),
-            ConformanceClass(uri="http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core"),
+            ConformanceClass(
+                uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core"
+            ),
+            ConformanceClass(
+                uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/geojson"
+            ),
+            ConformanceClass(
+                uri="http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core"
+            ),
         ]
 
         groups = group_conformance_by_spec(ccs)

@@ -248,9 +248,7 @@ class AsyncOpenAPIClient:
         sync_client = OpenAPIClient()
         return sync_client._parse_content(content, content_type, url)
 
-    async def fetch(
-        self, url: str
-    ) -> tuple[dict[str, Any], SpecificationMetadata]:
+    async def fetch(self, url: str) -> tuple[dict[str, Any], SpecificationMetadata]:
         """Fetch an OpenAPI specification from a URL asynchronously.
 
         Args:

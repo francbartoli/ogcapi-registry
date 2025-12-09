@@ -1,6 +1,22 @@
 # CHANGELOG
 
 
+## v0.2.0 (2025-12-09)
+
+### Bug Fixes
+
+- Add custom headers to example script for OGC API servers
+  ([`6a55be7`](https://github.com/francbartoli/ogcapi-registry/commit/6a55be7613fc27fb4468cec03b8cd47b0b6a34a1))
+
+### Features
+
+- Discover OpenAPI URL from landing page (OGC API - Common compliant)
+  ([`2e609ef`](https://github.com/francbartoli/ogcapi-registry/commit/2e609efc1270761eb94668476987424a526fcbc1))
+
+- Add discover_openapi_url() to find service-desc link - Support both /api and /openapi paths as
+  fallback - Handle relative URLs in landing page links
+
+
 ## v0.1.1 (2025-12-09)
 
 ### Bug Fixes

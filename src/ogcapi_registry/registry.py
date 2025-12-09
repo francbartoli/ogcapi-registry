@@ -4,7 +4,10 @@ import threading
 from typing import Iterator
 
 from .client import AsyncOpenAPIClient, OpenAPIClient
-from .exceptions import SpecificationAlreadyExistsError, SpecificationNotFoundError
+from .exceptions import (
+    SpecificationAlreadyExistsError,
+    SpecificationNotFoundError,
+)
 from .models import (
     RegisteredSpecification,
     SpecificationKey,
@@ -280,7 +283,10 @@ class AsyncSpecificationRegistry:
         Returns:
             The registered specification
         """
-        content, metadata = await self._async_client.fetch_and_validate_structure(url)
+        (
+            content,
+            metadata,
+        ) = await self._async_client.fetch_and_validate_structure(url)
 
         # Infer type and version from content if not provided
         openapi_version = content["openapi"]

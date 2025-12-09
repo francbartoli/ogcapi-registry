@@ -41,9 +41,7 @@ class TestOpenAPIClient:
 
     def test_parse_json_content(self, client):
         """Test parsing JSON content."""
-        content = (
-            b'{"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0"}}'
-        )
+        content = b'{"openapi": "3.0.3", "info": {"title": "Test", "version": "1.0"}}'
         result = client._parse_content(content, "application/json", "test.json")
         assert result["openapi"] == "3.0.3"
 
@@ -56,9 +54,7 @@ class TestOpenAPIClient:
     def test_parse_content_from_url_extension(self, client):
         """Test inferring format from URL extension."""
         content = b"openapi: '3.0.3'\ninfo:\n  title: Test\n  version: '1.0'"
-        result = client._parse_content(
-            content, None, "https://example.com/api.yaml"
-        )
+        result = client._parse_content(content, None, "https://example.com/api.yaml")
         assert result["openapi"] == "3.0.3"
 
     def test_parse_invalid_content(self, client):
@@ -130,9 +126,7 @@ class TestOpenAPIClient:
         )
         assert content["openapi"] == "3.0.3"
 
-    def test_fetch_and_validate_structure_missing_openapi(
-        self, httpx_mock, client
-    ):
+    def test_fetch_and_validate_structure_missing_openapi(self, httpx_mock, client):
         """Test that missing openapi field raises ParseError."""
         invalid = json.dumps({"info": {"title": "Test", "version": "1.0"}})
         httpx_mock.add_response(
@@ -141,16 +135,10 @@ class TestOpenAPIClient:
             headers={"content-type": "application/json"},
         )
 
-        with pytest.raises(
-            ParseError, match="Missing required 'openapi' field"
-        ):
-            client.fetch_and_validate_structure(
-                "https://example.com/openapi.json"
-            )
+        with pytest.raises(ParseError, match="Missing required 'openapi' field"):
+            client.fetch_and_validate_structure("https://example.com/openapi.json")
 
-    def test_fetch_and_validate_structure_unsupported_version(
-        self, httpx_mock, client
-    ):
+    def test_fetch_and_validate_structure_unsupported_version(self, httpx_mock, client):
         """Test that unsupported version raises ParseError."""
         invalid = json.dumps(
             {
@@ -165,9 +153,7 @@ class TestOpenAPIClient:
         )
 
         with pytest.raises(ParseError, match="Unsupported OpenAPI version"):
-            client.fetch_and_validate_structure(
-                "https://example.com/openapi.json"
-            )
+            client.fetch_and_validate_structure("https://example.com/openapi.json")
 
 
 class TestAsyncOpenAPIClient:
@@ -198,9 +184,7 @@ class TestAsyncOpenAPIClient:
             headers={"content-type": "application/json"},
         )
 
-        content, metadata = await client.fetch(
-            "https://example.com/openapi.json"
-        )
+        content, metadata = await client.fetch("https://example.com/openapi.json")
         assert content["openapi"] == "3.0.3"
         assert metadata.source_url == "https://example.com/openapi.json"
 

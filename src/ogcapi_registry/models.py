@@ -4,8 +4,29 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-from openapi_pydantic import OpenAPI
+from openapi_pydantic import OpenAPI as OpenAPI31
+from openapi_pydantic.v3.v3_0 import OpenAPI as OpenAPI30
 from pydantic import BaseModel, Field
+
+
+class ErrorSeverity(str, Enum):
+    """Severity levels for validation errors.
+
+    Used to distinguish between critical errors that must be fixed
+    and informational warnings that may be acceptable.
+    """
+
+    CRITICAL = "critical"
+    """Critical errors that violate required OGC conformance classes.
+    These must be fixed for the API to be considered compliant."""
+
+    WARNING = "warning"
+    """Warnings for optional conformance class violations.
+    The API may still be functional without addressing these."""
+
+    INFO = "info"
+    """Informational messages about best practices or recommendations.
+    These do not affect compliance status."""
 
 
 class SpecificationType(str, Enum):
@@ -64,7 +85,8 @@ class SpecificationMetadata(BaseModel):
     model_config = {"frozen": True}
 
     source_url: str | None = Field(
-        None, description="Original URL from which the specification was fetched"
+        None,
+        description="Original URL from which the specification was fetched",
     )
     fetched_at: datetime = Field(
         default_factory=datetime.utcnow,
@@ -110,25 +132,18 @@ class RegisteredSpecification(BaseModel):
         info = self.raw_content.get("info", {})
         return info.get("version")
 
-    def to_openapi(self) -> OpenAPI:
+    def to_openapi(self) -> OpenAPI31 | OpenAPI30:
         """Convert to an openapi-pydantic OpenAPI model.
 
         Returns:
-            An OpenAPI model instance
-
-        Raises:
-            ValueError: If the specification is OpenAPI 3.0.x (not supported by openapi-pydantic)
+            An OpenAPI model instance (OpenAPI30 for 3.0.x, OpenAPI31 for 3.1.x)
 
         Note:
             This creates a new OpenAPI instance on each call for safety.
-            openapi-pydantic only supports OpenAPI 3.1.x versions.
         """
         if self.key.spec_type == SpecificationType.OPENAPI_3_0:
-            raise ValueError(
-                "openapi-pydantic does not support OpenAPI 3.0.x. "
-                "Use raw_content for 3.0.x specifications."
-            )
-        return OpenAPI.model_validate(self.raw_content)
+            return OpenAPI30.model_validate(self.raw_content)
+        return OpenAPI31.model_validate(self.raw_content)
 
 
 class ValidationResult(BaseModel):
@@ -159,7 +174,10 @@ class ValidationResult(BaseModel):
     ) -> "ValidationResult":
         """Create a successful validation result."""
         return cls(
-            is_valid=True, errors=(), warnings=warnings, validated_against=validated_against
+            is_valid=True,
+            errors=(),
+            warnings=warnings,
+            validated_against=validated_against,
         )
 
     @classmethod
@@ -176,3 +194,61 @@ class ValidationResult(BaseModel):
             warnings=warnings,
             validated_against=validated_against,
         )
+
+    def get_errors_by_severity(
+        self, severity: "ErrorSeverity"
+    ) -> tuple[dict[str, Any], ...]:
+        """Get errors filtered by severity level.
+
+        Args:
+            severity: The severity level to filter by
+
+        Returns:
+            Tuple of error dicts matching the severity
+        """
+        return tuple(
+            error for error in self.errors if error.get("severity") == severity.value
+        )
+
+    @property
+    def critical_errors(self) -> tuple[dict[str, Any], ...]:
+        """Get only critical errors that must be fixed."""
+        return self.get_errors_by_severity(ErrorSeverity.CRITICAL)
+
+    @property
+    def warning_errors(self) -> tuple[dict[str, Any], ...]:
+        """Get only warning-level errors for optional conformance."""
+        return self.get_errors_by_severity(ErrorSeverity.WARNING)
+
+    @property
+    def info_errors(self) -> tuple[dict[str, Any], ...]:
+        """Get only informational errors."""
+        return self.get_errors_by_severity(ErrorSeverity.INFO)
+
+    @property
+    def has_critical_errors(self) -> bool:
+        """Check if there are any critical errors."""
+        return len(self.critical_errors) > 0
+
+    @property
+    def is_compliant(self) -> bool:
+        """Check if the document is compliant (no critical errors).
+
+        A document is considered compliant if it has no critical errors,
+        even if it has warnings or informational messages. This is different
+        from is_valid which requires zero errors of any kind.
+        """
+        return not self.has_critical_errors
+
+    def get_summary(self) -> dict[str, int]:
+        """Get a summary of errors by severity.
+
+        Returns:
+            Dict with counts for each severity level
+        """
+        return {
+            "critical": len(self.critical_errors),
+            "warning": len(self.warning_errors),
+            "info": len(self.info_errors),
+            "total": len(self.errors),
+        }

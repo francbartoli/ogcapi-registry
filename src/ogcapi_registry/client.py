@@ -109,7 +109,8 @@ class OpenAPIClient:
 
             if not isinstance(result, dict):
                 raise ParseError(
-                    "OpenAPI specification must be a JSON/YAML object", source=url
+                    "OpenAPI specification must be a JSON/YAML object",
+                    source=url,
                 )
 
             return result
@@ -143,7 +144,9 @@ class OpenAPIClient:
             except httpx.RequestError as e:
                 raise FetchError(url, str(e))
 
-            content_type = response.headers.get("content-type", "").split(";")[0].strip()
+            content_type = (
+                response.headers.get("content-type", "").split(";")[0].strip()
+            )
             etag = response.headers.get("etag")
 
             content = self._parse_content(response.content, content_type, url)
@@ -269,7 +272,9 @@ class AsyncOpenAPIClient:
             except httpx.RequestError as e:
                 raise FetchError(url, str(e))
 
-            content_type = response.headers.get("content-type", "").split(";")[0].strip()
+            content_type = (
+                response.headers.get("content-type", "").split(";")[0].strip()
+            )
             etag = response.headers.get("etag")
 
             content = self._parse_content(response.content, content_type, url)

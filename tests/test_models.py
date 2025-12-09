@@ -17,25 +17,13 @@ class TestSpecificationType:
 
     def test_from_version_3_0(self):
         """Test parsing OpenAPI 3.0.x versions."""
-        assert (
-            SpecificationType.from_version("3.0.0")
-            == SpecificationType.OPENAPI_3_0
-        )
-        assert (
-            SpecificationType.from_version("3.0.3")
-            == SpecificationType.OPENAPI_3_0
-        )
+        assert SpecificationType.from_version("3.0.0") == SpecificationType.OPENAPI_3_0
+        assert SpecificationType.from_version("3.0.3") == SpecificationType.OPENAPI_3_0
 
     def test_from_version_3_1(self):
         """Test parsing OpenAPI 3.1.x versions."""
-        assert (
-            SpecificationType.from_version("3.1.0")
-            == SpecificationType.OPENAPI_3_1
-        )
-        assert (
-            SpecificationType.from_version("3.1.1")
-            == SpecificationType.OPENAPI_3_1
-        )
+        assert SpecificationType.from_version("3.1.0") == SpecificationType.OPENAPI_3_1
+        assert SpecificationType.from_version("3.1.1") == SpecificationType.OPENAPI_3_1
 
     def test_from_version_unsupported(self):
         """Test that unsupported versions raise ValueError."""
@@ -50,17 +38,13 @@ class TestSpecificationKey:
 
     def test_creation(self):
         """Test creating a specification key."""
-        key = SpecificationKey(
-            spec_type=SpecificationType.OPENAPI_3_0, version="3.0.3"
-        )
+        key = SpecificationKey(spec_type=SpecificationType.OPENAPI_3_0, version="3.0.3")
         assert key.spec_type == SpecificationType.OPENAPI_3_0
         assert key.version == "3.0.3"
 
     def test_immutability(self):
         """Test that specification key is immutable."""
-        key = SpecificationKey(
-            spec_type=SpecificationType.OPENAPI_3_0, version="3.0.3"
-        )
+        key = SpecificationKey(spec_type=SpecificationType.OPENAPI_3_0, version="3.0.3")
         with pytest.raises(ValidationError):
             key.version = "3.0.4"
 
@@ -149,10 +133,11 @@ class TestRegisteredSpecification:
         """Test getting info version."""
         assert sample_spec.info_version == "1.0.0"
 
-    def test_to_openapi_raises_for_3_0(self, sample_spec):
-        """Test that converting 3.0 spec raises ValueError."""
-        with pytest.raises(ValueError, match="does not support OpenAPI 3.0"):
-            sample_spec.to_openapi()
+    def test_to_openapi_works_for_3_0(self, sample_spec):
+        """Test converting 3.0 spec to OpenAPI model."""
+        openapi = sample_spec.to_openapi()
+        assert openapi.info.title == "Test API"
+        assert openapi.info.version == "1.0.0"
 
     def test_to_openapi_works_for_3_1(self):
         """Test converting 3.1 spec to OpenAPI model."""
@@ -203,9 +188,7 @@ class TestValidationResult:
 
     def test_failure_with_key(self):
         """Test creating a failure result with validation key."""
-        key = SpecificationKey(
-            spec_type=SpecificationType.OPENAPI_3_0, version="3.0.3"
-        )
+        key = SpecificationKey(spec_type=SpecificationType.OPENAPI_3_0, version="3.0.3")
         result = ValidationResult.failure([], validated_against=key)
         assert result.validated_against == key
 

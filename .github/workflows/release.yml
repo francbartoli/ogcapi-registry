@@ -93,9 +93,6 @@ jobs:
     needs: release
     if: needs.release.outputs.released == 'true'
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/ogcapi-registry
 
     steps:
       - name: Checkout repository

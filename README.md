@@ -23,6 +23,31 @@ OGC API standards (Features, Tiles, Processes, Records, etc.) define specific re
 
 This library performs **static validation** of these OpenAPI documents, helping you verify that your OGC API server's published specification meets the standard requirements before deployment.
 
+### Difference from OGC CITE Test Suite
+
+| Aspect | ogcapi-registry | OGC CITE Test Suite |
+|--------|-----------------|---------------------|
+| **Type** | Static analysis | Runtime testing |
+| **What it validates** | OpenAPI document structure | Actual server behavior |
+| **Requires running server** | No (only the OpenAPI doc) | Yes |
+| **Speed** | Fast (seconds) | Slow (minutes to hours) |
+| **When to use** | CI/CD, pre-deployment | Certification, compliance |
+| **Catches** | Missing paths, wrong methods, schema errors | 500 errors, wrong responses, bugs |
+
+**Use both tools together:**
+
+1. **ogcapi-registry** → Fast feedback during development, catches specification errors early
+2. **OGC CITE** → Full compliance certification, validates actual server responses
+
+```
+Development Workflow:
+┌─────────────┐     ┌──────────────────┐     ┌─────────────┐
+│ Write Code  │ --> │ ogcapi-registry  │ --> │  OGC CITE   │
+│             │     │ (static check)   │     │ (runtime)   │
+└─────────────┘     └──────────────────┘     └─────────────┘
+      Fast              Seconds                 Minutes+
+```
+
 ## Features
 
 - **OGC API Validation**: Validate against OGC API - Features, Tiles, Processes, Records, Coverages, EDR, Maps, Styles, Routes

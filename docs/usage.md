@@ -904,6 +904,62 @@ def test_with_mock_strategy():
     assert result.is_valid
 ```
 
+## ogcapi-registry vs OGC CITE Test Suite
+
+Understanding the difference between this library and the OGC CITE Test Suite is crucial for choosing the right tool for your needs.
+
+### Comparison Table
+
+| Aspect | ogcapi-registry | OGC CITE Test Suite |
+|--------|-----------------|---------------------|
+| **Type** | Static analysis | Runtime testing |
+| **What it validates** | OpenAPI document structure | Actual server HTTP responses |
+| **Requires running server** | No (only needs the OpenAPI doc) | Yes (makes real HTTP requests) |
+| **Execution speed** | Fast (seconds) | Slow (minutes to hours) |
+| **Best for** | CI/CD pipelines, development | Official certification, compliance |
+| **Catches** | Missing paths, wrong methods, schema errors | 500 errors, incorrect responses, implementation bugs |
+| **Integration** | Python library, easy CI/CD | Java-based, TeamEngine server |
+
+### When to Use Each Tool
+
+```
+Development Workflow:
+┌─────────────┐     ┌──────────────────┐     ┌─────────────┐
+│ Write Code  │ --> │ ogcapi-registry  │ --> │  OGC CITE   │
+│             │     │ (static check)   │     │ (runtime)   │
+└─────────────┘     └──────────────────┘     └─────────────┘
+      Fast              Seconds                 Minutes+
+```
+
+**Use ogcapi-registry when:**
+
+- Running checks in CI/CD pipelines (fast feedback)
+- Validating OpenAPI documents during development
+- Checking specification compliance before deployment
+- You don't have a running server yet
+
+**Use OGC CITE when:**
+
+- Seeking official OGC certification
+- Validating that your server actually implements the spec correctly
+- Testing real HTTP responses and error handling
+- Final compliance verification before production
+
+### Complementary Usage
+
+The tools are complementary, not competing:
+
+1. **ogcapi-registry** catches specification errors early and fast
+2. **OGC CITE** validates that your implementation matches the specification
+
+A document can pass ogcapi-registry validation but fail CITE tests if:
+- The server returns 500 errors
+- Response bodies don't match declared schemas
+- Required query parameters aren't implemented
+- CRS transformations are incorrect
+
+Conversely, fixing issues found by ogcapi-registry often prevents CITE failures later.
+
 ## Troubleshooting Common Issues
 
 ### 1. "Validation passes but server doesn't work"

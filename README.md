@@ -117,7 +117,36 @@ primary = get_primary_api_type(conformance_classes)
 
 ## Application Example: CI/CD Validation
 
-Integrate OGC API validation into your deployment pipeline to catch specification errors before they reach production:
+Integrate OGC API validation into your deployment pipeline to catch specification errors before they reach production.
+
+### Using the Example Script
+
+The library includes a ready-to-use validation script in `examples/validate_ogc_api_server.py`:
+
+```bash
+# Clone the repository
+git clone https://github.com/francbartoli/ogcapi-registry.git
+cd ogcapi-registry
+
+# Install dependencies
+uv sync --all-extras --dev
+
+# Run validation against a real OGC API server
+uv run python -c "
+from examples.validate_ogc_api_server import validate_server, print_report
+report = validate_server('https://demo.ldproxy.net/daraa')
+print_report(report)
+"
+```
+
+The script will:
+1. Fetch the OpenAPI document from `/api`
+2. Fetch conformance classes from `/conformance`
+3. Analyze conformance coverage
+4. Validate against OGC API requirements
+5. Print a detailed report with errors by severity
+
+### Custom CI/CD Script
 
 ```python
 #!/usr/bin/env python
@@ -189,8 +218,37 @@ if __name__ == "__main__":
 Use in GitHub Actions:
 
 ```yaml
+- name: Install ogcapi-registry
+  run: pip install ogcapi-registry
+
 - name: Validate OGC API Compliance
   run: python validate_ogc_server.py ${{ env.SERVER_URL }}
+```
+
+Or using the library's example script directly:
+
+```yaml
+- name: Checkout ogcapi-registry
+  uses: actions/checkout@v4
+  with:
+    repository: francbartoli/ogcapi-registry
+    path: ogcapi-registry
+
+- name: Install uv
+  uses: astral-sh/setup-uv@v4
+
+- name: Install dependencies
+  run: cd ogcapi-registry && uv sync --all-extras --dev
+
+- name: Validate OGC API Server
+  run: |
+    cd ogcapi-registry
+    uv run python -c "
+    from examples.validate_ogc_api_server import validate_server, print_report
+    report = validate_server('${{ env.SERVER_URL }}')
+    print_report(report)
+    exit(0 if report['status'] in ['valid', 'compliant'] else 1)
+    "
 ```
 
 ## Supported OGC API Standards

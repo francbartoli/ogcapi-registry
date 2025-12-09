@@ -393,10 +393,10 @@ from ogcapi_registry import (
 # Parse content (JSON or YAML)
 content = parse_openapi_content(yaml_string, format_hint="yaml")
 
-# Validate structure (JSON Schema validation)
+# Validate structure (basic required fields check)
 result = validate_openapi_structure(content)
 
-# Validate with Pydantic (stricter, OpenAPI 3.1 only)
+# Validate with Pydantic (full OpenAPI 3.0.x and 3.1.x validation)
 result = validate_openapi_with_pydantic(content)
 
 # Combined validation

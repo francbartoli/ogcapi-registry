@@ -39,7 +39,12 @@ def fetch_openapi_document(base_url: str) -> dict[str, Any]:
     Returns:
         The parsed OpenAPI document
     """
-    client = OpenAPIClient(timeout=30.0)
+    # Custom headers for OGC API servers
+    headers = {
+        "User-Agent": "ogcapi-registry/0.1.0",
+        "Accept": "application/vnd.oai.openapi+json;version=3.0, application/json",
+    }
+    client = OpenAPIClient(timeout=30.0, headers=headers)
 
     # OGC APIs typically serve OpenAPI at /api with format negotiation
     api_url = f"{base_url}/api"
@@ -68,7 +73,12 @@ def fetch_conformance_classes(base_url: str) -> list[ConformanceClass]:
     Returns:
         List of ConformanceClass objects
     """
-    client = OpenAPIClient(timeout=30.0)
+    # Custom headers for OGC API servers
+    headers = {
+        "User-Agent": "ogcapi-registry/0.1.0",
+        "Accept": "application/json",
+    }
+    client = OpenAPIClient(timeout=30.0, headers=headers)
 
     conformance_url = f"{base_url}/conformance?f=json"
 

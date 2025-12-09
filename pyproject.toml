@@ -1,7 +1,7 @@
 [project]
 name = "ogcapi-registry"
 version = "0.1.0"
-description = "Add your description here"
+description = "A Python library for validating OpenAPI documents published by OGC API servers"
 readme = "README.md"
 authors = [
     { name = "Claude", email = "noreply@anthropic.com" },
@@ -43,3 +43,33 @@ ignore_missing_imports = true
 init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
+
+# Semantic Release Configuration
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+version_variables = ["src/ogcapi_registry/__init__.py:__version__"]
+branch = "main"
+build_command = "uv build"
+commit_message = "chore(release): {version} [skip ci]"
+tag_format = "v{version}"
+
+[tool.semantic_release.changelog]
+changelog_file = "CHANGELOG.md"
+exclude_commit_patterns = [
+    "^chore\\(release\\):",
+    "^ci:",
+    "^docs:",
+    "^style:",
+]
+
+[tool.semantic_release.commit_parser_options]
+allowed_tags = ["feat", "fix", "perf", "refactor", "build"]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf", "refactor"]
+
+[tool.semantic_release.remote]
+type = "github"
+token = { env = "GH_TOKEN" }
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true

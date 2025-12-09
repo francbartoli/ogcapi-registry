@@ -30,8 +30,46 @@ from ogcapi_registry import (
 )
 
 
+def discover_openapi_url(base_url: str, client: OpenAPIClient) -> str | None:
+    """Discover OpenAPI document URL from the landing page.
+
+    According to OGC API - Common, the landing page should have a link
+    with rel="service-desc" pointing to the API definition.
+
+    Args:
+        base_url: The base URL of the OGC API
+        client: The OpenAPI client to use
+
+    Returns:
+        The URL of the OpenAPI document, or None if not found
+    """
+    try:
+        landing_page, _ = client.fetch(f"{base_url}?f=json")
+        links = landing_page.get("links", [])
+
+        # Look for service-desc or service-description link
+        for link in links:
+            rel = link.get("rel", "")
+            if rel in ("service-desc", "service-description"):
+                href = link.get("href", "")
+                if href:
+                    # Handle relative URLs
+                    if href.startswith("/"):
+                        href = base_url.rstrip("/") + href
+                    elif not href.startswith("http"):
+                        href = base_url.rstrip("/") + "/" + href
+                    return href
+    except Exception:
+        pass
+
+    return None
+
+
 def fetch_openapi_document(base_url: str) -> dict[str, Any]:
     """Fetch the OpenAPI document from an OGC API server.
+
+    This function follows OGC API - Common by first checking the landing page
+    for a service-desc link, then falling back to common paths (/api, /openapi).
 
     Args:
         base_url: The base URL of the OGC API (e.g., https://demo.ldproxy.net/daraa)
@@ -46,22 +84,43 @@ def fetch_openapi_document(base_url: str) -> dict[str, Any]:
     }
     client = OpenAPIClient(timeout=30.0, headers=headers)
 
-    # OGC APIs typically serve OpenAPI at /api with format negotiation
-    api_url = f"{base_url}/api"
+    # Step 1: Try to discover OpenAPI URL from landing page (OGC API - Common compliant)
+    openapi_url = discover_openapi_url(base_url, client)
+    if openapi_url:
+        try:
+            content, _ = client.fetch(f"{openapi_url}?f=json")
+            return content
+        except Exception:
+            try:
+                content, _ = client.fetch(openapi_url)
+                return content
+            except Exception:
+                pass
 
-    # Try JSON format first
-    try:
-        content, metadata = client.fetch(f"{api_url}?f=json")
-        return content
-    except Exception:
-        pass
+    # Step 2: Fall back to common paths
+    common_paths = ["/api", "/openapi"]
 
-    # Try with Accept header
-    try:
-        content, metadata = client.fetch(api_url)
-        return content
-    except Exception as e:
-        raise RuntimeError(f"Failed to fetch OpenAPI document: {e}")
+    for path in common_paths:
+        api_url = f"{base_url.rstrip('/')}{path}"
+
+        # Try JSON format first
+        try:
+            content, _ = client.fetch(f"{api_url}?f=json")
+            return content
+        except Exception:
+            pass
+
+        # Try with Accept header only
+        try:
+            content, _ = client.fetch(api_url)
+            return content
+        except Exception:
+            pass
+
+    raise RuntimeError(
+        f"Failed to fetch OpenAPI document. Tried landing page discovery "
+        f"and common paths: {common_paths}"
+    )
 
 
 def fetch_conformance_classes(base_url: str) -> list[ConformanceClass]:

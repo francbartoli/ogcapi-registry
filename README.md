@@ -1,5 +1,15 @@
 # OGC API Registry Validator
 
+[![PyPI version](https://img.shields.io/pypi/v/ogcapi-registry?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/ogcapi-registry/)
+[![Python versions](https://img.shields.io/pypi/pyversions/ogcapi-registry?style=for-the-badge&logo=python&logoColor=white)](https://pypi.org/project/ogcapi-registry/)
+[![License](https://img.shields.io/github/license/francbartoli/ogcapi-registry?style=for-the-badge)](https://github.com/francbartoli/ogcapi-registry/blob/main/LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/francbartoli/ogcapi-registry/test.yml?branch=main&style=for-the-badge&logo=github&label=CI)](https://github.com/francbartoli/ogcapi-registry/actions/workflows/test.yml)
+[![Docs](https://img.shields.io/github/actions/workflow/status/francbartoli/ogcapi-registry/docs.yml?branch=main&style=for-the-badge&logo=materialformkdocs&logoColor=white&label=Docs)](https://francbartoli.github.io/ogcapi-registry/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/ogcapi-registry?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/ogcapi-registry/)
+[![Code style: Ruff](https://img.shields.io/badge/code%20style-ruff-261230?style=for-the-badge&logo=ruff&logoColor=white)](https://github.com/astral-sh/ruff)
+[![Type checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue?style=for-the-badge&logo=python&logoColor=white)](https://mypy-lang.org/)
+[![Pydantic v2](https://img.shields.io/badge/Pydantic-v2-E92063?style=for-the-badge&logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
+
 A Python library for validating OpenAPI documents published by OGC API servers against OGC specification requirements.
 
 ## Why This Library?

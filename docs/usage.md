@@ -1012,6 +1012,102 @@ http://www.opengis.net/spec/ogcapi-features-1/v1.0/conf/core  # "v1.0" instead o
 
 ---
 
+## Validating Real OGC API Servers
+
+The library includes a ready-to-use example script for validating real OGC API servers.
+
+### Running the Example Script
+
+```bash
+# Clone the repository
+git clone https://github.com/francbartoli/ogcapi-registry.git
+cd ogcapi-registry
+
+# Install dependencies
+uv sync --all-extras --dev
+
+# Validate an OGC API server
+uv run python -c "
+from examples.validate_ogc_api_server import validate_server, print_report
+report = validate_server('https://demo.ldproxy.net/daraa')
+print_report(report)
+"
+```
+
+### Example Output
+
+```
+============================================================
+OGC API VALIDATION REPORT
+============================================================
+
+Server: https://demo.ldproxy.net/daraa
+Status: COMPLIANT
+
+OpenAPI Document:
+  Version: 3.0.3
+  Title: Daraa
+  API Version: 1.0.0
+  Paths: 42
+
+Conformance Classes: 15
+
+  OGC API - Features Part 1 v1.0:
+    - core [CORE]
+    - oas30
+    - html
+    - geojson
+
+Validation: COMPLIANT (no critical errors, has warnings)
+
+  Summary:
+    Critical: 0
+    Warnings: 3
+    Info:     2
+    Total:    5
+
+============================================================
+```
+
+### Using in GitHub Actions
+
+```yaml
+name: Validate OGC API
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily validation
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ogcapi-registry
+        uses: actions/checkout@v4
+        with:
+          repository: francbartoli/ogcapi-registry
+          path: ogcapi-registry
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install dependencies
+        run: cd ogcapi-registry && uv sync --all-extras --dev
+
+      - name: Validate OGC API Server
+        env:
+          SERVER_URL: https://demo.ldproxy.net/daraa
+        run: |
+          cd ogcapi-registry
+          uv run python -c "
+          from examples.validate_ogc_api_server import validate_server, print_report
+          report = validate_server('$SERVER_URL')
+          print_report(report)
+          exit(0 if report['status'] in ['valid', 'compliant'] else 1)
+          "
+```
+
 ## Next Steps
 
 For complete examples of validating real OGC API servers, including:

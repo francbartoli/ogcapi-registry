@@ -1,6 +1,6 @@
 [project]
 name = "ogcapi-registry"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Python library for validating OpenAPI documents published by OGC API servers"
 readme = "README.md"
 license = { text = "MIT" }

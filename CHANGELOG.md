@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.1.1 (2025-12-09)
+
+### Bug Fixes
+
+- **ci**: Remove environment from publish job for trusted publishing
+  ([`297f02c`](https://github.com/francbartoli/ogcapi-registry/commit/297f02c80b7b606f8173d765ab8a2f8487745b12))
+
+
 ## v0.1.0 (2025-12-09)
 
 ### Bug Fixes

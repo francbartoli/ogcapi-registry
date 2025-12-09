@@ -133,10 +133,11 @@ class TestRegisteredSpecification:
         """Test getting info version."""
         assert sample_spec.info_version == "1.0.0"
 
-    def test_to_openapi_raises_for_3_0(self, sample_spec):
-        """Test that converting 3.0 spec raises ValueError."""
-        with pytest.raises(ValueError, match="does not support OpenAPI 3.0"):
-            sample_spec.to_openapi()
+    def test_to_openapi_works_for_3_0(self, sample_spec):
+        """Test converting 3.0 spec to OpenAPI model."""
+        openapi = sample_spec.to_openapi()
+        assert openapi.info.title == "Test API"
+        assert openapi.info.version == "1.0.0"
 
     def test_to_openapi_works_for_3_1(self):
         """Test converting 3.1 spec to OpenAPI model."""

@@ -2,9 +2,9 @@
 
 from typing import Any
 
-import jsonschema
 import yaml
-from openapi_pydantic import OpenAPI
+from openapi_pydantic import OpenAPI as OpenAPI31
+from openapi_pydantic.v3.v3_0 import OpenAPI as OpenAPI30
 from pydantic import ValidationError as PydanticValidationError
 
 from .exceptions import ParseError
@@ -15,71 +15,6 @@ from .models import (
     ValidationResult,
 )
 from .registry import SpecificationRegistry
-
-# OpenAPI 3.0 JSON Schema (simplified core structure)
-# For full validation, use the official OpenAPI JSON Schema
-OPENAPI_3_0_CORE_SCHEMA = {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "type": "object",
-    "required": ["openapi", "info", "paths"],
-    "properties": {
-        "openapi": {
-            "type": "string",
-            "pattern": "^3\\.0\\.\\d+$",
-        },
-        "info": {
-            "type": "object",
-            "required": ["title", "version"],
-            "properties": {
-                "title": {"type": "string"},
-                "version": {"type": "string"},
-                "description": {"type": "string"},
-                "termsOfService": {"type": "string", "format": "uri"},
-                "contact": {"type": "object"},
-                "license": {"type": "object"},
-            },
-        },
-        "paths": {"type": "object"},
-        "servers": {"type": "array"},
-        "components": {"type": "object"},
-        "security": {"type": "array"},
-        "tags": {"type": "array"},
-        "externalDocs": {"type": "object"},
-    },
-}
-
-OPENAPI_3_1_CORE_SCHEMA = {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "type": "object",
-    "required": ["openapi", "info"],
-    "properties": {
-        "openapi": {
-            "type": "string",
-            "pattern": "^3\\.1\\.\\d+$",
-        },
-        "info": {
-            "type": "object",
-            "required": ["title", "version"],
-            "properties": {
-                "title": {"type": "string"},
-                "version": {"type": "string"},
-                "summary": {"type": "string"},
-                "description": {"type": "string"},
-                "termsOfService": {"type": "string", "format": "uri"},
-                "contact": {"type": "object"},
-                "license": {"type": "object"},
-            },
-        },
-        "paths": {"type": "object"},
-        "webhooks": {"type": "object"},
-        "servers": {"type": "array"},
-        "components": {"type": "object"},
-        "security": {"type": "array"},
-        "tags": {"type": "array"},
-        "externalDocs": {"type": "object"},
-        "jsonSchemaDialect": {"type": "string", "format": "uri"},
-    },
-}
 
 
 def parse_openapi_content(
@@ -125,7 +60,8 @@ def validate_openapi_structure(
 ) -> ValidationResult:
     """Validate the basic structure of an OpenAPI document.
 
-    This performs JSON Schema validation against the core OpenAPI structure.
+    This performs initial checks on the OpenAPI document structure
+    before full Pydantic validation.
 
     Args:
         document: The OpenAPI document to validate
@@ -181,23 +117,46 @@ def validate_openapi_structure(
             }
         )
 
-    # Select appropriate schema
+    # Check for required fields based on version
     if detected_type == SpecificationType.OPENAPI_3_0:
-        schema = OPENAPI_3_0_CORE_SCHEMA
-    else:
-        schema = OPENAPI_3_1_CORE_SCHEMA
+        # OpenAPI 3.0.x requires paths
+        if "paths" not in document:
+            errors.append(
+                {
+                    "path": "paths",
+                    "message": "Missing required 'paths' field for OpenAPI 3.0.x",
+                    "type": "missing_required",
+                }
+            )
+    # OpenAPI 3.1.x doesn't require paths (can use webhooks instead)
 
-    # Validate against JSON Schema
-    validator = jsonschema.Draft7Validator(schema)
-    for error in validator.iter_errors(document):
+    # Check for info field (required in both versions)
+    if "info" not in document:
         errors.append(
             {
-                "path": "/".join(str(p) for p in error.absolute_path) or "/",
-                "message": error.message,
-                "type": "schema_error",
-                "schema_path": list(error.schema_path),
+                "path": "info",
+                "message": "Missing required 'info' field",
+                "type": "missing_required",
             }
         )
+    elif isinstance(document.get("info"), dict):
+        info = document["info"]
+        if "title" not in info:
+            errors.append(
+                {
+                    "path": "info/title",
+                    "message": "Missing required 'title' field in info",
+                    "type": "missing_required",
+                }
+            )
+        if "version" not in info:
+            errors.append(
+                {
+                    "path": "info/version",
+                    "message": "Missing required 'version' field in info",
+                    "type": "missing_required",
+                }
+            )
 
     key = SpecificationKey(spec_type=detected_type, version=openapi_version)
 
@@ -213,9 +172,8 @@ def validate_openapi_with_pydantic(
 ) -> ValidationResult:
     """Validate an OpenAPI document using Pydantic models.
 
-    This provides stricter validation using the openapi-pydantic library.
-    Note: openapi-pydantic only supports OpenAPI 3.1.x versions. For 3.0.x,
-    this function will skip Pydantic validation and return success.
+    This provides comprehensive validation using the openapi-pydantic library,
+    which supports both OpenAPI 3.0.x and 3.1.x versions.
 
     Args:
         document: The OpenAPI document to validate
@@ -234,13 +192,12 @@ def validate_openapi_with_pydantic(
         # If we can't determine version, skip Pydantic validation
         return ValidationResult.success()
 
-    # openapi-pydantic only supports OpenAPI 3.1.x
-    # For 3.0.x, we skip Pydantic validation and rely on JSON Schema validation
-    if spec_type == SpecificationType.OPENAPI_3_0:
-        return ValidationResult.success(validated_against=key)
-
+    # Validate with appropriate OpenAPI model based on version
     try:
-        OpenAPI.model_validate(document)
+        if spec_type == SpecificationType.OPENAPI_3_0:
+            OpenAPI30.model_validate(document)
+        else:
+            OpenAPI31.model_validate(document)
     except PydanticValidationError as e:
         for error in e.errors():
             loc = "/".join(str(p) for p in error["loc"]) or "/"

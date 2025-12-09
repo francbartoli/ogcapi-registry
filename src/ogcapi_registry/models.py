@@ -4,7 +4,8 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-from openapi_pydantic import OpenAPI
+from openapi_pydantic import OpenAPI as OpenAPI31
+from openapi_pydantic.v3.v3_0 import OpenAPI as OpenAPI30
 from pydantic import BaseModel, Field
 
 
@@ -131,25 +132,18 @@ class RegisteredSpecification(BaseModel):
         info = self.raw_content.get("info", {})
         return info.get("version")
 
-    def to_openapi(self) -> OpenAPI:
+    def to_openapi(self) -> OpenAPI31 | OpenAPI30:
         """Convert to an openapi-pydantic OpenAPI model.
 
         Returns:
-            An OpenAPI model instance
-
-        Raises:
-            ValueError: If the specification is OpenAPI 3.0.x (not supported by openapi-pydantic)
+            An OpenAPI model instance (OpenAPI30 for 3.0.x, OpenAPI31 for 3.1.x)
 
         Note:
             This creates a new OpenAPI instance on each call for safety.
-            openapi-pydantic only supports OpenAPI 3.1.x versions.
         """
         if self.key.spec_type == SpecificationType.OPENAPI_3_0:
-            raise ValueError(
-                "openapi-pydantic does not support OpenAPI 3.0.x. "
-                "Use raw_content for 3.0.x specifications."
-            )
-        return OpenAPI.model_validate(self.raw_content)
+            return OpenAPI30.model_validate(self.raw_content)
+        return OpenAPI31.model_validate(self.raw_content)
 
 
 class ValidationResult(BaseModel):

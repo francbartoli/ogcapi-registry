@@ -75,6 +75,7 @@ jobs:
           github_token: ${{ secrets.GH_TOKEN }}
           git_committer_name: "github-actions[bot]"
           git_committer_email: "github-actions[bot]@users.noreply.github.com"
+          build: "false"
 
       - name: Store release outputs
         if: steps.release.outputs.released == 'true'

@@ -26,6 +26,12 @@ theme:
     - navigation.expand
     - toc.follow
 
+plugins:
+  - search
+  - kroki:
+      EnableExcalidraw: true
+      FencePrefix: ""
+
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true

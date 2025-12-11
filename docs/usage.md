@@ -922,13 +922,168 @@ Understanding the difference between this library and the OGC CITE Test Suite is
 
 ### When to Use Each Tool
 
-```
-Development Workflow:
-┌─────────────┐     ┌──────────────────┐     ┌─────────────┐
-│ Write Code  │ --> │ ogcapi-registry  │ --> │  OGC CITE   │
-│             │     │ (static check)   │     │ (runtime)   │
-└─────────────┘     └──────────────────┘     └─────────────┘
-      Fast              Seconds                 Minutes+
+```excalidraw
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "ogcapi-registry",
+  "elements": [
+    {
+      "id": "box1",
+      "type": "rectangle",
+      "x": 50,
+      "y": 100,
+      "width": 140,
+      "height": 80,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "text1",
+      "type": "text",
+      "x": 75,
+      "y": 125,
+      "text": "Write Code",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "label1",
+      "type": "text",
+      "x": 90,
+      "y": 195,
+      "text": "Fast",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "arrow1",
+      "type": "arrow",
+      "x": 195,
+      "y": 140,
+      "width": 50,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [50, 0]]
+    },
+    {
+      "id": "box2",
+      "type": "rectangle",
+      "x": 250,
+      "y": 100,
+      "width": 180,
+      "height": 80,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "text2a",
+      "type": "text",
+      "x": 275,
+      "y": 115,
+      "text": "ogcapi-registry",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "text2b",
+      "type": "text",
+      "x": 285,
+      "y": 145,
+      "text": "(static check)",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "label2",
+      "type": "text",
+      "x": 300,
+      "y": 195,
+      "text": "Seconds",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "arrow2",
+      "type": "arrow",
+      "x": 435,
+      "y": 140,
+      "width": 50,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [50, 0]]
+    },
+    {
+      "id": "box3",
+      "type": "rectangle",
+      "x": 490,
+      "y": 100,
+      "width": 140,
+      "height": 80,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffec99",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "text3a",
+      "type": "text",
+      "x": 520,
+      "y": 115,
+      "text": "OGC CITE",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "text3b",
+      "type": "text",
+      "x": 525,
+      "y": 145,
+      "text": "(runtime)",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "label3",
+      "type": "text",
+      "x": 515,
+      "y": 195,
+      "text": "Minutes+",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "x": 220,
+      "y": 40,
+      "text": "Development Workflow",
+      "fontSize": 24,
+      "fontFamily": 1,
+      "textAlign": "center"
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff"
+  }
+}
 ```
 
 **Use ogcapi-registry when:**

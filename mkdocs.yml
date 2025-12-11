@@ -28,9 +28,6 @@ theme:
 
 plugins:
   - search
-  - kroki:
-      EnableExcalidraw: true
-      FencePrefix: ""
 
 markdown_extensions:
   - pymdownx.highlight:

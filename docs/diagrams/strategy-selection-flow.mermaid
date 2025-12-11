@@ -1,4 +1,3 @@
-```mermaid
 sequenceDiagram
     participant Client
     participant StrategyRegistry
@@ -29,4 +28,3 @@ sequenceDiagram
     Strategy->>Strategy: validate_operations_exist()
     Strategy-->>StrategyRegistry: ValidationResult
     StrategyRegistry-->>Client: ValidationResult
-```

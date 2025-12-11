@@ -28,6 +28,10 @@ theme:
 
 plugins:
   - search
+  - kroki:
+      EnableExcalidraw: true
+      FileTypes:
+        - excalidraw
 
 markdown_extensions:
   - pymdownx.highlight:

@@ -1,6 +1,69 @@
 # CHANGELOG
 
 
+## v0.3.0 (2025-12-11)
+
+### Features
+
+- **docs**: Improve diagrams with the use of excalidraw
+  ([#7](https://github.com/francbartoli/ogcapi-registry/pull/7),
+  [`1bfe086`](https://github.com/francbartoli/ogcapi-registry/commit/1bfe086458ecde92d4ddaddee32bf8c0defafc03))
+
+* feat(docs): Add mkdocs-kroki-plugin for Excalidraw diagrams
+
+- Add mkdocs-kroki-plugin to dev dependencies - Configure kroki plugin in mkdocs.yml with Excalidraw
+  support - Convert workflow diagram to Excalidraw format in docs - Add diagrams folder with
+  workflow.excalidraw
+
+* fix(docs): Replace Excalidraw with Mermaid diagram and remove kroki plugin
+
+- Remove enable-cache from docs workflow to fix cache errors - Replace Excalidraw JSON diagram with
+  simpler Mermaid flowchart - Remove mkdocs-kroki-plugin dependency (not needed for Mermaid) -
+  Delete docs/diagrams/workflow.excalidraw file
+
+* fix(docs): Restore Excalidraw diagram with kroki plugin file reference
+
+- Restore mkdocs-kroki-plugin dependency - Configure kroki with FileTypes for excalidraw files -
+  Recreate docs/diagrams/workflow.excalidraw - Use @from_file: syntax to reference external diagram
+  file
+
+* fix(docs): Use correct snake_case config options for kroki plugin
+
+- Change EnableExcalidraw to enable_excalidraw - Remove invalid file_types option (only for output
+  format, not diagram type)
+
+* feat(docs): Convert all architecture diagrams to Excalidraw format
+
+- Create 9 Excalidraw diagram files for architecture documentation - Replace all Mermaid diagrams
+  with Excalidraw file references - Use kroki-excalidraw @from_file syntax for external files
+
+Diagrams converted: - high-level-architecture.excalidraw - strategy-class-diagram.excalidraw -
+  strategy-selection-flow.excalidraw - conformance-classes.excalidraw -
+  composite-strategy.excalidraw - data-models.excalidraw - ogc-registry-class.excalidraw -
+  version-aware-flow.excalidraw - protocol-hierarchy.excalidraw
+
+* fix(ci): Remove enable-cache from test and publish workflows
+
+Fix cache 400 errors by removing enable-cache: true from: - test.yml (both test and lint jobs) -
+  publish.yml
+
+* docs(diagrams): Add Mermaid source files for all diagrams
+
+Add .md files with original Mermaid code blocks alongside .excalidraw files for easy reinsertion
+  into markdown documentation if needed.
+
+* docs(diagrams): Use .mermaid format for referenceable source files
+
+Replace .md files with .mermaid files that can be referenced directly in markdown using kroki
+  syntax:
+
+```kroki-mermaid @from_file:diagrams/high-level-architecture.mermaid ```
+
+---------
+
+Co-authored-by: Claude <noreply@anthropic.com>
+
+
 ## v0.2.0 (2025-12-09)
 
 ### Bug Fixes

@@ -1,0 +1,35 @@
+classDiagram
+    class ValidationStrategyProtocol {
+        <<protocol>>
+        +api_type: OGCAPIType
+        +validate(document, conformance_classes) ValidationResult
+        +get_required_paths(conformance_classes) list
+        +get_required_operations(conformance_classes) dict
+        +matches_conformance(conformance_classes) bool
+    }
+
+    class VersionAwareStrategyProtocol {
+        <<protocol>>
+        +supports_version(spec_version) bool
+        +get_spec_version_from_conformance(conformance_classes) str
+        +get_specification_key(conformance_classes) OGCSpecificationKey
+    }
+
+    class OpenAPIClientProtocol {
+        <<protocol>>
+        +fetch(url) tuple
+        +fetch_and_validate_structure(url) tuple
+    }
+
+    class RegistryProtocol~K, V~ {
+        <<protocol>>
+        +get_by_key(key) V
+        +exists_by_key(key) bool
+        +remove_by_key(key) bool
+        +list_keys() list~K~
+        +clear() None
+    }
+
+    ValidationStrategyProtocol <|-- VersionAwareStrategyProtocol
+    ValidationStrategy ..|> ValidationStrategyProtocol : implements
+    ValidationStrategy ..|> VersionAwareStrategyProtocol : implements

@@ -1,0 +1,42 @@
+classDiagram
+    class SpecificationKey {
+        <<frozen>>
+        +spec_type: SpecificationType
+        +version: str
+    }
+
+    class SpecificationMetadata {
+        <<frozen>>
+        +source_url: str
+        +fetched_at: datetime
+        +content_type: str
+        +etag: str
+    }
+
+    class RegisteredSpecification {
+        <<frozen>>
+        +key: SpecificationKey
+        +metadata: SpecificationMetadata
+        +raw_content: dict
+        +openapi_version: str
+        +info_title: str
+    }
+
+    class ValidationResult {
+        <<frozen>>
+        +is_valid: bool
+        +errors: tuple
+        +warnings: tuple
+        +validated_against: SpecificationKey
+    }
+
+    class ConformanceClass {
+        <<frozen>>
+        +uri: str
+        +api_type: OGCAPIType
+        +is_core: bool
+        +version: str
+    }
+
+    RegisteredSpecification --> SpecificationKey
+    RegisteredSpecification --> SpecificationMetadata

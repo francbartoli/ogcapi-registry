@@ -1,0 +1,201 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "ogcapi-registry",
+  "elements": [
+    {
+      "id": "title",
+      "type": "text",
+      "x": 250,
+      "y": 20,
+      "text": "Immutable Data Models",
+      "fontSize": 24,
+      "fontFamily": 1
+    },
+    {
+      "id": "sk-box",
+      "type": "rectangle",
+      "x": 50,
+      "y": 70,
+      "width": 160,
+      "height": 90,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "sk-header",
+      "type": "text",
+      "x": 60,
+      "y": 75,
+      "text": "<<frozen>>\nSpecificationKey",
+      "fontSize": 12,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "sk-attrs",
+      "type": "text",
+      "x": 60,
+      "y": 110,
+      "text": "+spec_type: SpecType\n+version: str",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "sm-box",
+      "type": "rectangle",
+      "x": 240,
+      "y": 70,
+      "width": 180,
+      "height": 110,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "sm-header",
+      "type": "text",
+      "x": 250,
+      "y": 75,
+      "text": "<<frozen>>\nSpecificationMetadata",
+      "fontSize": 12,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "sm-attrs",
+      "type": "text",
+      "x": 250,
+      "y": 110,
+      "text": "+source_url: str\n+fetched_at: datetime\n+content_type: str\n+etag: str",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "rs-box",
+      "type": "rectangle",
+      "x": 450,
+      "y": 70,
+      "width": 190,
+      "height": 130,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffec99",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "rs-header",
+      "type": "text",
+      "x": 460,
+      "y": 75,
+      "text": "<<frozen>>\nRegisteredSpecification",
+      "fontSize": 12,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "rs-attrs",
+      "type": "text",
+      "x": 460,
+      "y": 110,
+      "text": "+key: SpecificationKey\n+metadata: SpecMetadata\n+raw_content: dict\n+openapi_version: str\n+info_title: str",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "vr-box",
+      "type": "rectangle",
+      "x": 50,
+      "y": 220,
+      "width": 180,
+      "height": 110,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffc9c9",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "vr-header",
+      "type": "text",
+      "x": 60,
+      "y": 225,
+      "text": "<<frozen>>\nValidationResult",
+      "fontSize": 12,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "vr-attrs",
+      "type": "text",
+      "x": 60,
+      "y": 260,
+      "text": "+is_valid: bool\n+errors: tuple\n+warnings: tuple\n+validated_against: SpecKey",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "cc-box",
+      "type": "rectangle",
+      "x": 270,
+      "y": 220,
+      "width": 170,
+      "height": 110,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#d0bfff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "cc-header",
+      "type": "text",
+      "x": 280,
+      "y": 225,
+      "text": "<<frozen>>\nConformanceClass",
+      "fontSize": 12,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "cc-attrs",
+      "type": "text",
+      "x": 280,
+      "y": 260,
+      "text": "+uri: str\n+api_type: OGCAPIType\n+is_core: bool\n+version: str",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow-rs-sk",
+      "type": "arrow",
+      "x": 445,
+      "y": 130,
+      "width": 30,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [-30, 0]]
+    },
+    {
+      "id": "arrow-rs-sm",
+      "type": "arrow",
+      "x": 445,
+      "y": 150,
+      "width": 20,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [-20, 0]]
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff"
+  }
+}

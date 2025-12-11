@@ -1,0 +1,30 @@
+sequenceDiagram
+    participant Client
+    participant StrategyRegistry
+    participant Strategy
+    participant Document
+
+    Client->>StrategyRegistry: detect_and_validate(document, conformance_classes)
+
+    alt No conformance classes provided
+        StrategyRegistry->>Document: Extract from x-conformance
+        StrategyRegistry->>Document: Infer from paths
+    end
+
+    StrategyRegistry->>StrategyRegistry: get_for_conformance(conformance_classes)
+
+    loop For each registered strategy
+        StrategyRegistry->>Strategy: matches_conformance(conformance_classes)
+        Strategy-->>StrategyRegistry: true/false
+    end
+
+    alt Multiple strategies match
+        StrategyRegistry->>StrategyRegistry: Create CompositeValidationStrategy
+    end
+
+    StrategyRegistry->>Strategy: validate(document, conformance_classes)
+    Strategy->>Strategy: get_required_paths()
+    Strategy->>Strategy: validate_paths_exist()
+    Strategy->>Strategy: validate_operations_exist()
+    Strategy-->>StrategyRegistry: ValidationResult
+    StrategyRegistry-->>Client: ValidationResult

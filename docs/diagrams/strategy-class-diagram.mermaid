@@ -1,0 +1,69 @@
+classDiagram
+    class ValidationStrategy {
+        <<abstract>>
+        +api_type: OGCAPIType
+        +required_conformance_patterns: list
+        +optional_conformance_patterns: list
+        +validate(document, conformance_classes) ValidationResult
+        +get_required_paths(conformance_classes) list
+        +get_required_operations(conformance_classes) dict
+        +matches_conformance(conformance_classes) bool
+        +get_conformance_score(conformance_classes) int
+    }
+
+    class CommonStrategy {
+        +api_type = COMMON
+        +validate()
+        +get_required_paths()
+        +get_required_operations()
+    }
+
+    class FeaturesStrategy {
+        +api_type = FEATURES
+        +validate()
+        +get_required_paths()
+        +get_required_operations()
+        -_validate_collections_endpoint()
+        -_validate_items_endpoint()
+        -_validate_crs_support()
+    }
+
+    class TilesStrategy {
+        +api_type = TILES
+        +validate()
+        +get_required_paths()
+        +get_required_operations()
+        -_validate_tileset_endpoint()
+        -_validate_tile_endpoint()
+    }
+
+    class ProcessesStrategy {
+        +api_type = PROCESSES
+        +validate()
+        +get_required_paths()
+        +get_required_operations()
+        -_validate_execution_endpoint()
+        -_validate_jobs_endpoint()
+    }
+
+    class CompositeValidationStrategy {
+        -strategies: list
+        +validate()
+        +get_required_paths()
+        +get_required_operations()
+    }
+
+    class StrategyRegistry {
+        -strategies: dict
+        +register(strategy)
+        +get(api_type) ValidationStrategy
+        +get_for_conformance(conformance_classes) ValidationStrategy
+        +detect_and_validate(document, conformance_classes) ValidationResult
+    }
+
+    ValidationStrategy <|-- CommonStrategy
+    ValidationStrategy <|-- FeaturesStrategy
+    ValidationStrategy <|-- TilesStrategy
+    ValidationStrategy <|-- ProcessesStrategy
+    ValidationStrategy <|-- CompositeValidationStrategy
+    StrategyRegistry o-- ValidationStrategy

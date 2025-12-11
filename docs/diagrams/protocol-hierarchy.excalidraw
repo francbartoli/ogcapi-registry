@@ -1,0 +1,197 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "ogcapi-registry",
+  "elements": [
+    {
+      "id": "title",
+      "type": "text",
+      "x": 220,
+      "y": 20,
+      "text": "Protocol Hierarchy",
+      "fontSize": 24,
+      "fontFamily": 1
+    },
+    {
+      "id": "vsp-box",
+      "type": "rectangle",
+      "x": 50,
+      "y": 70,
+      "width": 220,
+      "height": 120,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "vsp-header",
+      "type": "text",
+      "x": 60,
+      "y": 75,
+      "text": "<<protocol>>\nValidationStrategyProtocol",
+      "fontSize": 12,
+      "fontFamily": 1
+    },
+    {
+      "id": "vsp-attrs",
+      "type": "text",
+      "x": 60,
+      "y": 110,
+      "text": "+api_type: OGCAPIType\n+validate(doc, cc)\n+get_required_paths(cc)\n+get_required_operations(cc)\n+matches_conformance(cc)",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "vasp-box",
+      "type": "rectangle",
+      "x": 50,
+      "y": 230,
+      "width": 220,
+      "height": 100,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "vasp-header",
+      "type": "text",
+      "x": 60,
+      "y": 235,
+      "text": "<<protocol>>\nVersionAwareStrategyProtocol",
+      "fontSize": 11,
+      "fontFamily": 1
+    },
+    {
+      "id": "vasp-attrs",
+      "type": "text",
+      "x": 60,
+      "y": 270,
+      "text": "+supports_version(spec_ver)\n+get_spec_version_from_cc(cc)\n+get_specification_key(cc)",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "ocp-box",
+      "type": "rectangle",
+      "x": 320,
+      "y": 70,
+      "width": 200,
+      "height": 90,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffec99",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "ocp-header",
+      "type": "text",
+      "x": 330,
+      "y": 75,
+      "text": "<<protocol>>\nOpenAPIClientProtocol",
+      "fontSize": 12,
+      "fontFamily": 1
+    },
+    {
+      "id": "ocp-attrs",
+      "type": "text",
+      "x": 330,
+      "y": 110,
+      "text": "+fetch(url)\n+fetch_and_validate_structure(url)",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "rp-box",
+      "type": "rectangle",
+      "x": 320,
+      "y": 190,
+      "width": 200,
+      "height": 100,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffc9c9",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "rp-header",
+      "type": "text",
+      "x": 330,
+      "y": 195,
+      "text": "<<protocol>>\nRegistryProtocol<K, V>",
+      "fontSize": 12,
+      "fontFamily": 1
+    },
+    {
+      "id": "rp-attrs",
+      "type": "text",
+      "x": 330,
+      "y": 230,
+      "text": "+get_by_key(key)\n+exists_by_key(key)\n+remove_by_key(key)\n+list_keys()",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow-inherit",
+      "type": "arrow",
+      "x": 160,
+      "y": 225,
+      "width": 0,
+      "height": 30,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [0, -30]]
+    },
+    {
+      "id": "vs-impl-box",
+      "type": "rectangle",
+      "x": 80,
+      "y": 370,
+      "width": 160,
+      "height": 50,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#e9ecef",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "vs-impl-text",
+      "type": "text",
+      "x": 95,
+      "y": 385,
+      "text": "ValidationStrategy",
+      "fontSize": 12,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow-impl",
+      "type": "line",
+      "x": 160,
+      "y": 365,
+      "width": 0,
+      "height": 30,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "points": [[0, 0], [0, -30]]
+    },
+    {
+      "id": "impl-label",
+      "type": "text",
+      "x": 170,
+      "y": 345,
+      "text": "implements",
+      "fontSize": 10,
+      "fontFamily": 1
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff"
+  }
+}

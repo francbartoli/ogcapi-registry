@@ -922,13 +922,8 @@ Understanding the difference between this library and the OGC CITE Test Suite is
 
 ### When to Use Each Tool
 
-```
-Development Workflow:
-┌─────────────┐     ┌──────────────────┐     ┌─────────────┐
-│ Write Code  │ --> │ ogcapi-registry  │ --> │  OGC CITE   │
-│             │     │ (static check)   │     │ (runtime)   │
-└─────────────┘     └──────────────────┘     └─────────────┘
-      Fast              Seconds                 Minutes+
+```kroki-excalidraw
+@from_file:diagrams/workflow.excalidraw
 ```
 
 **Use ogcapi-registry when:**

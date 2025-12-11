@@ -26,6 +26,11 @@ theme:
     - navigation.expand
     - toc.follow
 
+plugins:
+  - search
+  - kroki:
+      enable_excalidraw: true
+
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true

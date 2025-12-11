@@ -1,0 +1,284 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "ogcapi-registry",
+  "elements": [
+    {
+      "id": "title",
+      "type": "text",
+      "x": 280,
+      "y": 20,
+      "text": "Strategy Pattern - Class Diagram",
+      "fontSize": 24,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "vs-box",
+      "type": "rectangle",
+      "x": 220,
+      "y": 70,
+      "width": 220,
+      "height": 140,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "vs-title",
+      "type": "text",
+      "x": 250,
+      "y": 80,
+      "text": "<<abstract>>\nValidationStrategy",
+      "fontSize": 14,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "vs-attrs",
+      "type": "text",
+      "x": 230,
+      "y": 115,
+      "text": "+api_type: OGCAPIType\n+required_patterns: list\n+optional_patterns: list",
+      "fontSize": 11,
+      "fontFamily": 1
+    },
+    {
+      "id": "vs-methods",
+      "type": "text",
+      "x": 230,
+      "y": 160,
+      "text": "+validate()\n+get_required_paths()\n+matches_conformance()",
+      "fontSize": 11,
+      "fontFamily": 1
+    },
+    {
+      "id": "cs-box",
+      "type": "rectangle",
+      "x": 50,
+      "y": 280,
+      "width": 140,
+      "height": 80,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "cs-title",
+      "type": "text",
+      "x": 65,
+      "y": 290,
+      "text": "CommonStrategy",
+      "fontSize": 12,
+      "fontFamily": 1
+    },
+    {
+      "id": "cs-text",
+      "type": "text",
+      "x": 60,
+      "y": 315,
+      "text": "api_type=COMMON\n+validate()\n+get_required_paths()",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "fs-box",
+      "type": "rectangle",
+      "x": 210,
+      "y": 280,
+      "width": 140,
+      "height": 80,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "fs-title",
+      "type": "text",
+      "x": 222,
+      "y": 290,
+      "text": "FeaturesStrategy",
+      "fontSize": 12,
+      "fontFamily": 1
+    },
+    {
+      "id": "fs-text",
+      "type": "text",
+      "x": 220,
+      "y": 315,
+      "text": "api_type=FEATURES\n+validate()\n-_validate_collections()",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "ts-box",
+      "type": "rectangle",
+      "x": 370,
+      "y": 280,
+      "width": 140,
+      "height": 80,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "ts-title",
+      "type": "text",
+      "x": 400,
+      "y": 290,
+      "text": "TilesStrategy",
+      "fontSize": 12,
+      "fontFamily": 1
+    },
+    {
+      "id": "ts-text",
+      "type": "text",
+      "x": 380,
+      "y": 315,
+      "text": "api_type=TILES\n+validate()\n-_validate_tileset()",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "ps-box",
+      "type": "rectangle",
+      "x": 530,
+      "y": 280,
+      "width": 140,
+      "height": 80,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "ps-title",
+      "type": "text",
+      "x": 540,
+      "y": 290,
+      "text": "ProcessesStrategy",
+      "fontSize": 12,
+      "fontFamily": 1
+    },
+    {
+      "id": "ps-text",
+      "type": "text",
+      "x": 540,
+      "y": 315,
+      "text": "api_type=PROCESSES\n+validate()\n-_validate_jobs()",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "reg-box",
+      "type": "rectangle",
+      "x": 500,
+      "y": 70,
+      "width": 180,
+      "height": 100,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffec99",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "reg-title",
+      "type": "text",
+      "x": 530,
+      "y": 80,
+      "text": "StrategyRegistry",
+      "fontSize": 14,
+      "fontFamily": 1
+    },
+    {
+      "id": "reg-text",
+      "type": "text",
+      "x": 510,
+      "y": 105,
+      "text": "-strategies: dict\n+register(strategy)\n+get(api_type)\n+detect_and_validate()",
+      "fontSize": 11,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow-cs",
+      "type": "line",
+      "x": 120,
+      "y": 280,
+      "width": 130,
+      "height": 65,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [130, -65]]
+    },
+    {
+      "id": "arrow-fs",
+      "type": "line",
+      "x": 280,
+      "y": 280,
+      "width": 50,
+      "height": 65,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [50, -65]]
+    },
+    {
+      "id": "arrow-ts",
+      "type": "line",
+      "x": 440,
+      "y": 280,
+      "width": 50,
+      "height": 65,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [-50, -65]]
+    },
+    {
+      "id": "arrow-ps",
+      "type": "line",
+      "x": 600,
+      "y": 280,
+      "width": 130,
+      "height": 65,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [-130, -65]]
+    },
+    {
+      "id": "arrow-reg",
+      "type": "line",
+      "x": 445,
+      "y": 120,
+      "width": 50,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [50, 0]],
+      "strokeStyle": "dashed"
+    },
+    {
+      "id": "diamond",
+      "type": "diamond",
+      "x": 480,
+      "y": 110,
+      "width": 20,
+      "height": 20,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 2
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff"
+  }
+}

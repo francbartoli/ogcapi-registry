@@ -1,0 +1,263 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "ogcapi-registry",
+  "elements": [
+    {
+      "id": "title",
+      "type": "text",
+      "x": 180,
+      "y": 20,
+      "text": "Version-Aware Validation Flow",
+      "fontSize": 24,
+      "fontFamily": 1
+    },
+    {
+      "id": "client-box",
+      "type": "rectangle",
+      "x": 50,
+      "y": 70,
+      "width": 80,
+      "height": 350,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2
+    },
+    {
+      "id": "client-text",
+      "type": "text",
+      "x": 65,
+      "y": 80,
+      "text": "Client",
+      "fontSize": 14,
+      "fontFamily": 1
+    },
+    {
+      "id": "sreg-box",
+      "type": "rectangle",
+      "x": 160,
+      "y": 70,
+      "width": 110,
+      "height": 350,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "strokeWidth": 2
+    },
+    {
+      "id": "sreg-text",
+      "type": "text",
+      "x": 165,
+      "y": 80,
+      "text": "StrategyRegistry",
+      "fontSize": 11,
+      "fontFamily": 1
+    },
+    {
+      "id": "oreg-box",
+      "type": "rectangle",
+      "x": 300,
+      "y": 70,
+      "width": 100,
+      "height": 350,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffec99",
+      "fillStyle": "solid",
+      "strokeWidth": 2
+    },
+    {
+      "id": "oreg-text",
+      "type": "text",
+      "x": 305,
+      "y": 80,
+      "text": "OGCRegistry",
+      "fontSize": 11,
+      "fontFamily": 1
+    },
+    {
+      "id": "strategy-box",
+      "type": "rectangle",
+      "x": 430,
+      "y": 70,
+      "width": 80,
+      "height": 350,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffc9c9",
+      "fillStyle": "solid",
+      "strokeWidth": 2
+    },
+    {
+      "id": "strategy-text",
+      "type": "text",
+      "x": 440,
+      "y": 80,
+      "text": "Strategy",
+      "fontSize": 12,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow1",
+      "type": "arrow",
+      "x": 135,
+      "y": 130,
+      "width": 20,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [20, 0]]
+    },
+    {
+      "id": "msg1",
+      "type": "text",
+      "x": 135,
+      "y": 110,
+      "text": "validate_against_spec()",
+      "fontSize": 9,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow2",
+      "type": "arrow",
+      "x": 275,
+      "y": 170,
+      "width": 150,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [150, 0]]
+    },
+    {
+      "id": "msg2",
+      "type": "text",
+      "x": 310,
+      "y": 150,
+      "text": "supports_version()",
+      "fontSize": 9,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow3",
+      "type": "arrow",
+      "x": 425,
+      "y": 200,
+      "width": 150,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [-150, 0]]
+    },
+    {
+      "id": "msg3",
+      "type": "text",
+      "x": 320,
+      "y": 185,
+      "text": "true",
+      "fontSize": 9,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow4",
+      "type": "arrow",
+      "x": 275,
+      "y": 240,
+      "width": 150,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [150, 0]]
+    },
+    {
+      "id": "msg4",
+      "type": "text",
+      "x": 310,
+      "y": 220,
+      "text": "validate(doc, cc)",
+      "fontSize": 9,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow5",
+      "type": "arrow",
+      "x": 425,
+      "y": 280,
+      "width": 150,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [-150, 0]]
+    },
+    {
+      "id": "msg5",
+      "type": "text",
+      "x": 310,
+      "y": 265,
+      "text": "ValidationResult",
+      "fontSize": 9,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow6",
+      "type": "arrow",
+      "x": 275,
+      "y": 320,
+      "width": 20,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [20, 0]]
+    },
+    {
+      "id": "msg6",
+      "type": "text",
+      "x": 280,
+      "y": 300,
+      "text": "get(api_type, ver)",
+      "fontSize": 9,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow7",
+      "type": "arrow",
+      "x": 295,
+      "y": 350,
+      "width": 20,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [-20, 0]]
+    },
+    {
+      "id": "msg7",
+      "type": "text",
+      "x": 280,
+      "y": 335,
+      "text": "OGCSpec",
+      "fontSize": 9,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow8",
+      "type": "arrow",
+      "x": 155,
+      "y": 390,
+      "width": 20,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [-20, 0]]
+    },
+    {
+      "id": "msg8",
+      "type": "text",
+      "x": 135,
+      "y": 375,
+      "text": "Result + warnings",
+      "fontSize": 9,
+      "fontFamily": 1
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff"
+  }
+}

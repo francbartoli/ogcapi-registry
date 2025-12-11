@@ -1,0 +1,165 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "ogcapi-registry",
+  "elements": [
+    {
+      "id": "title",
+      "type": "text",
+      "x": 200,
+      "y": 20,
+      "text": "OGC Specification Registry",
+      "fontSize": 24,
+      "fontFamily": 1
+    },
+    {
+      "id": "key-box",
+      "type": "rectangle",
+      "x": 50,
+      "y": 70,
+      "width": 200,
+      "height": 130,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "key-header",
+      "type": "text",
+      "x": 60,
+      "y": 75,
+      "text": "<<frozen>>\nOGCSpecificationKey",
+      "fontSize": 12,
+      "fontFamily": 1,
+      "textAlign": "center"
+    },
+    {
+      "id": "key-attrs",
+      "type": "text",
+      "x": 60,
+      "y": 110,
+      "text": "+api_type: OGCAPIType\n+spec_version: str\n+part: int | None",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "key-methods",
+      "type": "text",
+      "x": 60,
+      "y": 155,
+      "text": "+matches(other, strict)\n+__hash__()\n+__str__()",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "spec-box",
+      "type": "rectangle",
+      "x": 300,
+      "y": 70,
+      "width": 200,
+      "height": 150,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "spec-header",
+      "type": "text",
+      "x": 310,
+      "y": 75,
+      "text": "OGCRegisteredSpecification",
+      "fontSize": 12,
+      "fontFamily": 1
+    },
+    {
+      "id": "spec-attrs",
+      "type": "text",
+      "x": 310,
+      "y": 100,
+      "text": "+key: OGCSpecificationKey\n+raw_content: dict\n+metadata: SpecMetadata\n+openapi_version: str\n+info_title: str\n+paths: dict",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "reg-box",
+      "type": "rectangle",
+      "x": 125,
+      "y": 260,
+      "width": 250,
+      "height": 150,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffec99",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "roundness": { "type": 3 }
+    },
+    {
+      "id": "reg-header",
+      "type": "text",
+      "x": 155,
+      "y": 265,
+      "text": "OGCSpecificationRegistry",
+      "fontSize": 14,
+      "fontFamily": 1
+    },
+    {
+      "id": "reg-attrs",
+      "type": "text",
+      "x": 135,
+      "y": 290,
+      "text": "-specs: dict\n-lock: RLock",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "reg-methods",
+      "type": "text",
+      "x": 135,
+      "y": 325,
+      "text": "+register(api_type, version, content)\n+register_from_url(api_type, version, url)\n+get(api_type, version, part)\n+get_latest(api_type)\n+list_versions(api_type)\n+list_by_type(api_type)",
+      "fontSize": 10,
+      "fontFamily": 1
+    },
+    {
+      "id": "arrow-spec-key",
+      "type": "arrow",
+      "x": 295,
+      "y": 130,
+      "width": 40,
+      "height": 0,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [-40, 0]]
+    },
+    {
+      "id": "arrow-reg-spec",
+      "type": "line",
+      "x": 250,
+      "y": 255,
+      "width": 100,
+      "height": 30,
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "points": [[0, 0], [100, -30]]
+    },
+    {
+      "id": "diamond",
+      "type": "diamond",
+      "x": 340,
+      "y": 215,
+      "width": 20,
+      "height": 20,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 2
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff"
+  }
+}

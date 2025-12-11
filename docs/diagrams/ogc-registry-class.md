@@ -1,0 +1,35 @@
+```mermaid
+classDiagram
+    class OGCSpecificationKey {
+        <<frozen>>
+        +api_type: OGCAPIType
+        +spec_version: str
+        +part: int | None
+        +matches(other, strict) bool
+        +__hash__() int
+        +__str__() str
+    }
+
+    class OGCRegisteredSpecification {
+        +key: OGCSpecificationKey
+        +raw_content: dict
+        +metadata: SpecificationMetadata
+        +openapi_version: str
+        +info_title: str
+        +paths: dict
+    }
+
+    class OGCSpecificationRegistry {
+        -specs: dict
+        -lock: RLock
+        +register(api_type, version, content) OGCRegisteredSpecification
+        +register_from_url(api_type, version, url) OGCRegisteredSpecification
+        +get(api_type, version, part) OGCRegisteredSpecification
+        +get_latest(api_type) OGCRegisteredSpecification
+        +list_versions(api_type) list
+        +list_by_type(api_type) list
+    }
+
+    OGCSpecificationRegistry o-- OGCRegisteredSpecification
+    OGCRegisteredSpecification --> OGCSpecificationKey
+```

@@ -1,0 +1,9 @@
+```mermaid
+graph LR
+    CC[Conformance Class URI] --> DT{Detect Type}
+    DT -->|"contains 'features'"| F[Features]
+    DT -->|"contains 'tiles'"| T[Tiles]
+    DT -->|"contains 'processes'"| P[Processes]
+    DT -->|"contains 'common'"| C[Common]
+    DT -->|"unknown"| C
+```

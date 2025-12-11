@@ -1,0 +1,49 @@
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        OC[OpenAPIClient]
+        AOC[AsyncOpenAPIClient]
+    end
+
+    subgraph "Registry Layer"
+        SR[SpecificationRegistry]
+        ASR[AsyncSpecificationRegistry]
+        OGCR[OGCSpecificationRegistry]
+    end
+
+    subgraph "Validation Layer"
+        STR[StrategyRegistry]
+        OV[OpenAPIValidator]
+    end
+
+    subgraph "Strategy Layer"
+        VS[ValidationStrategy]
+        CS[CommonStrategy]
+        FS[FeaturesStrategy]
+        TS[TilesStrategy]
+        PS[ProcessesStrategy]
+        OS[Other Strategies...]
+    end
+
+    subgraph "OGC Types"
+        SK[OGCSpecificationKey]
+        CC[ConformanceClass]
+        AT[OGCAPIType]
+    end
+
+    OC --> SR
+    OC --> OGCR
+    AOC --> ASR
+    SR --> OV
+    OGCR --> STR
+    STR --> VS
+    VS --> CS
+    VS --> FS
+    VS --> TS
+    VS --> PS
+    VS --> OS
+    OV --> STR
+    CC --> SK
+    SK --> OGCR
+    AT --> SK
+```

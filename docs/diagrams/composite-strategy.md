@@ -1,0 +1,13 @@
+```mermaid
+graph TB
+    subgraph "Composite Strategy"
+        CV[CompositeValidationStrategy]
+        CV --> FS[FeaturesStrategy]
+        CV --> TS[TilesStrategy]
+    end
+
+    FS --> FR[Features Results]
+    TS --> TR[Tiles Results]
+    FR --> MR[Merged Results]
+    TR --> MR
+```

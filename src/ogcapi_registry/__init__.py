@@ -9,6 +9,7 @@ This library provides:
 
 from .client import AsyncOpenAPIClient, OpenAPIClient
 from .conformance import ConformanceReport, validate_conformance
+from .expectations import Expectation, Verb
 from .exceptions import (
     FetchError,
     OpenAPIRegistryError,
@@ -171,4 +172,7 @@ __all__ = [
     "KnownConformanceClass",
     "ConformanceReport",
     "validate_conformance",
+    # Expectations, in the standard's own words
+    "Expectation",
+    "Verb",
 ]

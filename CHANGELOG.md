@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v0.3.1 (2026-09-16)
+
+### Bug Fixes
+
+- **tiles**: /tilematrixsets is not a required path
+  ([#11](https://github.com/francbartoli/ogcapi-registry/pull/11),
+  [`0794e13`](https://github.com/francbartoli/ogcapi-registry/commit/0794e13109f6e90657408da675ce5bd798af91a1))
+
+Closes #10
+
+
 ## v0.3.0 (2025-12-11)
 
 ### Features

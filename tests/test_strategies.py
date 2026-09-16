@@ -144,6 +144,68 @@ class TestFeaturesStrategy:
         result = strategy.validate(doc, conformance_classes)
         assert result.is_valid
 
+    def test_a_parameter_declared_by_reference_is_recognised(self, strategy):
+        """A `$ref` carries no `name`, and pygeoapi declares `crs` that way.
+
+        Reading only `name` makes a document that declares the parameter
+        correctly look as if it had not.
+        """
+        document = {
+            "components": {"parameters": {"crs": {"name": "crs", "in": "query"}}},
+            "paths": {
+                "/collections/{collectionId}/items": {
+                    "get": {
+                        "parameters": [
+                            {"$ref": "#/components/parameters/crs"},
+                            {"name": "bbox", "in": "query"},
+                            {"name": "bbox-crs", "in": "query"},
+                        ]
+                    }
+                }
+            },
+        }
+
+        messages = [w["message"] for w in strategy._validate_crs_support(document)]
+
+        assert [m for m in messages if "'crs'" in m] == []
+
+    def test_a_collection_path_without_a_template_is_still_checked(self, strategy):
+        """pygeoapi writes the collection id literally: `/collections/lakes/items`.
+
+        Requiring a `{` anywhere in the path skipped exactly the operation
+        the CRS class is about, and inspected only the single-feature one.
+        """
+        document = {
+            "paths": {
+                "/collections/lakes/items": {
+                    "get": {"parameters": [{"name": "bbox", "in": "query"}]}
+                }
+            },
+        }
+
+        messages = [w["message"] for w in strategy._validate_crs_support(document)]
+
+        assert [m for m in messages if "'crs'" in m]
+
+    def test_bbox_crs_is_asked_for_only_where_bbox_is_supported(self, strategy):
+        """OGC API - Features Part 2 Requirement 10 ties one to the other.
+
+        `crs` (Requirement 9A) applies to every geometry-returning
+        operation, so the single-feature path owes it; `bbox-crs` applies
+        only to operations that support `bbox`, and that path has none.
+        """
+        document = {
+            "paths": {
+                "/collections/lakes/items/{featureId}": {
+                    "get": {"parameters": [{"name": "crs", "in": "query"}]}
+                }
+            },
+        }
+
+        messages = [w["message"] for w in strategy._validate_crs_support(document)]
+
+        assert [m for m in messages if "bbox-crs" in m] == []
+
     def test_validate_missing_collections(self, strategy, conformance_classes):
         """Test validation fails when collections is missing."""
         doc = {

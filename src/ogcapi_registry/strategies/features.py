@@ -233,43 +233,101 @@ class FeaturesStrategy(ValidationStrategy):
         errors: list[dict[str, Any]] = []
         paths = document.get("paths", {})
 
-        # Find items path
         for path, path_item in paths.items():
-            if "/items" in path and "{" in path:
-                get_op = path_item.get("get", {})
-                if not get_op:
-                    continue
+            if not self._is_items_operation(path):
+                continue
 
-                parameters = get_op.get("parameters", [])
-                param_names = {
-                    p.get("name", "") for p in parameters if isinstance(p, dict)
-                }
+            get_op = path_item.get("get", {})
+            if not get_op:
+                continue
 
-                # CRS Part 2 requires crs and bbox-crs parameters
-                # These are WARNING because CRS is an optional conformance class
-                if "crs" not in param_names:
-                    errors.append(
-                        self.create_error(
-                            path=f"paths/{path}.get.parameters",
-                            message="CRS conformance requires 'crs' query parameter",
-                            error_type="missing_parameter",
-                            severity=ErrorSeverity.WARNING,
-                            conformance_class="http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
-                        )
+            param_names = self._parameter_names(get_op.get("parameters", []), document)
+
+            # Requirement 9A: the parameter applies to every operation that
+            # returns geometries, so both the items list and a single
+            # feature owe it. WARNING because the CRS class is optional.
+            if "crs" not in param_names:
+                errors.append(
+                    self.create_error(
+                        path=f"paths/{path}.get.parameters",
+                        message="CRS conformance requires 'crs' query parameter",
+                        error_type="missing_parameter",
+                        severity=ErrorSeverity.WARNING,
+                        conformance_class="http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
                     )
+                )
 
-                if "bbox-crs" not in param_names:
-                    errors.append(
-                        self.create_error(
-                            path=f"paths/{path}.get.parameters",
-                            message="CRS conformance requires 'bbox-crs' query parameter",
-                            error_type="missing_parameter",
-                            severity=ErrorSeverity.WARNING,
-                            conformance_class="http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
-                        )
+            # Requirement 10 ties `bbox-crs` to operations that support
+            # `bbox`. The single-feature path has none, so asking for it
+            # there corresponds to nothing in the standard.
+            if "bbox" in param_names and "bbox-crs" not in param_names:
+                errors.append(
+                    self.create_error(
+                        path=f"paths/{path}.get.parameters",
+                        message="CRS conformance requires 'bbox-crs' query parameter",
+                        error_type="missing_parameter",
+                        severity=ErrorSeverity.WARNING,
+                        conformance_class="http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
                     )
+                )
 
         return errors
+
+    @staticmethod
+    def _is_items_operation(path: str) -> bool:
+        """Whether a path is the items list or a single feature.
+
+        The collection id may be written as a template or literally —
+        pygeoapi emits `/collections/lakes/items`, the standard's own
+        examples use `/collections/{collectionId}/items` — and both are
+        the same operation. Keying on a brace anywhere in the path
+        recognised only the second, and along with it the single-feature
+        path, which is the one the `bbox-crs` rule does not reach.
+        """
+        return path.endswith("/items") or "/items/" in path
+
+    @staticmethod
+    def _parameter_names(
+        parameters: list[Any],
+        document: dict[str, Any],
+    ) -> set[str]:
+        """The names of an operation's parameters, references included.
+
+        A `$ref` carries no `name`, and a document is free to declare
+        every parameter that way: pygeoapi declares `crs` as
+        `#/components/parameters/crs`. Reading only `name` makes a
+        document that declares the parameter correctly look as if it had
+        not. Local references are resolved; for a remote one the last
+        fragment segment is used, which is the component name and matches
+        the parameter name in the OGC documents.
+        """
+        names: set[str] = set()
+        for parameter in parameters:
+            if not isinstance(parameter, dict):
+                continue
+            if "name" in parameter:
+                names.add(parameter["name"])
+                continue
+
+            ref = parameter.get("$ref", "")
+            if not ref:
+                continue
+
+            target: Any = None
+            if ref.startswith("#/"):
+                target = document
+                for segment in ref[2:].split("/"):
+                    if not isinstance(target, dict):
+                        target = None
+                        break
+                    target = target.get(segment)
+
+            if isinstance(target, dict) and "name" in target:
+                names.add(target["name"])
+            else:
+                names.add(ref.rsplit("/", 1)[-1])
+
+        return names
 
     def _validate_filter_support(
         self, document: dict[str, Any]

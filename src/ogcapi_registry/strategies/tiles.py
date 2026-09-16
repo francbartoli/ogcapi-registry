@@ -3,6 +3,7 @@
 from typing import Any, ClassVar
 
 from ..models import ValidationResult
+from ..expectations import Expectation, Verb
 from ..ogc_types import ConformanceClass, OGCAPIType
 from .base import ValidationStrategy
 
@@ -65,90 +66,111 @@ class TilesStrategy(ValidationStrategy):
 
         return ValidationResult.success(warnings=tuple(warnings))
 
+    def get_expectations(
+        self,
+        conformance_classes: list[ConformanceClass],
+    ) -> list[Expectation]:
+        """What the standard expects, in the standard's own words.
+
+        Each entry carries the verb the clause used and the clause
+        itself, so severity is derived rather than chosen, and a reader
+        can check the claim against the text.
+        """
+        expectations = [
+            Expectation(
+                target="/",
+                verb=Verb.SHALL,
+                source="OGC API - Common Part 1, landing page",
+            ),
+            Expectation(
+                target="/conformance",
+                verb=Verb.SHALL,
+                source="OGC API - Common Part 1, conformance declaration",
+            ),
+        ]
+
+        if self._has_conformance_class(conformance_classes, "/conf/dataset-tilesets"):
+            expectations += [
+                Expectation(
+                    target="/tiles",
+                    verb=Verb.SHALL,
+                    source="OGC API - Tiles Part 1, /req/tilesets-list/tileset-path: "
+                    "the API SHALL support a GET operation on a .../tiles path",
+                ),
+                Expectation(
+                    target="/tiles/{tileMatrixSetId}",
+                    verb=Verb.SHALL,
+                    source="OGC API - Tiles Part 1, /req/tileset/description",
+                ),
+                Expectation(
+                    target="/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}",
+                    verb=Verb.SHALL,
+                    source="OGC API - Tiles Part 1, /req/core/tc-tilematrix-definition "
+                    "and the tileRow/tileCol definitions beside it",
+                ),
+            ]
+
+        if self._has_conformance_class(conformance_classes, "/conf/geodata-tilesets"):
+            expectations += [
+                Expectation(
+                    target="/collections/{collectionId}/tiles",
+                    verb=Verb.SHALL,
+                    source="OGC API - Tiles Part 1, /req/geodata-tilesets/operation A: "
+                    "the resource SHALL have a list of at least one tileset at .../tiles",
+                ),
+                Expectation(
+                    target="/collections/{collectionId}/tiles/{tileMatrixSetId}",
+                    verb=Verb.SHALL,
+                    source="OGC API - Tiles Part 1, /req/tileset/description",
+                ),
+                Expectation(
+                    target=(
+                        "/collections/{collectionId}/tiles/{tileMatrixSetId}"
+                        "/{tileMatrix}/{tileRow}/{tileCol}"
+                    ),
+                    verb=Verb.SHALL,
+                    source="OGC API - Tiles Part 1, /req/core/tc-tilematrix-definition "
+                    "and the tileRow/tileCol definitions beside it",
+                ),
+            ]
+
+        # Recorded rather than demanded, and deliberately not tied to any
+        # conformance class: the tiling schemes clauses are a SHOULD, and
+        # they apply only where the API uses a tile matrix set that is not
+        # in a register. Deleting the line would lose the knowledge; this
+        # way it is here, cited, and it never fires.
+        expectations.append(
+            Expectation(
+                target="/tileMatrixSets",
+                verb=Verb.SHOULD,
+                source="OGC API - Tiles Part 1, tiling schemes clauses B-D",
+                condition="the API uses a tile matrix set not available in a register",
+            )
+        )
+
+        return expectations
+
     def get_required_paths(
         self,
         conformance_classes: list[ConformanceClass],
     ) -> list[str]:
-        """Get required paths for OGC API - Tiles.
+        """The paths the standard demands outright.
 
-        Args:
-            conformance_classes: Conformance classes declared by the implementation
-
-        Returns:
-            List of required path patterns
+        Derived from `get_expectations`: only what a clause states with
+        `shall`, and only where no condition stands in the way.
         """
-        paths = [
-            "/",
-            "/conformance",
+        return [
+            expectation.target
+            for expectation in self.get_expectations(conformance_classes)
+            if expectation.verb is Verb.SHALL and expectation.is_evaluable
         ]
-
-        # Dataset tilesets
-        if self._has_conformance_class(conformance_classes, "/conf/dataset-tilesets"):
-            paths.extend(
-                [
-                    "/tiles",
-                    "/tiles/{tileMatrixSetId}",
-                    "/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}",
-                ]
-            )
-
-        # Collection tilesets (geodata-tilesets)
-        if self._has_conformance_class(conformance_classes, "/conf/geodata-tilesets"):
-            paths.extend(
-                [
-                    "/collections/{collectionId}/tiles",
-                    "/collections/{collectionId}/tiles/{tileMatrixSetId}",
-                    "/collections/{collectionId}/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}",
-                ]
-            )
-
-        # `/conf/tilesets-list` adds no path of its own: the lists it
-        # governs are `/tiles` and `/collections/{collectionId}/tiles`,
-        # already required above by the classes that serve them.
-        #
-        # It used to add `/tileMatrixSets`, which is a different resource
-        # — the tiling schemes — and one the standard does not require.
-        # OGC API - Tiles states it as a SHOULD, conditional on the API
-        # using a tile matrix set that is *not* available in a register;
-        # the standard reserves `shall` for requirements (Terms and
-        # definitions, OGC Policy Directive 49). An implementation
-        # serving `WebMercatorQuad`, which the OGC register holds, has
-        # nothing to publish there.
-
-        return paths
 
     def get_required_operations(
         self,
         conformance_classes: list[ConformanceClass],
     ) -> dict[str, list[str]]:
-        """Get required operations for OGC API - Tiles paths.
-
-        Args:
-            conformance_classes: Conformance classes declared by the implementation
-
-        Returns:
-            Dict mapping paths to required HTTP methods
-        """
-        operations: dict[str, list[str]] = {
-            "/": ["get"],
-            "/conformance": ["get"],
-        }
-
-        if self._has_conformance_class(conformance_classes, "/conf/dataset-tilesets"):
-            operations["/tiles"] = ["get"]
-            operations["/tiles/{tileMatrixSetId}"] = ["get"]
-            operations["/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}"] = [
-                "get"
-            ]
-
-        if self._has_conformance_class(conformance_classes, "/conf/geodata-tilesets"):
-            operations["/collections/{collectionId}/tiles"] = ["get"]
-            operations["/collections/{collectionId}/tiles/{tileMatrixSetId}"] = ["get"]
-            operations[
-                "/collections/{collectionId}/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}"
-            ] = ["get"]
-
-        return operations
+        """The operations those paths owe, which for tiles is a GET each."""
+        return {path: ["get"] for path in self.get_required_paths(conformance_classes)}
 
     def _validate_tileset_endpoint(
         self,

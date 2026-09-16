@@ -8,6 +8,8 @@ This library provides:
 """
 
 from .client import AsyncOpenAPIClient, OpenAPIClient
+from .conformance import ConformanceReport, validate_conformance
+from .expectations import Expectation, Verb
 from .exceptions import (
     FetchError,
     OpenAPIRegistryError,
@@ -52,6 +54,11 @@ from .protocols import (
     SpecificationKeyProtocol,
     ValidationStrategyProtocol,
     VersionAwareStrategyProtocol,
+)
+from .known_classes import (
+    KNOWN_CONFORMANCE_CLASSES,
+    SOURCE_DOCUMENTS,
+    KnownConformanceClass,
 )
 from .registry import AsyncSpecificationRegistry, SpecificationRegistry
 from .strategies import (
@@ -159,4 +166,13 @@ __all__ = [
     "AsyncOpenAPIClientProtocol",
     "ConformanceClassProtocol",
     "SpecificationKeyProtocol",
+    # Conformance classes published by the standards
+    "KNOWN_CONFORMANCE_CLASSES",
+    "SOURCE_DOCUMENTS",
+    "KnownConformanceClass",
+    "ConformanceReport",
+    "validate_conformance",
+    # Expectations, in the standard's own words
+    "Expectation",
+    "Verb",
 ]

@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v0.3.2 (2026-09-16)
+
+### Bug Fixes
+
+- **features**: Check CRS parameters where the standard puts them
+  ([#12](https://github.com/francbartoli/ogcapi-registry/pull/12),
+  [`c3c1794`](https://github.com/francbartoli/ogcapi-registry/commit/c3c17949f0e131708ff3e2fc19d12681b7fd6a74))
+
+Closes #9
+
+
 ## v0.3.1 (2026-09-16)
 
 ### Bug Fixes

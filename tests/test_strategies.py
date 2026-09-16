@@ -194,6 +194,29 @@ class TestTilesStrategy:
         assert "/tiles" in paths
         assert "/tiles/{tileMatrixSetId}" in paths
 
+    def test_tilesets_list_does_not_require_the_tiling_schemes_endpoint(self, strategy):
+        """`/tileMatrixSets` is a conditional SHOULD, not a requirement.
+
+        OGC API - Tiles states the endpoint for the case where the API
+        uses a tile matrix set that is *not* available in a register, and
+        the standard reserves `shall` for requirements (Terms and
+        definitions, OGC Policy Directive 49). An implementation serving
+        `WebMercatorQuad`, which the OGC register holds, has nothing to
+        publish there and answers 404 correctly.
+
+        `conf/tilesets-list` is the class for the list of tilesets —
+        `/tiles` and `/collections/{collectionId}/tiles` — not for tiling
+        schemes, so it never required this path in the first place.
+        """
+        classes = [
+            ConformanceClass(
+                uri="http://www.opengis.net/spec/ogcapi-tiles-1/1.0/conf/tilesets-list"
+            ),
+        ]
+
+        assert "/tileMatrixSets" not in strategy.get_required_paths(classes)
+        assert "/tileMatrixSets" not in strategy.get_required_operations(classes)
+
 
 class TestProcessesStrategy:
     """Tests for ProcessesStrategy."""

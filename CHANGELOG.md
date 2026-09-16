@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.4.0 (2026-09-16)
+
+### Features
+
+- **conformance**: The classes the standards publish, and what they say
+  ([#13](https://github.com/francbartoli/ogcapi-registry/pull/13),
+  [`b607d10`](https://github.com/francbartoli/ogcapi-registry/commit/b607d1098d76dc247b6ac4cd4bd8122ed6702f0b))
+
+* feat(conformance): the classes the standards publish, and what they say
+
+Closes #8 partially
+
+* feat(conformance): expectations carry the verb and the clause
+
+Closes #8
+
+
 ## v0.3.2 (2026-09-16)
 
 ### Bug Fixes

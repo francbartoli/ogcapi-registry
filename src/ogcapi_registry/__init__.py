@@ -90,7 +90,7 @@ from .validator import (
     validate_openapi_with_pydantic,
 )
 
-__version__ = "0.3.2"
+__version__ = "0.4.0"
 
 __all__ = [
     # Version

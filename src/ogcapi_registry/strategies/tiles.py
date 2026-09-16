@@ -102,9 +102,18 @@ class TilesStrategy(ValidationStrategy):
                 ]
             )
 
-        # Tilesets list
-        if self._has_conformance_class(conformance_classes, "/conf/tilesets-list"):
-            paths.append("/tileMatrixSets")
+        # `/conf/tilesets-list` adds no path of its own: the lists it
+        # governs are `/tiles` and `/collections/{collectionId}/tiles`,
+        # already required above by the classes that serve them.
+        #
+        # It used to add `/tileMatrixSets`, which is a different resource
+        # — the tiling schemes — and one the standard does not require.
+        # OGC API - Tiles states it as a SHOULD, conditional on the API
+        # using a tile matrix set that is *not* available in a register;
+        # the standard reserves `shall` for requirements (Terms and
+        # definitions, OGC Policy Directive 49). An implementation
+        # serving `WebMercatorQuad`, which the OGC register holds, has
+        # nothing to publish there.
 
         return paths
 
@@ -138,9 +147,6 @@ class TilesStrategy(ValidationStrategy):
             operations[
                 "/collections/{collectionId}/tiles/{tileMatrixSetId}/{tileMatrix}/{tileRow}/{tileCol}"
             ] = ["get"]
-
-        if self._has_conformance_class(conformance_classes, "/conf/tilesets-list"):
-            operations["/tileMatrixSets"] = ["get"]
 
         return operations
 

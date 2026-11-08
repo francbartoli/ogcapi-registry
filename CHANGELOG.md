@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v0.6.1 (2026-11-08)
+
+### Bug Fixes
+
+- Read requirement identifiers with capitals and three segments
+  ([#16](https://github.com/francbartoli/ogcapi-registry/pull/16),
+  [`4e38e50`](https://github.com/francbartoli/ogcapi-registry/commit/4e38e50cb8fc7f6c3e1c988f9b8bc124ec54571b))
+
+The header pattern took only lowercase two-segment identifiers, so fc-timeStamp became fc-time and
+  processID-mandatory became process, and some requirements were lost. The per-document counts now
+  come from an independent count of the headers instead of the parser's own output.
+
+
 ## v0.6.0 (2026-11-08)
 
 ### Features

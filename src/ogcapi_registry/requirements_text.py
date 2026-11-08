@@ -19,6 +19,10 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+#: Written where the HTML closes a table. A requirement is stated in a table
+#: of its own, so the statement ends there, before any example or note.
+TABLE_END = "\x00"
+
 _HEADER = re.compile(
     r"(?<!Requirement )Requirement (?:[A-Z]\.)?\d+:? (?:Identifier )?"
     r"/req/([a-z0-9-]+)/([a-z0-9-]+)(?![a-z0-9/-])"
@@ -27,8 +31,9 @@ _END = re.compile(
     r"(?:Requirement|Recommendation|Permission) (?:[A-Z]\.)?\d+"
     r"|Abstract test|Conformance Test|(?<!Included in )Requirements class \d"
     r"|\b\d+(?:\.\d+)+\. [A-Z]"
+    rf"|{TABLE_END}"
 )
-_INCLUDED = re.compile(r"^Included in Requirements class [^:]*: \S+ ")
+_INCLUDED = re.compile(r"^Included in Requirements class [^:]*: \S*/req/([a-z0-9_-]+) ")
 _CONDITION = re.compile(r"^Condition .*?(?= (?:Statement )?A:? )")
 
 
@@ -64,7 +69,8 @@ def parse_requirements(
     Parameters
     ----------
     text
-        The standard, stripped to text with its whitespace collapsed.
+        The standard, stripped to text with its whitespace collapsed and
+        ``TABLE_END`` where each table closed.
     spec
         The name of the standard in its URIs, such as ``ogcapi-maps-1``.
     version
@@ -90,11 +96,35 @@ def parse_requirements(
             continue
         found[uri] = KnownRequirement(
             uri=uri,
-            conformance_class=f"{base}/conf/{name}",
+            conformance_class=f"{base}/conf/{_name_class(body, name)}",
             document=document,
             parts=_split_parts(body),
         )
     return list(found.values())
+
+
+def _name_class(body: str, name: str) -> str:
+    """Name the class of a requirement, as the requirement itself states it.
+
+    Some standards write, after the header, the requirements class that
+    states the requirement (``Included in Requirements class A.3: …/req/queries``).
+    That class wins over the segment of the identifier, which EDR does not
+    keep in step with it.
+
+    Parameters
+    ----------
+    body
+        The text after the header.
+    name
+        The class segment of the identifier, used when the text names none.
+
+    Returns
+    -------
+    str
+        The name of the class.
+    """
+    included = _INCLUDED.match(body)
+    return included.group(1) if included else name
 
 
 def _is_statement(body: str) -> bool:

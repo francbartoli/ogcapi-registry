@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from ogcapi_registry.requirements_text import KnownRequirement, parse_requirements
+from ogcapi_registry.requirements_text import (
+    TABLE_END,
+    KnownRequirement,
+    parse_requirements,
+)
 
 FEATURES = (
     "7.2.2. Response Requirement 2 /req/core/root-success A A successful execution of "
@@ -141,3 +145,38 @@ def test_a_requirement_that_reuses_another_is_read():
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/req/gmlsf2/content",
         "http://www.opengis.net/spec/ogcapi-features-1/1.0/req/gmlsf2/headers",
     ]
+
+
+def test_the_class_a_requirement_names_wins_over_its_identifier():
+    text = (
+        "Requirement A.27 Identifier /req/edr/rc-area Included in Requirements "
+        "class A.3: https://www.opengis.net/spec/ogcapi-edr-1/1.1/req/queries "
+        "Statement A: An area GET or POST operation SHALL include a coords parameter ."
+    )
+
+    (requirement,) = parse_requirements(text, "ogcapi-edr-1", "1.1", "19-086r6")
+
+    assert (
+        requirement.uri
+        == "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/rc-area"
+    )
+    assert (
+        requirement.conformance_class
+        == "http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries"
+    )
+
+
+def test_a_requirement_ends_with_its_table():
+    text = (
+        "Requirement 3 /req/accent-insensitive-comparison/accenti-function A The server "
+        "SHALL support a function named ACCENTI . B The function SHALL return a string."
+        f" {TABLE_END} Example 9. ACCENTI(etat_vol) = ACCENTI('debarquer') Note The "
+        "implementation requires UnicodeData.txt ."
+    )
+
+    (requirement,) = parse_requirements(text, "cql2", "1.0", "21-065r2")
+
+    assert requirement.parts == (
+        "The server SHALL support a function named ACCENTI .",
+        "The function SHALL return a string.",
+    )

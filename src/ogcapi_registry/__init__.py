@@ -60,6 +60,7 @@ from .known_classes import (
     SOURCE_DOCUMENTS,
     KnownConformanceClass,
 )
+from .known_requirements import KNOWN_REQUIREMENTS, list_requirements
 from .registry import AsyncSpecificationRegistry, SpecificationRegistry
 from .strategies import (
     CommonStrategy,
@@ -80,6 +81,7 @@ from .strategy_registry import (
     get_default_registry,
     validate_ogc_api,
 )
+from .requirements_text import KnownRequirement
 from .validator import (
     OpenAPIValidator,
     create_validator_with_specs,
@@ -170,6 +172,10 @@ __all__ = [
     "KNOWN_CONFORMANCE_CLASSES",
     "SOURCE_DOCUMENTS",
     "KnownConformanceClass",
+    # Requirements those conformance classes carry
+    "KNOWN_REQUIREMENTS",
+    "KnownRequirement",
+    "list_requirements",
     "ConformanceReport",
     "validate_conformance",
     # Expectations, in the standard's own words

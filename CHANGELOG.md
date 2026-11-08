@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## v0.6.0 (2026-11-08)
+
+### Features
+
+- Catalogue OGC API Common Part 3 from 23-058r2
+  ([#15](https://github.com/francbartoli/ogcapi-registry/pull/15),
+  [`ae9e8c5`](https://github.com/francbartoli/ogcapi-registry/commit/ae9e8c51437c7c7882b052d6f64d343befab7cb2))
+
+23-058r2 is published once as Features Part 5 and Common Part 3, and its URIs name ogcapi-common-3.
+  It adds 10 classes and 37 requirements, among them schemas and advanced-property-roles, which
+  pygeoapi declares.
+
+
 ## v0.5.0 (2026-11-08)
 
 ### Features

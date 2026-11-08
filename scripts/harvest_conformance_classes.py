@@ -52,6 +52,11 @@ DOCUMENTS: dict[str, tuple[str, str]] = {
     "20-058": ("ogcapi-maps-1", "OGC API - Maps - Part 1: Core"),
     "21-065r2": ("cql2", "Common Query Language (CQL2)"),
     "19-072": ("ogcapi-common-1", "OGC API - Common - Part 1: Core"),
+    # Published once as two parts; its URIs name Common Part 3.
+    "23-058r2": (
+        "ogcapi-common-3",
+        "OGC API - Features - Part 5 / OGC API - Common - Part 3: Schemas",
+    ),
 }
 
 #: Requirements whose identifier names a class the standard does not publish,

@@ -21,6 +21,7 @@ FLOORS = {
     "20-058": 63,
     "21-065r2": 41,
     "19-072": 27,
+    "23-058r2": 37,
 }
 
 
@@ -72,3 +73,14 @@ def test_edr_requirements_carry_the_version_of_their_document():
 
 def test_an_unknown_class_has_no_requirements():
     assert list_requirements(f"{MAPS}/conf/no-such-class") == ()
+
+
+def test_common_part_3_is_catalogued():
+    schemas = "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas"
+    roles = (
+        "http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/advanced-property-roles"
+    )
+
+    assert KNOWN_CONFORMANCE_CLASSES[schemas].document == "23-058r2"
+    assert len(list_requirements(schemas)) == 9
+    assert len(list_requirements(roles)) == 7

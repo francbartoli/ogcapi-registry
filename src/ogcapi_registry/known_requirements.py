@@ -608,6 +608,344 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
             "If the operations of the API are access-controlled, the security scheme(s) and requirements SHALL be documented in the OpenAPI definition.",
         ),
     ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/primary-temporal-constraints": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/primary-temporal-constraints",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/advanced-property-roles",
+        document="23-058r2",
+        parts=(
+            'If a schema has a property with role "primary-instant", the schema SHALL NOT have properties with role "primary-interval-start", "primary-interval-end", or "primary-interval".',
+            'If a schema has a property with role "primary-interval", the schema SHALL NOT have properties with role "primary-interval-start", "primary-interval-end", or "primary-instant".',
+            'If a schema has properties with both roles "primary-interval-start" and "primary-interval-end", both properties SHALL have the same temporal granularity ("date" or "date-time").',
+            'If a schema has a property with only one the roles "primary-interval-start" or "primary-interval-end", the primary temporal information SHALL be the half-bounded interval with the specified start or end.',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-primary-geometry": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-primary-geometry",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/advanced-property-roles",
+        document="23-058r2",
+        parts=(
+            'A property with "x-ogc-role" set to "primary-geometry" SHALL be a spatial property.',
+            'At most one property in a schema SHALL have "x-ogc-role" with a value "primary-geometry".',
+            'If the schema has only one spatial property, the property SHALL be the primary geometry even if the property is not explicitly tagged with the role "primary-geometry".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-primary-instant": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-primary-instant",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/advanced-property-roles",
+        document="23-058r2",
+        parts=(
+            'A property with "x-ogc-role" set to "primary-instant" SHALL be a temporal property.',
+            'At most one property in a schema SHALL have "x-ogc-role" with a value of "primary-instant".',
+            'If the schema has only one temporal property, the property SHALL be the primary temporal information even if the property is not explicitly tagged with the role "primary-instant".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-primary-interval": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-primary-interval",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/advanced-property-roles",
+        document="23-058r2",
+        parts=(
+            'A property with "x-ogc-role" set to "primary-interval" SHALL be a temporal property.',
+            'At most one property in a schema SHALL have "x-ogc-role" with a value "primary-interval".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-primary-interval-end": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-primary-interval-end",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/advanced-property-roles",
+        document="23-058r2",
+        parts=(
+            'A property with "x-ogc-role" set to "primary-interval-end" SHALL be a temporal property.',
+            'At most one property in a schema SHALL have "x-ogc-role" with a value "primary-interval-end".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-primary-interval-start": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-primary-interval-start",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/advanced-property-roles",
+        document="23-058r2",
+        parts=(
+            'A property with "x-ogc-role" set to "primary-interval-start" SHALL be a temporal property.',
+            'At most one property in a schema SHALL have "x-ogc-role" with a value "primary-interval-start".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-type": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/advanced-property-roles/role-type",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/advanced-property-roles",
+        document="23-058r2",
+        parts=(
+            'A property with "x-ogc-role" set to "type" SHALL be a string property.',
+            'At most one property in a schema SHALL have "x-ogc-role" with a value "type".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-codelists/codelist-inline": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-codelists/codelist-inline",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-codelists",
+        document="23-058r2",
+        parts=(
+            'If the profile "codelist-inline" ( http://www.opengis.net/def/profile/OGC/0/codelist-inline ) is applied, the schema of each property with values from a codelist SHALL be represented by a "oneOf" schema with a schema for each code.',
+            'If the profile "codelist-inline" is applied, the schema for each code SHALL have a "const" member with the code as the value.',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-codelists/codelist-ref": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-codelists/codelist-ref",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-codelists",
+        document="23-058r2",
+        parts=(
+            'If the profile "codelist-ref" ( http://www.opengis.net/def/profile/OGC/0/codelist-ref ) is applied, the codelist SHALL be referenced by a HTTP(S) URI using the keyword "x-ogc-codelistUri".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-codelists/consistency": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-codelists/consistency",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-codelists",
+        document="23-058r2",
+        parts=(
+            "All codelist-valued properties in a schema SHALL use the same profile.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-domains/actual-domain": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-domains/actual-domain",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-domains",
+        document="23-058r2",
+        parts=(
+            'If the profile "actual-domain" ( http://www.opengis.net/def/profile/OGC/0/actual-domain ) is applied, "format" values starting with "geometry-" SHALL be restricted to the actual geometry types in the dataset at the time of the request; "enum" values SHALL be restricted to values in the dataset at the time of the request; "minLength" and "maxLength" values SHALL be restricted to the actual range of the length of the text strings in the dataset at the time of the request; "minimum", "maximum", "exclusiveMinimum", and "exclusiveMaximum" values SHALL be restricted to the actual numeric range of the values in the dataset at the time of the request;',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-domains/consistency": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-domains/consistency",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-domains",
+        document="23-058r2",
+        parts=(
+            "All properties with constraint keywords in a schema SHALL use the same profile.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-parameter/profile-param": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-parameter/profile-param",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-parameter",
+        document="23-058r2",
+        parts=(
+            'The GET operation on selected resources SHALL support a query parameter "profile" with the following characteristics (using an OpenAPI Specification 3.1 fragment): name: profile in: query required: false schema: type: array items: type: string style: form explode: false',
+            "Each item SHALL be one of the follwoing: The profile identifier of a profile in the OGC Profile Register (the profileId value in the URI template http://www.opengis.net/def/profile/OGC/0/{profileId} ); A HTTP(S) URI of a profile.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-parameter/profile-param-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-parameter/profile-param-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-parameter",
+        document="23-058r2",
+        parts=(
+            "The query parameter is not required, that is, omitting the parameter in a request SHALL not result in an error.",
+            'If the media type of the response supports web links in accordance with RFC 8288 Web Linking , the response SHALL include links to the selected profile(s) with the link relation type "profile".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-references/ref-profiles": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-references/ref-profiles",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-references",
+        document="23-058r2",
+        parts=(
+            "If the Returnables and Receivables schema of a collection includes a property with role „reference“, the GET operation on resources providing representations of the data SHALL provide the query parameter profile.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-references/rel-as-key": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-references/rel-as-key",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-references",
+        document="23-058r2",
+        parts=(
+            'In the profile "rel-as-key" ( http://www.opengis.net/def/profile/OGC/0/rel-as-key ) a reference in the response SHALL be represented by the resourceId of the referenced resource (a string or integer, depending on the type of the identifier property in the referenced collection), if the property with role "reference" has the keyword "x-ogc-collectionId".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-references/rel-as-link": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-references/rel-as-link",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-references",
+        document="23-058r2",
+        parts=(
+            'In the profile "rel-as-link" ( http://www.opengis.net/def/profile/OGC/0/rel-as-link ) a reference in the response SHALL be represented by an object with the property "href" (the URI of the referenced resource) and, optionally, a property "title" (a human readable label, e.g. for a clickable link).',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-references/rel-as-uri": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/profile-references/rel-as-uri",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/profile-references",
+        document="23-058r2",
+        parts=(
+            'In the profile "rel-as-uri" ( http://www.opengis.net/def/profile/OGC/0/rel-as-uri ) a reference in the response SHALL be represented by an HTTP(S) URI.',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/queryables/link": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/queryables/link",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/queryables",
+        document="23-058r2",
+        parts=(
+            "A Queryables resource SHALL be referenced from all Collection resources with a link with the link relation type http://www.opengis.net/def/rel/ogc/1.0/queryables .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/queryables/op": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/queryables/op",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/queryables",
+        document="23-058r2",
+        parts=(
+            "The Queryables resource SHALL support the HTTP GET operation and the media type application/schema+json .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/queryables/response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/queryables/response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/queryables",
+        document="23-058r2",
+        parts=(
+            "A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 .",
+            'For responses that use application/schema+json as the Content-Type of the response, the response SHALL conform to Requirements Class "Schemas" .',
+            "If additionalProperties is not included or has the default value true , any property name is valid in a filter expression on the collection that is evaluated by the Web API and the property reference SHALL evaluate to null , if the property does not exist for a resource. If additionalProperties is set to false, property references that are not explicitly declared in the queryables schema SHALL result in a 400 response.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/references/role-reference": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/references/role-reference",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/references",
+        document="23-058r2",
+        parts=(
+            'A property with "x-ogc-role" set to "reference" SHALL be a string or integer property.',
+            'If the property is of type "integer", the property with role "id" of the referenced resource type SHALL be of type "integer", too.',
+            'If all instances of the property reference geospatial data in a fixed collection of the same server, the id of that collection SHALL be provided in "x-ogc-collectionId".',
+            'If Requirements C does not apply, the URI template SHALL be provided in "x-ogc-uriTemplate" with a template parameter resourceId .',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/returnables-and-receivables/link": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/returnables-and-receivables/link",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/returnables-and-receivables",
+        document="23-058r2",
+        parts=(
+            "A Returnables and Receivables resource SHALL be referenced from all Collection resources with a link with the link relation type http://www.opengis.net/def/rel/ogc/1.0/schema .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/returnables-and-receivables/op": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/returnables-and-receivables/op",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/returnables-and-receivables",
+        document="23-058r2",
+        parts=(
+            "The Returnables and Receivables resource SHALL support the HTTP GET operation and the media type application/schema+json .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/returnables-and-receivables/response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/returnables-and-receivables/response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/returnables-and-receivables",
+        document="23-058r2",
+        parts=(
+            "A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 .",
+            'For responses that use application/schema+json as the Content-Type of the response, the response SHALL conform to Requirements Class "Schemas" .',
+            'The "additionalProperties" member with a value of "true" (the default) or "false" is used to state the expected behavior with respect to properties that are not explicitly declared in the schema. If "additionalProperties" is set to "false", properties that are not explicitly declared in the schema SHALL NOT be allowed, otherwise they SHALL be allowed.',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/additional-keywords": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/additional-keywords",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+        document="23-058r2",
+        parts=('Additional keywords specified by OGC SHALL start with "x-ogc-".',),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+        document="23-058r2",
+        parts=(
+            'The keyword "x-ogc-definition" SHALL be used to identify the semantic definition for the property.',
+            'The value of the keyword "x-ogc-definition" SHALL be a URI.',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/json-schema": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/json-schema",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+        document="23-058r2",
+        parts=(
+            "The schema SHALL be a valid JSON Schema.",
+            'The schema SHALL have the following characteristics: "$schema" is "https://json-schema.org/draft/2020-12/schema"; "$id" is a HTTP(S) URI without query parameters that returns the schema, if requested with the header "Accept: application/schema+json"; and "type" is "object".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/nullvalues": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/nullvalues",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+        document="23-058r2",
+        parts=(
+            'The keyword "x-ogc-nullValues" SHALL be used to identify the values considered null , but that are for some reason represented by a value in the value domain of the data type of the property.',
+            'The value of the keyword "x-ogc-nullValues" SHALL be an array of values (numbers or strings), depending on the data type of the property.',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/properties": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/properties",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+        document="23-058r2",
+        parts=(
+            'Each property SHALL include a "type" member, except for spatial properties.',
+            'Each spatial property SHALL not include a "type" or "$ref" member.',
+            'Each spatial property SHALL include a "format" member with a string value "geometry", followed by a hyphen, followed by the name of the geometry type in lower case. I.e., the values for the core Simple Feature geometry types are: "geometry-point", "geometry-multipoint", "geometry-linestring", "geometry-multilinestring", "geometry-polygon", "geometry-multipolygon", and "geometry-geometrycollection". In addition, the following special values are supported: "geometry-any" as the wildcard for any geometry type, "geometry-point-or-multipoint" for a Point or MultiPoint, "geometry-linestring-or-multilinestring" for a LineString or MultiLineString, and "geometry-polygon-or-multipolygon" for a Polygon or MultiPolygon.',
+            'Each temporal property that represents an instant (including the start or end of an interval) SHALL be a "string" literal with the appropriate format (e.g., "date-time" or "date", depending on the temporal granularity).',
+            'Each temporal property that represents an interval SHALL either be a "string" literal with format "interval-iso8601" (two instants with the same granularity separated by a "/") or an array with format "interval-array" consisting of two "string"s representing the interval start and end instants. In both variants, unbounded interval ends are represented by the string "..".',
+            'As a general rule, if the data type of a property has to be more specific than the JSON Schema data types ("number", "integer", "string"), the "format" keyword SHALL be used.',
+            'Properties that are only applicable when creating new data or updating existing data SHALL include "writeOnly: true".',
+            'Properties that are only applicable when data is fetched SHALL include "readOnly: true".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/property-seq": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/property-seq",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+        document="23-058r2",
+        parts=(
+            'The keyword "x-ogc-propertySeq" SHALL be used to declare a hint about the relative position of the property in the object.',
+            'The value of the keyword "x-ogc-propertySeq" SHALL be an integer representing the relative position in ascending order.',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/role": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/role",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+        document="23-058r2",
+        parts=(
+            'The keyword "x-ogc-role" SHALL be used to declare a specific role of the property.',
+            'The value of the keyword "x-ogc-role" SHALL be a string.',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/role-id": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/role-id",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+        document="23-058r2",
+        parts=(
+            'A property with "x-ogc-role" set to "id" SHALL be the identifier of the resource in the collection that contains the resource.',
+            'A property with role "id" SHALL either be a string or integer.',
+            'Only one property in a schema SHALL have "x-ogc-role" with a value "id".',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/unit": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/schemas/unit",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/schemas",
+        document="23-058r2",
+        parts=(
+            'The keyword "x-ogc-unit" SHALL be used to declare the unit of measure of the property.',
+            'The value of the keyword "x-ogc-unit" SHALL be a string representing the unit of measure.',
+            'The value of the keyword "x-ogc-unit" SHALL be the case sensitive UCUM representation ("c/s") unless a different language / register for units is identified in keyword "x-ogc-unitLang".',
+            'The value for UCUM, if explicitly declared as the language for units in keyword "x-ogc-unitLang", SHALL be "UCUM".',
+            'For specifying a unit from QUDT Units Vocabulary, "x-ogc-unitLang", SHALL be "QUDT".',
+            'For specifying a unit from QUDT Units Vocabulary, the value of the keyword "x-ogc-unit" SHALL be the URI of the unit.',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/sortables/link": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/sortables/link",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/sortables",
+        document="23-058r2",
+        parts=(
+            "A Sortables resource SHALL be referenced from all Collection resources with a link with the link relation type http://www.opengis.net/def/rel/ogc/1.0/sortables .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/sortables/op": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/sortables/op",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/sortables",
+        document="23-058r2",
+        parts=(
+            "The Sortables resource SHALL support the HTTP GET operation and the media type application/schema+json .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-common-3/1.0/req/sortables/response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-common-3/1.0/req/sortables/response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-common-3/1.0/conf/sortables",
+        document="23-058r2",
+        parts=(
+            "A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 .",
+            'For responses that use application/schema+json as the Content-Type of the response, the response SHALL conform to Requirements Class "Schemas" .',
+            'No property SHALL be of type "object" or "array".',
+            "No property SHALL be a spatial property.",
+            "If additionalProperties is not included or has the default value true , any property name is valid in a sorting expression on the collection that is evaluated by the server and the property reference SHALL evaluate to null , if the property does not exist for a resource. If additionalProperties is set to false, property references that are not explicitly declared in the sortables schema SHALL result in a 400 response.",
+        ),
+    ),
     "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/collections/rc-md-op": KnownRequirement(
         uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/collections/rc-md-op",
         conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/collections",

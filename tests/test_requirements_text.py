@@ -180,3 +180,20 @@ def test_a_requirement_ends_with_its_table():
         "The server SHALL support a function named ACCENTI .",
         "The function SHALL return a string.",
     )
+
+
+def test_an_identifier_keeps_its_case_underscores_and_segments():
+    text = (
+        "Requirement 25 /req/core/fc-timeStamp A The response SHALL include a "
+        "timeStamp property . Requirement 15 /req/core/process-exception/no-such-process "
+        "A The server SHALL answer 404 . Requirement A.60 Identifier "
+        "/req/edr/REQ_rc-crs-response Statement A: The server SHALL answer in the crs ."
+    )
+
+    uris = [r.uri for r in parse_requirements(text, "ogcapi-x-1", "1.0", "00-000")]
+
+    assert uris == [
+        "http://www.opengis.net/spec/ogcapi-x-1/1.0/req/core/fc-timeStamp",
+        "http://www.opengis.net/spec/ogcapi-x-1/1.0/req/core/process-exception/no-such-process",
+        "http://www.opengis.net/spec/ogcapi-x-1/1.0/req/edr/REQ_rc-crs-response",
+    ]

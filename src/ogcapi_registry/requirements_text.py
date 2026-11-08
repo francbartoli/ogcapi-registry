@@ -25,7 +25,7 @@ TABLE_END = "\x00"
 
 _HEADER = re.compile(
     r"(?<!Requirement )Requirement (?:[A-Z]\.)?\d+:? (?:Identifier )?"
-    r"/req/([a-z0-9-]+)/([a-z0-9-]+)(?![a-z0-9/-])"
+    r"/req/([a-z0-9_-]+)/([A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*)(?![A-Za-z0-9/_-])"
 )
 _END = re.compile(
     r"(?:Requirement|Recommendation|Permission) (?:[A-Z]\.)?\d+"

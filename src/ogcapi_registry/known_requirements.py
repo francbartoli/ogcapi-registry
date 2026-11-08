@@ -1688,12 +1688,22 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
             "The content of that response SHALL be based upon the OpenAPI 3.0 schema collections.yaml .",
         ),
     ),
-    "http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-number": KnownRequirement(
-        uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-number",
+    "http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-numberMatched": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-numberMatched",
         conformance_class="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
         document="17-069r4",
         parts=(
-            "Matched A If a property numberMatched is included in the response, the value SHALL be identical to the number of features in the feature collections that match the selection parameters like bbox , datetime or additional filter parameters. B A server MAY omit this information in a response, if the information about the number of matching features is not known or difficult to compute.",
+            "If a property numberMatched is included in the response, the value SHALL be identical to the number of features in the feature collections that match the selection parameters like bbox , datetime or additional filter parameters.",
+            "A server MAY omit this information in a response, if the information about the number of matching features is not known or difficult to compute.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-numberReturned": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-numberReturned",
+        conformance_class="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
+        document="17-069r4",
+        parts=(
+            "If a property numberReturned is included in the response, the value SHALL be identical to the number of features in the response.",
+            "A server MAY omit this information in a response, if the information about the number of features in the response is not known or difficult to compute.",
         ),
     ),
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-op": KnownRequirement(
@@ -1720,14 +1730,6 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
             "The response SHALL only include features selected by the request.",
         ),
     ),
-    "http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-time": KnownRequirement(
-        uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-time",
-        conformance_class="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
-        document="17-069r4",
-        parts=(
-            "Stamp A If a property timeStamp is included in the response, the value SHALL be set to the time stamp when the response was generated.",
-        ),
-    ),
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-time-definition": KnownRequirement(
         uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-time-definition",
         conformance_class="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
@@ -1747,6 +1749,14 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
             'Temporal geometries are either a date-time value or a time interval. The parameter value SHALL conform to the following syntax (using ABNF ): interval-bounded = date-time "/" date-time interval-half-bounded-start = [".."] "/" date-time interval-half-bounded-end = date-time "/" [".."] interval = interval-closed / interval-half-bounded-start / interval-half-bounded-end datetime = date-time / interval',
             "The syntax of date-time is specified by RFC 3339, 5.6 .",
             "Half-bounded time intervals are supported using a double-dot ( .. ) or an empty string for the start/end.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-timeStamp": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/fc-timeStamp",
+        conformance_class="http://www.opengis.net/spec/ogcapi-features-1/1.0/conf/core",
+        document="17-069r4",
+        parts=(
+            "If a property timeStamp is included in the response, the value SHALL be set to the time stamp when the response was generated.",
         ),
     ),
     "http://www.opengis.net/spec/ogcapi-features-1/1.0/req/core/http": KnownRequirement(
@@ -2034,12 +2044,20 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
             "If the crs property in the collection object of a spatial feature collection includes a JSON Pointer to the global list of CRS identifiers ( #/crs ), then all CRS identifiers in the global list SHALL be valid for the referencing collection.",
         ),
     ),
-    "http://www.opengis.net/spec/ogcapi-features-2/1.0/req/crs/fc-md-storage": KnownRequirement(
-        uri="http://www.opengis.net/spec/ogcapi-features-2/1.0/req/crs/fc-md-storage",
+    "http://www.opengis.net/spec/ogcapi-features-2/1.0/req/crs/fc-md-storageCrs": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-features-2/1.0/req/crs/fc-md-storageCrs",
         conformance_class="http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
         document="18-058r1",
         parts=(
-            "Crs If all features in a spatial feature collection are stored using a particular CRS then the property storageCrs SHALL be specified in the collection object of the spatial feature collection to indicate the identifier for this storage CRS.",
+            "If all features in a spatial feature collection are stored using a particular CRS then the property storageCrs SHALL be specified in the collection object of the spatial feature collection to indicate the identifier for this storage CRS.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-features-2/1.0/req/crs/fc-md-storageCrs-valid-value": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-features-2/1.0/req/crs/fc-md-storageCrs-valid-value",
+        conformance_class="http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs",
+        document="18-058r1",
+        parts=(
+            "The value of the storageCrs property SHALL be one of the CRS identifiers from the list of supported CRS identifiers found in the collection object using the crs property.",
         ),
     ),
     "http://www.opengis.net/spec/ogcapi-features-2/1.0/req/crs/geojson": KnownRequirement(
@@ -2974,6 +2992,22 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
             "The server SHALL response as per requirement /req/core/process-execute-sync-raw-value-one .",
         ),
     ),
+    "http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/core/job-results-exception/no-such-job": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/core/job-results-exception/no-such-job",
+        conformance_class="http://www.opengis.net/spec/ogcapi-processes-1/1.0/conf/core",
+        document="18-062r2",
+        parts=(
+            "If the operation is executed using an invalid job identifier, the response SHALL have HTTP status code 404. The content of that response SHALL be based upon the OpenAPI 3.0 schema exception.yaml . The type of the exception SHALL be “http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/no-such-job”.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/core/job-results-exception/results-not-ready": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/core/job-results-exception/results-not-ready",
+        conformance_class="http://www.opengis.net/spec/ogcapi-processes-1/1.0/conf/core",
+        document="18-062r2",
+        parts=(
+            "If the operation is executed on a running job with a valid job identifier, the response SHALL have HTTP status code 404. The content of that response SHALL be based upon the OpenAPI 3.0 schema exception.yaml . The type of the exception SHALL be “http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/result-not-ready”.",
+        ),
+    ),
     "http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/core/job-results-failed": KnownRequirement(
         uri="http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/core/job-results-failed",
         conformance_class="http://www.opengis.net/spec/ogcapi-processes-1/1.0/conf/core",
@@ -3043,6 +3077,14 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
         document="18-062r2",
         parts=(
             "The server SHALL support the HTTP GET operation at the path /processes/{processID} .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/core/process-exception/no-such-process": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/core/process-exception/no-such-process",
+        conformance_class="http://www.opengis.net/spec/ogcapi-processes-1/1.0/conf/core",
+        document="18-062r2",
+        parts=(
+            "If the operation is executed using an invalid process identifier, the response SHALL be HTTP status code 404. The content of that response SHALL be based upon the OpenAPI 3.0 schema exception.yaml . The type of the exception SHALL be “http://www.opengis.net/def/exceptions/ogcapi-processes-1/1.0/no-such-process”.",
         ),
     ),
     "http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/core/process-execute-auto-execution-mode": KnownRequirement(
@@ -3323,12 +3365,20 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
             "A 200 -response SHALL include the following links: a link to this response document (relation: self ), a link to the response document in every other media type supported by the service (relation: alternate ).",
         ),
     ),
-    "http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/job-list/process": KnownRequirement(
-        uri="http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/job-list/process",
+    "http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/job-list/processID-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/job-list/processID-definition",
         conformance_class="http://www.opengis.net/spec/ogcapi-processes-1/1.0/conf/job-list",
         document="18-062r2",
         parts=(
-            "ID-mandatory A If the server supports this conformance class, the optional processID property in the statusInfo.yaml schema SHALL be mandatory.",
+            "The operation SHALL support a parameter processID with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: processID in: query required: false schema: type: array items: type: string",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/job-list/processID-mandatory": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/job-list/processID-mandatory",
+        conformance_class="http://www.opengis.net/spec/ogcapi-processes-1/1.0/conf/job-list",
+        document="18-062r2",
+        parts=(
+            "If the server supports this conformance class, the optional processID property in the statusInfo.yaml schema SHALL be mandatory.",
         ),
     ),
     "http://www.opengis.net/spec/ogcapi-processes-1/1.0/req/job-list/processid-response": KnownRequirement(

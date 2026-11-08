@@ -9,20 +9,25 @@ from ogcapi_registry.known_classes import KNOWN_CONFORMANCE_CLASSES
 
 MAPS = "http://www.opengis.net/spec/ogcapi-maps-1/1.0"
 
-#: Requirements under a numbered header in each document, counted on 2026-11-08.
-FLOORS = {
-    "17-069r4": 50,
-    "18-058r1": 15,
+#: Distinct identifiers under a numbered requirement header in each document,
+#: counted on 2026-11-09 with a pattern that accepts any identifier. A header
+#: the parser misses shows up as a difference here.
+HEADERS = {
+    "17-069r4": 51,
+    "18-058r1": 16,
     "19-079r2": 18,
     "20-057": 33,
-    "18-062r2": 78,
-    # 79 under a header; the 26 of Requirements class A.4 have no conformance class.
-    "19-086r6": 53,
+    "18-062r2": 82,
+    "19-086r6": 90,
     "20-058": 63,
     "21-065r2": 41,
     "19-072": 27,
     "23-058r2": 37,
 }
+
+#: Requirements stated in a requirements class that has no conformance class:
+#: Requirements class A.4 of EDR 1.1.
+LEFT_OUT = {"19-086r6": 37}
 
 
 def test_every_requirement_belongs_to_a_known_class():
@@ -41,7 +46,12 @@ def test_every_document_yields_its_requirements():
         requirement.document for requirement in KNOWN_REQUIREMENTS.values()
     )
 
-    assert {document: counts[document] for document in FLOORS} == FLOORS
+    expected = {
+        document: headers - LEFT_OUT.get(document, 0)
+        for document, headers in HEADERS.items()
+    }
+
+    assert {document: counts[document] for document in HEADERS} == expected
 
 
 def test_maps_requirements_meet_their_class_under_http():

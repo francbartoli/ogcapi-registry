@@ -1,6 +1,16 @@
 # CHANGELOG
 
 
+## v0.5.0 (2026-11-08)
+
+### Features
+
+- Catalogue the requirements of each conformance class
+  ([`0091445`](https://github.com/francbartoli/ogcapi-registry/commit/009144570f4b67cdd3dac2cd71c752e60867ed16))
+
+Release the catalogue merged in #14, whose squash title had no type.
+
+
 ## v0.4.0 (2026-09-16)
 
 ### Features

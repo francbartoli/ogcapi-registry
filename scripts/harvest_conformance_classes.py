@@ -23,10 +23,19 @@ to the one doing the citing.
 
 from __future__ import annotations
 
+import dataclasses
 import html
 import re
+import subprocess
+import sys
 import urllib.request
 from pathlib import Path
+
+from ogcapi_registry.requirements_text import (
+    TABLE_END,
+    KnownRequirement,
+    parse_requirements,
+)
 
 #: The published standards this catalogue covers, as OGC document
 #: numbers, with the conformance class prefix each one defines.
@@ -41,22 +50,73 @@ DOCUMENTS: dict[str, tuple[str, str]] = {
     "18-062r2": ("ogcapi-processes-1", "OGC API - Processes - Part 1: Core"),
     "19-086r6": ("ogcapi-edr-1", "OGC API - Environmental Data Retrieval"),
     "20-058": ("ogcapi-maps-1", "OGC API - Maps - Part 1: Core"),
+    "21-065r2": ("cql2", "Common Query Language (CQL2)"),
+    "19-072": ("ogcapi-common-1", "OGC API - Common - Part 1: Core"),
+}
+
+#: Requirements whose identifier names a class the standard does not publish,
+#: with the class whose section states them. Only where the text says
+#: nothing itself: a requirement that names its class keeps it.
+CLASS_OF_REQUIREMENTS: dict[str, dict[str, str]] = {
+    # Tiles, section 13 "Requirements Class Datetime" states rc-datetime-*
+    # and rc-subset-* under /req/collections/.
+    "20-057": {"collections": "datetime"},
+    # CQL2 keeps identifiers of an earlier draft: spatial-predicate is stated
+    # in "Basic Spatial Functions", temporal-predicates in section 7.8
+    # "Temporal Functions".
+    "21-065r2": {
+        "basic-spatial-operators": "basic-spatial-functions",
+        "temporal-operators": "temporal-functions",
+    },
+}
+
+#: Requirements stated in a class's section with no "Included in" line and an
+#: identifier that names no class, keyed by the path after ``/req/``.
+CLASS_OF_REQUIREMENT: dict[str, dict[str, str]] = {
+    "19-086r6": {
+        # Section A.3.1 "Requirements Class Collections": A.15 to A.20 detail
+        # the data_queries object of /req/edr/rc-data-queries (A.14).
+        "edr/rc-common-variables": "collections",
+        "edr/rc-common-query-type": "collections",
+        "edr/rc-radius-variables": "collections",
+        "edr/rc-cube-variables": "collections",
+        "edr/rc-corridor-variables": "collections",
+        "edr/rc-items-variables": "collections",
+        # Section A.4.9 "Requirements for Locations Queries", listed by
+        # Requirements class A.3 "Queries" as A.33.
+        "edr/rc-locations": "queries",
+    },
+}
+
+#: Requirements classes a standard states with no conformance class of their
+#: own. A server cannot declare them, so their requirements stay out of the
+#: catalogue; each run lists them.
+CLASSES_WITHOUT_CONFORMANCE: dict[str, dict[str, str]] = {
+    "19-086r6": {
+        "query_parameters": (
+            "EDR 1.1 states the query parameters in Requirements class A.4, "
+            "which no conformance class publishes"
+        ),
+    },
 }
 
 CONFORMANCE_URI = re.compile(
-    r"https?://www\.opengis\.net/spec/(ogcapi-[a-z]+-\d+)/(\d+\.\d+)/conf/"
+    r"https?://www\.opengis\.net/spec/([a-z][a-z0-9-]*[a-z0-9])/(\d+\.\d+)/conf/"
     r"([a-z0-9][a-z0-9-]*)(?![a-z0-9/-])"
 )
 
 
 def text_of(document: str, cache: Path) -> str:
-    """The standard's HTML, stripped to text, fetched once."""
+    """The standard's HTML, stripped to text, fetched once.
+
+    Each closing table tag becomes ``TABLE_END``, where a requirement ends.
+    """
     local = cache / f"{document}.html"
     if not local.exists():
         url = f"https://docs.ogc.org/is/{document}/{document}.html"
         with urllib.request.urlopen(url) as response:  # noqa: S310 - fixed host
             local.write_bytes(response.read())
-    raw = local.read_text(errors="ignore")
+    raw = local.read_text(errors="ignore").replace("</table>", f" {TABLE_END} ")
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", raw)))
 
 
@@ -72,6 +132,95 @@ def harvest(cache: Path) -> dict[str, tuple[str, str, str, str]]:
             uri = f"http://www.opengis.net/spec/{spec}/{version}/conf/{name}"
             catalogue.setdefault(uri, (spec, version, name, document))
     return catalogue
+
+
+def harvest_requirements(
+    cache: Path, catalogue: dict[str, tuple[str, str, str, str]]
+) -> dict[str, KnownRequirement]:
+    """Map each requirement URI to the requirement, from every document.
+
+    A document's requirements take the version of the classes harvested from
+    it: EDR's 19-086r6 writes 1.1.
+    """
+    requirements: dict[str, KnownRequirement] = {}
+    for document, (prefix, _title) in DOCUMENTS.items():
+        versions = {v for _, (_, v, _, d) in catalogue.items() if d == document}
+        if len(versions) != 1:
+            sys.exit(f"{document}: expected one version, found {sorted(versions)}")
+        (version,) = versions
+        for requirement in parse_requirements(
+            text_of(document, cache), prefix, version, document
+        ):
+            name = requirement.conformance_class.rsplit("/conf/", 1)[1]
+            reason = CLASSES_WITHOUT_CONFORMANCE.get(document, {}).get(name)
+            if reason is not None:
+                print(f"left out {requirement.uri}: {reason}")
+                continue
+            path = requirement.uri.split("/req/", 1)[1]
+            renamed = CLASS_OF_REQUIREMENT.get(document, {}).get(path)
+            if renamed is None:
+                renamed = CLASS_OF_REQUIREMENTS.get(document, {}).get(name)
+            if renamed is not None:
+                requirement = dataclasses.replace(
+                    requirement,
+                    conformance_class=requirement.conformance_class.replace(
+                        f"/conf/{name}", f"/conf/{renamed}"
+                    ),
+                )
+            requirements.setdefault(requirement.uri, requirement)
+    return requirements
+
+
+def render_requirements(requirements: dict[str, KnownRequirement]) -> str:
+    """The generated module of requirements, ordered so a diff stays readable."""
+    lines = [
+        '"""Requirements the OGC API standards attach to their conformance classes.',
+        "",
+        "GENERATED by scripts/harvest_conformance_classes.py — do not edit by",
+        "hand. Each requirement records the OGC document it was read from and",
+        "the conformance class whose requirements class states it.",
+        '"""',
+        "",
+        "from __future__ import annotations",
+        "",
+        "from .requirements_text import KnownRequirement",
+        "",
+        "KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {",
+    ]
+    for uri, requirement in sorted(requirements.items()):
+        lines.append(f"    {uri!r}: KnownRequirement(")
+        lines.append(f"        uri={uri!r},")
+        lines.append(f"        conformance_class={requirement.conformance_class!r},")
+        lines.append(f"        document={requirement.document!r},")
+        lines.append("        parts=(")
+        lines += [f"            {part!r}," for part in requirement.parts]
+        lines.append("        ),")
+        lines.append("    ),")
+    lines += [
+        "}",
+        "",
+        "",
+        "def list_requirements(conformance_class: str) -> tuple[KnownRequirement, ...]:",
+        '    """List the requirements a conformance class carries, in URI order.',
+        "",
+        "    Parameters",
+        "    ----------",
+        "    conformance_class",
+        "        The URI of the conformance class, with ``http://``.",
+        "",
+        "    Returns",
+        "    -------",
+        "    tuple of KnownRequirement",
+        "        Its requirements; empty for a class the catalogue does not know.",
+        '    """',
+        "    return tuple(",
+        "        requirement",
+        "        for requirement in KNOWN_REQUIREMENTS.values()",
+        "        if requirement.conformance_class == conformance_class",
+        "    )",
+        "",
+    ]
+    return "\n".join(lines)
 
 
 def render(catalogue: dict[str, tuple[str, str, str, str]]) -> str:
@@ -138,6 +287,20 @@ def main() -> None:
     target = Path("src/ogcapi_registry/known_classes.py")
     target.write_text(render(catalogue))
     print(f"{len(catalogue)} classes from {len(DOCUMENTS)} documents -> {target}")
+    requirements = harvest_requirements(cache, catalogue)
+    orphans = sorted(
+        uri
+        for uri, requirement in requirements.items()
+        if requirement.conformance_class not in catalogue
+    )
+    if orphans:
+        sys.exit(
+            "requirements without a known conformance class:\n" + "\n".join(orphans)
+        )
+    target = Path("src/ogcapi_registry/known_requirements.py")
+    target.write_text(render_requirements(requirements))
+    subprocess.run([sys.executable, "-m", "ruff", "format", str(target)], check=True)  # noqa: S603 - fixed arguments
+    print(f"{len(requirements)} requirements -> {target}")
 
 
 if __name__ == "__main__":

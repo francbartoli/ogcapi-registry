@@ -73,6 +73,10 @@ CLASS_OF_REQUIREMENTS: dict[str, dict[str, str]] = {
         "basic-spatial-operators": "basic-spatial-functions",
         "temporal-operators": "temporal-functions",
     },
+    # EDR 1.1 states its query parameters in Requirements class A.4, which no
+    # conformance class publishes; conformance class B.9 "Queries" holds their
+    # abstract tests, such as B.47 /conf/edr/rc-z-definition-position.
+    "19-086r6": {"query_parameters": "queries"},
 }
 
 #: Requirements stated in a class's section with no "Included in" line and an
@@ -96,14 +100,7 @@ CLASS_OF_REQUIREMENT: dict[str, dict[str, str]] = {
 #: Requirements classes a standard states with no conformance class of their
 #: own. A server cannot declare them, so their requirements stay out of the
 #: catalogue; each run lists them.
-CLASSES_WITHOUT_CONFORMANCE: dict[str, dict[str, str]] = {
-    "19-086r6": {
-        "query_parameters": (
-            "EDR 1.1 states the query parameters in Requirements class A.4, "
-            "which no conformance class publishes"
-        ),
-    },
-}
+CLASSES_WITHOUT_CONFORMANCE: dict[str, dict[str, str]] = {}
 
 CONFORMANCE_URI = re.compile(
     r"https?://www\.opengis\.net/spec/([a-z][a-z0-9-]*[a-z0-9])/(\d+\.\d+)/conf/"

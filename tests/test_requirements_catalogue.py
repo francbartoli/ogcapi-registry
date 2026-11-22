@@ -25,9 +25,10 @@ HEADERS = {
     "23-058r2": 37,
 }
 
-#: Requirements stated in a requirements class that has no conformance class:
-#: Requirements class A.4 of EDR 1.1.
-LEFT_OUT = {"19-086r6": 37}
+#: Requirements stated in a requirements class that has no conformance class.
+LEFT_OUT: dict[str, int] = {}
+
+EDR_11 = "http://www.opengis.net/spec/ogcapi-edr-1/1.1"
 
 
 def test_every_requirement_belongs_to_a_known_class():
@@ -94,3 +95,16 @@ def test_common_part_3_is_catalogued():
     assert KNOWN_CONFORMANCE_CLASSES[schemas].document == "23-058r2"
     assert len(list_requirements(schemas)) == 9
     assert len(list_requirements(roles)) == 7
+
+
+def test_edr_11_query_parameters_belong_to_queries():
+    uris = {r.uri for r in list_requirements(f"{EDR_11}/conf/queries")}
+
+    assert len(uris) == 49
+    assert {
+        f"{EDR_11}/req/edr/z-definition",
+        f"{EDR_11}/req/edr/coords-definition",
+        f"{EDR_11}/req/core/datetime-definition",
+        f"{EDR_11}/req/edr/resolution-x-definition",
+        f"{EDR_11}/req/queries/position",
+    } <= uris

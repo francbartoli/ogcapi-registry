@@ -1,10 +1,16 @@
 """Base classes and protocols for validation strategies."""
 
+import re
 from abc import ABC, abstractmethod
 from typing import Any, ClassVar
 
 from ..models import ErrorSeverity, ValidationResult
 from ..ogc_types import ConformanceClass, OGCAPIType, OGCSpecificationKey
+
+
+#: The suffix of a parameter file a remote reference points at, such as
+#: ``.../parameters/z.yaml``.
+_REMOTE_FILE_SUFFIX = re.compile(r"\.(?:ya?ml|json)$")
 
 
 class ValidationStrategy(ABC):
@@ -320,6 +326,49 @@ class ValidationStrategy(ABC):
                         )
 
         return errors
+
+    @staticmethod
+    def _parameter_names(
+        parameters: list[Any],
+        document: dict[str, Any],
+    ) -> set[str]:
+        """The names of an operation's parameters, references included.
+
+        A `$ref` carries no `name`, and a document is free to declare
+        every parameter that way: pygeoapi declares `crs` as
+        `#/components/parameters/crs`. Reading only `name` makes a
+        document that declares the parameter correctly look as if it had
+        not. Local references are resolved. A remote one gives its last
+        segment without a ``.yaml`` or ``.json`` suffix, which in the OGC
+        documents is the component name or the name of the parameter file.
+        """
+        names: set[str] = set()
+        for parameter in parameters:
+            if not isinstance(parameter, dict):
+                continue
+            if "name" in parameter:
+                names.add(parameter["name"])
+                continue
+
+            ref = parameter.get("$ref", "")
+            if not ref:
+                continue
+
+            target: Any = None
+            if ref.startswith("#/"):
+                target = document
+                for segment in ref[2:].split("/"):
+                    if not isinstance(target, dict):
+                        target = None
+                        break
+                    target = target.get(segment)
+
+            if isinstance(target, dict) and "name" in target:
+                names.add(target["name"])
+            else:
+                names.add(_REMOTE_FILE_SUFFIX.sub("", ref.rsplit("/", 1)[-1]))
+
+        return names
 
     @staticmethod
     def _path_matches_pattern(path: str, pattern: str) -> bool:

@@ -286,49 +286,6 @@ class FeaturesStrategy(ValidationStrategy):
         """
         return path.endswith("/items") or "/items/" in path
 
-    @staticmethod
-    def _parameter_names(
-        parameters: list[Any],
-        document: dict[str, Any],
-    ) -> set[str]:
-        """The names of an operation's parameters, references included.
-
-        A `$ref` carries no `name`, and a document is free to declare
-        every parameter that way: pygeoapi declares `crs` as
-        `#/components/parameters/crs`. Reading only `name` makes a
-        document that declares the parameter correctly look as if it had
-        not. Local references are resolved; for a remote one the last
-        fragment segment is used, which is the component name and matches
-        the parameter name in the OGC documents.
-        """
-        names: set[str] = set()
-        for parameter in parameters:
-            if not isinstance(parameter, dict):
-                continue
-            if "name" in parameter:
-                names.add(parameter["name"])
-                continue
-
-            ref = parameter.get("$ref", "")
-            if not ref:
-                continue
-
-            target: Any = None
-            if ref.startswith("#/"):
-                target = document
-                for segment in ref[2:].split("/"):
-                    if not isinstance(target, dict):
-                        target = None
-                        break
-                    target = target.get(segment)
-
-            if isinstance(target, dict) and "name" in target:
-                names.add(target["name"])
-            else:
-                names.add(ref.rsplit("/", 1)[-1])
-
-        return names
-
     def _validate_filter_support(
         self, document: dict[str, Any]
     ) -> list[dict[str, Any]]:

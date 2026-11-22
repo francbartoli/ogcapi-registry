@@ -45,6 +45,25 @@ class TestCatalogue:
         specs = {known.spec for known in KNOWN_CONFORMANCE_CLASSES.values()}
         assert "ogcapi-maps-1" in specs
 
+    def test_edr_10_is_read_from_its_own_document(self):
+        """EDR 1.0.1 and 1.1 are two documents with their own URIs."""
+        names = (
+            "core",
+            "collections",
+            "queries",
+            "json",
+            "geojson",
+            "edr-geojson",
+            "covjson",
+            "html",
+            "oas30",
+        )
+
+        for name in names:
+            uri = f"http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/{name}"
+            assert KNOWN_CONFORMANCE_CLASSES[uri].document == "19-086r5"
+        assert {"19-086r5", "19-086r6"} <= set(SOURCE_DOCUMENTS)
+
     def test_classes_are_attributed_to_the_standard_that_defines_them(self):
         """Tiles cites Common; those classes belong to Common."""
         for uri, known in KNOWN_CONFORMANCE_CLASSES.items():

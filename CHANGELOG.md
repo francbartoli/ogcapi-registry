@@ -1,6 +1,22 @@
 # CHANGELOG
 
 
+## v0.7.0 (2026-11-22)
+
+### Bug Fixes
+
+- Attribute the EDR 1.1 query parameters to the queries class
+  ([`7492b32`](https://github.com/francbartoli/ogcapi-registry/commit/7492b3293895bbe6f3b50d8dab627a1614c21616))
+
+- Check EDR query parameters on the paths a server publishes
+  ([`e46285e`](https://github.com/francbartoli/ogcapi-registry/commit/e46285e21439f29e8943c7f7d5eb1d1fd78ab581))
+
+### Features
+
+- Catalogue OGC API EDR 1.0.1 from 19-086r5
+  ([`13e40d0`](https://github.com/francbartoli/ogcapi-registry/commit/13e40d0edfd814d4e86e537fd12626ef7194b2cd))
+
+
 ## v0.6.1 (2026-11-08)
 
 ### Bug Fixes

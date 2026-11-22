@@ -1027,6 +1027,27 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
             "Unless the client explicitly requests a different coordinate reference system, all spatial geometries SHALL be in the CRS defined by the spatial element of the extent section in the collection response.",
         ),
     ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/core/datetime-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/core/datetime-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "The datetime parameter SHALL have the following characteristics (using an OpenAPI Specification 3.0 fragment): name: datetime in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/core/datetime-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/core/datetime-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the datetime parameter is provided, only resources that have a temporal geometry that intersects the temporal information in the datetime parameter SHALL be part of the result set.",
+            "If a resource has multiple temporal properties, the API implementor decides whether only a single temporal property is used to determine the extent or all relevant temporal properties.",
+            "The datetime parameter SHALL match all resources in the collection that are not associated with a temporal geometry.",
+            'The temporal information is either a date-time or a time interval. The parameter value SHALL conform to the following syntax (using ABNF ): interval - closed = date - time "/" date - time interval - open - start = "../" date - time interval - open - end = date - time "/.." interval = interval - closed / interval - open - start / interval - open - end datetime = date - time / interval',
+            "The syntax of date-time is specified by RFC 3339, 5.6 .",
+            "Open ranges in time intervals at the start or end SHALL be supported using a double-dot ( .. ).",
+        ),
+    ),
     "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/core/http": KnownRequirement(
         uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/core/http",
         conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/core",
@@ -1034,6 +1055,29 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
         parts=(
             "The API SHALL conform to HTTP 1.1 .",
             "If the API supports HTTPS, then the API SHALL also conform to HTTP over TLS .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/core/rc-bbox-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/core/rc-bbox-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "The operation SHALL support a parameter bbox with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: bbox in: query required: false schema: oneOf: - items: minItems: 4 maxItems: 4 type: number type: array - items: minItems: 6 maxItems: 6 type: number type: array style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/core/rc-bbox-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/core/rc-bbox-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Only features that have a spatial geometry that intersects the bounding box SHALL be part of the result set, if the bbox parameter is provided.",
+            "If a feature has multiple spatial geometry properties, it is the decision of the server whether only a single spatial geometry property is used to determine the extent or all relevant geometries.",
+            "The bbox parameter SHALL match all features in the collection that are not associated with a spatial geometry, too.",
+            "The bounding box is provided as four or six numbers, depending on whether the coordinate reference system includes a vertical axis (height or depth): Lower left corner, coordinate axis 1 Lower left corner, coordinate axis 2 Minimum value, coordinate axis 3 (optional) Upper right corner, coordinate axis 1 Upper right corner, coordinate axis 2 Maximum value, coordinate axis 3 (optional)",
+            "The bounding box SHALL consist of four or six numbers, depending on whether the coordinate reference system includes a vertical axis (height or depth) and the coordinate reference system of the values SHALL be interpreted as the coordinate reference system that is specified in a parameter crs .",
+            "If the crs query parameter is not defined, the bounding box SHALL consist of four or six numbers, depending on whether the coordinate reference system includes a vertical axis (height or depth) and the coordinate reference system of the values SHALL be interpreted as the default coordinate reference system specified for the query type.",
+            "If the crs query parameter is not defined and a default crs is not defined for the query, the bounding box SHALL consist of four numbers and the coordinate reference system of the values SHALL be in the CRS defined by the spatial element of the extent section in the collection response.",
+            "The coordinate values SHALL be within the extent specified for the coordinate reference system.",
         ),
     ),
     "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/core/rc-collection-info-links": KnownRequirement(
@@ -1112,6 +1156,207 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
         document="19-086r6",
         parts=(
             "200 -responses of the server SHALL support the following media types: application/geo+json for resources that include feature content, and application/json for all other resources.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-corridor-height-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-corridor-height-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation SHALL support a parameter corridor-height with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: corridor-height in: query required: true schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-corridor-height-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-corridor-height-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the corridor-height parameter is defined the result set SHALL contain values derived from the chosen interpolation algorithm at the number of specified intervals. corridor - height = height",
+            "The height of the corridor parameter is the total height of the required corridor.",
+            "The coordinates of the coords parameter define the center point of the corridor.",
+            "If an unsupported units value is requested, an HTTP 400 error should be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-corridor-width-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-corridor-width-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "The corridor-width information SHALL be the total width of the required corridor.",
+            "The supported corridor-width width units SHALL be supplied by the query metadata information. corridor - width = width",
+            "If the width value SHALL be the total width of the corridor.",
+            "The coordinates of the coords parameter SHALL define the center point of the corridor.",
+            "If an unsupported units value is requested, an HTTP 400 error SHOULD be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-crs-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-crs-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation SHALL support a parameter crs with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: crs in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-crs-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-crs-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the crs parameter is provided, the returned information should be reprojected (if required) to the defined coordinate system. If the crs parameter is not specified the data SHALL be returned in the coordinate reference system defined by the spatial element of the extent section in the collection.",
+            "The crs parameter SHALL consist of an identifier selected from the enumerated list of valid values supplied in the collections metadata.",
+            "If an unsupported crs value is requested a 400 error message SHOULD be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-f-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-f-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the f parameter is provided, the returned information should be transformed to the defined data format.",
+            "The f parameter SHALL consist of a string value based on an enumerated list of available options provided in the collections metadata.",
+            "If f value is not defined the returned data should be in the default format specified by the default_output_format attribute of the collections metadata response. If a default_output_format attribute is not specified, the data return SHOULD be in the native format of the source datastore.",
+            "If an unsupported f value is requested a 400 error message should be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-height-units-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-height-units-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each corridor resource collection operation SHALL support a parameter height-units with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: height-units in: query required: true schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-parameter-name-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-parameter-name-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation SHALL support a parameter parameter-name with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: parameter-name in: query required: false explode: false schema: minItems: 1 type: array items: type: string",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-width-units-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-width-units-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each corridor resource collection operation SHALL support a parameter width-units with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: width-units in: query required: true schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-within-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-within-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the within parameter is provided, all selected information within the specified radius SHALL be part of the result set.",
+            "If a within-units parameter is not provided, a 400 error WILL be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-within-units-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/REQ_rc-within-units-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "The within-units parameter defines the distance units of the within query parameter value.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/coords-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/coords-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each geometry based resource (Position, Radius, Area, Trajectory, Corridor) collection operation SHALL support a parameter coords with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: coords in: query required: true schema: type: string style: form explode: false",
+            "The coords string value will be a Well Known Text representation of geometry as defined in Simple Feature Access — Part 1: Common Architecture . The representation type will depend on the queryType of the API",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/corridor-width-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/corridor-width-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation SHALL support a parameter corridor-width with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: corridor-width in: query required: true schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/cube-z-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/cube-z-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the z parameter is provided, only resources that have a vertical geometry that intersects the vertical information in the z parameter SHALL be part of the result set.",
+            "The z can be defined as a height range by specifying a min-level and max-level separated by a forward slash “/”",
+            "A list of z can be defined by specifying a comma delimited list of values level1, level2, level3 etc",
+            "An Arithmetic sequence using Recurring height intervals can be specified by R number of intervals / min height / height interval",
+            "If the z parameter is not provided, the server SHOULD return data at all available vertical levels",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/custom-dimension-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/custom-dimension-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation MAY support custom parameters with the following characteristics (using an OpenAPI Specification 3.0 fragment): in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/custom-dimension-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/custom-dimension-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If a custom parameter is provided, only resources that have values that are valid for the range defined in the custom query parameter SHALL be part of the result set.",
+            "The custom query parameter can be defined as a value range by specifying a min-value and max-value separated by a forward slash “/”",
+            "A list of query values can be defined be specifying a comma delimited list of values value1, value2, value3 etc",
+            "An Arithmetic sequence using Recurring value intervals can be specified by R number of intervals / min value / value interval",
+            "If a custom dimension is defined in the collections response but not included in the query request all valid values should be returned with no subsetting by the custom dimension .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/height-units-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/height-units-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the height-units parameter is defined the result set SHALL contain values derived based on the chosen units. height - units = units",
+            "If an unsupported units value is requested, an HTTP 400 error should be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/linestring-coords-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/linestring-coords-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Only those resources that are representative of the requested geometry that is defined by the coords parameter SHALL be part of the result set.",
+            "The coordinates SHALL consist of a Well Known Text (WKT) LINESTRING or (if supported by the collection) MULTILINESTRING geometry string.",
+            "If an unsupported Well Known Text (WKT) geometry is requested a 400 error SHOULD be returned.",
+            'The coordinate reference system of the values SHALL be interpreted as WGS84 longitude/latitude WKT: GEOGCS["WGS 84", DATUM["WGS_1984", SPHEROID["WGS 84", 6378137, 298.257223563, AUTHORITY["EPSG", "7030"]], AUTHORITY["EPSG", "6326"]], PRIMEM["Greenwich", 0 , AUTHORITY["EPSG", "8901"]], UNIT["degree", 0.01745329251994328, AUTHORITY["EPSG", "9122"]], AUTHORITY["EPSG", "4326"]] Figure A.5 unless a different coordinate reference system is specified in a parameter crs .',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/parameter-name-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/parameter-name-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the parameter-name parameter is provided, only those parameters named SHALL be returned. If the parameter-name parameter is not specified all parameters in the collection SHALL be returned.",
+            "The parameter-name parameter SHALL consist of a comma delimited string value based on an enumerated list of options listed in the collections metadata.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/point-coords-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/point-coords-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Only those resources that are representative of the requested geometry that is defined by the coords parameter SHALL be part of the result set.",
+            "The coordinates SHALL consist of a Well Known Text (WKT) POINT or (if supported by the collection) MULTIPOINT geometry string.",
+            "If an unsupported Well Known Text (WKT) geometry is requested a 400 error SHOULD be returned.",
+            'The coordinate reference system of the values SHALL be interpreted as WGS84 longitude/latitude WKT: GEOGCS["WGS 84", DATUM["WGS_1984", SPHEROID["WGS 84", 6378137, 298.257223563, AUTHORITY["EPSG", "7030"]], AUTHORITY["EPSG", "6326"]], PRIMEM["Greenwich", 0 , AUTHORITY["EPSG", "8901"]], UNIT["degree", 0.01745329251994328, AUTHORITY["EPSG", "9122"]], AUTHORITY["EPSG", "4326"]] Figure A.3 unless a different coordinate reference system is specified in a parameter crs .',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/polygon-coords-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/polygon-coords-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Only those resources that are representative of the requested geometry that is defined by the coords parameter SHALL be part of the result set.",
+            "The coordinates SHALL consist of a Well Known Text (WKT) POLYGON or (if supported by the collection) MULTIPOLYGON geometry string.",
+            "If an unsupported Well Known Text (WKT) geometry is requested a 400 error SHOULD be returned.",
+            'The coordinate reference system of the values SHALL be interpreted as WGS84 longitude/latitude WKT: GEOGCS["WGS 84", DATUM["WGS_1984", SPHEROID["WGS 84", 6378137, 298.257223563, AUTHORITY["EPSG", "7030"]], AUTHORITY["EPSG", "6326"]], PRIMEM["Greenwich", 0 , AUTHORITY["EPSG", "8901"]], UNIT["degree", 0.01745329251994328, AUTHORITY["EPSG", "9122"]], AUTHORITY["EPSG", "4326"]] Figure A.4 unless a different coordinate reference system is specified in a parameter crs .',
         ),
     ),
     "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/rc-area": KnownRequirement(
@@ -1258,6 +1503,14 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
             "All query types defined in the data_queries object SHALL comply with the requirement /req/edr/rc-common-query-type",
         ),
     ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/rc-f-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/rc-f-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation SHALL support a parameter f with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: f in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
     "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/rc-items": KnownRequirement(
         uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/rc-items",
         conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
@@ -1331,6 +1584,108 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
             "A trajectory GET or POST operation MAY include a datetime query parameter",
             "A trajectory GET or POST operation SHOULD include a crs query parameter",
             "A trajectory GET or POST operation SHOULD include an f query parameter",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-x-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-x-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation MAY support a parameter resolution-x with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: resolution-x in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-x-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-x-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the resolution-x parameter is provided, it denotes the number of positions to retrieve data for, across the width of the corridor path, including its minimum and maximum width coordinates. Figure A.15 — interpolated corridor example",
+            "A resolution-x value of 0 SHALL return all available data at the stored resolution between (and including) the minimum and maximum coordinates of the defined corridor. Figure A.16 — native resolution corridor example",
+            "If resolution-x is not specified, the API SHOULD return all available data at a resolution determined by the server, including the minimum and maximum coordinates of the defined corridor. resolution-x = number of intervals + 1",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-y-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-y-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation MAY support a parameter resolution-y with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: resolution-y in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-y-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-y-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the resolution-y parameter is provided, denotes the number of intervals to retrieve data for along the path between the minimum and maximum y coordinates",
+            "The total number of intervals includes the values for the minimum and maximum coordinates",
+            "A resolution-y value of 0 SHALL return all available data at the native y resolution between the minimum and maximum coordinates",
+            "IF resolution-y is not specified, data should be returned for just the locations specified in the requested coordinates ( ONLY IF interpolation is supported by the API) resolution-y = number of intervals",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-z-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-z-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation MAY support a parameter resolution-z with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: resolution-z in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-z-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/resolution-z-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the resolution-z parameter is provided, it denotes the number of positions to retrieve data for, over the depth of the corridor path including its minimum and maximum width coordinates. Figure A.21 — interpolated corridor example",
+            "A resolution-z value of 0 SHALL return all available data at the stored vertical resolution between (and including) the minimum and maximum coordinates of the defined corridor. Figure A.22 — native resolution corridor example",
+            "If resolution-z is not specified the API SHOULD return all available data at a resolution determined by the server, including the minimum and maximum coordinates of the defined corridor. resolution-z = number of intervals + 1",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/width-units-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/width-units-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the width-units parameter is defined the result set SHALL contain values derived based on the chosen units. width - units = units",
+            "If an unsupported units value is requested a 400 error should be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/within-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/within-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation MAY support a parameter within with the following characteristics (using an OpenAPI Specification 3.0 fragment):",
+            "If the instance metadata does not provide within-units values the API SHALL NOT support within queries: name: within in: query required: true schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/within-units-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/within-units-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation MAY support a parameter within-units with the following characteristics (using an OpenAPI Specification 3.0 fragment):",
+            "A within-units value SHALL be one of the values defined in the instance metadata: name: within-units in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/z-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/z-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "Each resource collection operation MAY support a parameter z with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: z in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/z-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/edr/z-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/queries",
+        document="19-086r6",
+        parts=(
+            "If the z parameter is provided, only resources that have a vertical geometry that intersects the vertical information in the z parameter SHALL be part of the result set.",
+            "The z can be defined as a height range by specifying a min-level and max-level separated by a forward slash “/”",
+            "A list of z can be defined be specifying a comma delimited list of values level1, level2, level3 etc",
+            "An Arithmetic sequence using Recurring height intervals can be specified by R number of intervals / min height / height interval",
+            "If the z parameter is not provided, the server SHOULD return data at all available vertical levels",
         ),
     ),
     "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/geojson/content": KnownRequirement(

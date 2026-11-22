@@ -6,6 +6,7 @@ from ogcapi_registry.ogc_types import ConformanceClass, OGCAPIType
 from ogcapi_registry.strategies import (
     CommonStrategy,
     CompositeValidationStrategy,
+    EDRStrategy,
     FeaturesStrategy,
     ProcessesStrategy,
     TilesStrategy,
@@ -395,3 +396,191 @@ class TestPathMatching:
     def test_no_match(self, strategy):
         """Test non-matching paths."""
         assert not strategy._path_matches_pattern("/other/path", "/collections")
+
+
+EDR = "http://www.opengis.net/spec/ogcapi-edr-1"
+
+
+def _edr_classes(*versions):
+    return [
+        ConformanceClass(uri=f"{EDR}/{version}/conf/{name}")
+        for version in versions
+        for name in ("core", "collections", "queries")
+    ]
+
+
+def _edr_document(paths, components=None):
+    every = {"/": [], "/conformance": [], "/collections": [], **paths}
+    document = {
+        "paths": {
+            path: {"get": {"parameters": parameters, "responses": {"200": {}}}}
+            for path, parameters in every.items()
+        }
+    }
+    if components:
+        document["components"] = {"parameters": components}
+    return document
+
+
+def _query(*names):
+    return [{"name": name, "in": "query"} for name in names]
+
+
+SHOULD = ("parameter-name", "crs", "f")
+
+
+class TestEDRStrategy:
+    """The query parameters EDR asks of the query paths a server publishes."""
+
+    @pytest.fixture
+    def strategy(self):
+        return EDRStrategy()
+
+    def test_a_position_path_without_coords_is_an_error(self, strategy):
+        document = _edr_document(
+            {"/collections/{collectionId}/position": _query(*SHOULD)}
+        )
+
+        result = strategy.validate(document, _edr_classes("1.1"))
+
+        assert [(e["severity"], e["conformance_class"]) for e in result.errors] == [
+            ("critical", f"{EDR}/1.1/conf/queries")
+        ]
+        assert "coords" in result.errors[0]["message"]
+
+    def test_a_cube_path_needs_bbox_and_z(self, strategy):
+        document = _edr_document({"/collections/{collectionId}/cube": _query(*SHOULD)})
+
+        result = strategy.validate(document, _edr_classes("1.1"))
+
+        messages = [e["message"] for e in result.errors]
+        assert len(messages) == 2
+        assert any("'bbox'" in m for m in messages)
+        assert any("'z'" in m for m in messages)
+
+    def test_a_missing_crs_or_f_is_a_warning(self, strategy):
+        document = _edr_document(
+            {"/collections/{collectionId}/position": _query("coords")}
+        )
+
+        result = strategy.validate(document, _edr_classes("1.1"))
+
+        assert result.errors == ()
+        warned = " ".join(w["message"] for w in result.warnings)
+        assert all(f"'{name}'" in warned for name in SHOULD)
+
+    def test_each_declared_version_is_reported(self, strategy):
+        document = _edr_document(
+            {"/collections/{collectionId}/position": _query(*SHOULD)}
+        )
+
+        result = strategy.validate(document, _edr_classes("1.0", "1.1"))
+
+        assert sorted(e["conformance_class"] for e in result.errors) == [
+            f"{EDR}/1.0/conf/queries",
+            f"{EDR}/1.1/conf/queries",
+        ]
+
+    def test_a_parameter_by_reference_counts(self, strategy):
+        document = _edr_document(
+            {
+                "/collections/{collectionId}/position": [
+                    {"$ref": "#/components/parameters/coords"},
+                    *_query(*SHOULD),
+                ]
+            },
+            components={"coords": {"name": "coords", "in": "query"}},
+        )
+
+        result = strategy.validate(document, _edr_classes("1.1"))
+
+        assert result.errors == ()
+
+    def test_a_literal_collection_id_is_a_query_path(self, strategy):
+        document = _edr_document({"/collections/lakes/area": _query(*SHOULD)})
+
+        result = strategy.validate(document, _edr_classes("1.1"))
+
+        assert len(result.errors) == 1
+        assert "coords" in result.errors[0]["message"]
+
+    def test_an_instance_query_path_is_checked(self, strategy):
+        path = "/collections/{collectionId}/instances/{instanceId}/cube"
+        document = _edr_document({path: _query("bbox", *SHOULD)})
+
+        result = strategy.validate(document, _edr_classes("1.1"))
+
+        assert len(result.errors) == 1
+        assert "'z'" in result.errors[0]["message"]
+
+    def test_a_collection_named_after_a_query_is_not_a_query_path(self, strategy):
+        document = _edr_document({"/collections/gps-position/items": []})
+
+        assert strategy.list_query_paths(document) == {
+            "items": ["/collections/gps-position/items"]
+        }
+
+    def test_queries_without_any_query_path_is_an_error(self, strategy):
+        document = _edr_document({})
+
+        result = strategy.validate(document, _edr_classes("1.1"))
+
+        assert len(result.errors) == 1
+        assert result.errors[0]["severity"] == "critical"
+        assert "/req/edr/rc-data-queries" in result.errors[0]["message"]
+
+    def test_a_query_type_not_offered_is_not_required(self, strategy):
+        document = _edr_document(
+            {"/collections/{collectionId}/position": _query("coords", *SHOULD)}
+        )
+
+        result = strategy.validate(document, _edr_classes("1.1"))
+
+        reported = " ".join(e["message"] for e in (*result.errors, *result.warnings))
+        assert "area" not in reported
+        assert "cube" not in reported
+
+    def test_pygeoapi_remote_references_count(self, strategy):
+        """pygeoapi points at the parameter files of the EDR schemas."""
+        oaedr = "https://schemas.opengis.net/ogcapi/edr/1.0/openapi"
+        document = _edr_document(
+            {
+                "/collections/lakes/position": [
+                    {"$ref": f"{oaedr}/parameters/positionCoords.yaml"},
+                    {"$ref": f"{oaedr}/parameters/parameter-name.yaml"},
+                    {"$ref": f"{oaedr}/parameters/z.yaml"},
+                    {"$ref": "#/components/parameters/crs"},
+                    {"$ref": "#/components/parameters/f"},
+                ]
+            },
+            components={
+                "crs": {"name": "crs", "in": "query"},
+                "f": {"name": "f", "in": "query"},
+            },
+        )
+
+        result = strategy.validate(document, _edr_classes("1.1"))
+
+        assert (result.errors, result.warnings) == ((), ())
+
+    def test_parameters_of_the_path_item_count(self, strategy):
+        """An operation inherits the parameters of its path item."""
+        document = _edr_document({"/collections/{collectionId}/area": _query(*SHOULD)})
+        document["paths"]["/collections/{collectionId}/area"]["parameters"] = _query(
+            "coords"
+        )
+
+        result = strategy.validate(document, _edr_classes("1.1"))
+
+        assert result.errors == ()
+
+    def test_a_query_offered_by_post_only_is_not_checked_as_get(self, strategy):
+        """EDR 1.1 lets a server offer a query by POST alone."""
+        document = _edr_document({})
+        document["paths"]["/collections/{collectionId}/cube"] = {
+            "post": {"responses": {"200": {}}}
+        }
+
+        result = strategy.validate(document, _edr_classes("1.1"))
+
+        assert result.errors == ()

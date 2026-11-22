@@ -48,7 +48,8 @@ DOCUMENTS: dict[str, tuple[str, str]] = {
     "19-079r2": ("ogcapi-features-3", "OGC API - Features - Part 3: Filtering"),
     "20-057": ("ogcapi-tiles-1", "OGC API - Tiles - Part 1: Core"),
     "18-062r2": ("ogcapi-processes-1", "OGC API - Processes - Part 1: Core"),
-    "19-086r6": ("ogcapi-edr-1", "OGC API - Environmental Data Retrieval"),
+    "19-086r5": ("ogcapi-edr-1", "OGC API - Environmental Data Retrieval 1.0.1"),
+    "19-086r6": ("ogcapi-edr-1", "OGC API - Environmental Data Retrieval 1.1"),
     "20-058": ("ogcapi-maps-1", "OGC API - Maps - Part 1: Core"),
     "21-065r2": ("cql2", "Common Query Language (CQL2)"),
     "19-072": ("ogcapi-common-1", "OGC API - Common - Part 1: Core"),
@@ -102,6 +103,28 @@ CLASS_OF_REQUIREMENT: dict[str, dict[str, str]] = {
 #: catalogue; each run lists them.
 CLASSES_WITHOUT_CONFORMANCE: dict[str, dict[str, str]] = {}
 
+#: Documents that state no "Included in" line: each requirement belongs to the
+#: requirements class whose Annex A section states it. The section titles map
+#: to class names.
+CLASS_BY_SECTION: dict[str, dict[str, str]] = {
+    "19-086r5": {
+        "Core": "core",
+        "Collections": "collections",
+        "Queries": "queries",
+        "JSON": "json",
+        "GeoJSON": "geojson",
+        "EDR GeoJSON": "edr-geojson",
+        "CoverageJSON": "covjson",
+        "HTML": "html",
+        "OpenAPI 3.0": "oas30",
+    },
+}
+
+#: Where the body of Annex A starts, after its table of contents.
+ANNEX_A_BODY = "This annex contains the complete requirements classes"
+
+SECTION_HEADING = re.compile(r"A\.\d+\. Requirements Class “([^”]+)”")
+
 CONFORMANCE_URI = re.compile(
     r"https?://www\.opengis\.net/spec/([a-z][a-z0-9-]*[a-z0-9])/(\d+\.\d+)/conf/"
     r"([a-z0-9][a-z0-9-]*)(?![a-z0-9/-])"
@@ -136,6 +159,67 @@ def harvest(cache: Path) -> dict[str, tuple[str, str, str, str]]:
     return catalogue
 
 
+def split_by_section(text: str, titles: dict[str, str]) -> list[tuple[str, str]]:
+    """Split the body of Annex A into the sections of its requirements classes.
+
+    Parameters
+    ----------
+    text
+        The standard, as ``text_of`` returns it.
+    titles
+        The class name of each section title, such as ``{"Core": "core"}``.
+
+    Returns
+    -------
+    list of tuple of str
+        ``(class name, section text)`` pairs, in document order.
+    """
+    start = text.find(ANNEX_A_BODY)
+    if start < 0:
+        sys.exit(f"no Annex A body: {ANNEX_A_BODY!r} not found")
+    headings = list(SECTION_HEADING.finditer(text, start))
+    sections = []
+    for index, heading in enumerate(headings):
+        title = heading.group(1)
+        if title not in titles:
+            sys.exit(f"section {title!r} has no class in CLASS_BY_SECTION")
+        end = headings[index + 1].start() if index + 1 < len(headings) else len(text)
+        sections.append((titles[title], text[heading.start() : end]))
+    return sections
+
+
+def parse_document(
+    text: str, prefix: str, version: str, document: str
+) -> list[KnownRequirement]:
+    """Read a document's requirements, by section for a document without "Included in".
+
+    Parameters
+    ----------
+    text
+        The standard, as ``text_of`` returns it.
+    prefix
+        The name of the standard in its URIs, such as ``ogcapi-edr-1``.
+    version
+        The version in its URIs, such as ``1.0``.
+    document
+        The OGC document number.
+
+    Returns
+    -------
+    list of KnownRequirement
+        The requirements, in document order.
+    """
+    titles = CLASS_BY_SECTION.get(document)
+    if titles is None:
+        return parse_requirements(text, prefix, version, document)
+    base = f"http://www.opengis.net/spec/{prefix}/{version}/conf"
+    return [
+        dataclasses.replace(requirement, conformance_class=f"{base}/{name}")
+        for name, section in split_by_section(text, titles)
+        for requirement in parse_requirements(section, prefix, version, document)
+    ]
+
+
 def harvest_requirements(
     cache: Path, catalogue: dict[str, tuple[str, str, str, str]]
 ) -> dict[str, KnownRequirement]:
@@ -150,7 +234,7 @@ def harvest_requirements(
         if len(versions) != 1:
             sys.exit(f"{document}: expected one version, found {sorted(versions)}")
         (version,) = versions
-        for requirement in parse_requirements(
+        for requirement in parse_document(
             text_of(document, cache), prefix, version, document
         ):
             name = requirement.conformance_class.rsplit("/conf/", 1)[1]

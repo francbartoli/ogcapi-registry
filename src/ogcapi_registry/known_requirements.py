@@ -946,6 +946,853 @@ KNOWN_REQUIREMENTS: dict[str, KnownRequirement] = {
             "If additionalProperties is not included or has the default value true , any property name is valid in a sorting expression on the collection that is evaluated by the server and the property reference SHALL evaluate to null , if the property does not exist for a resource. If additionalProperties is set to false, property references that are not explicitly declared in the sortables schema SHALL result in a 400 response.",
         ),
     ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/collections/rc-md-op": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/collections/rc-md-op",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "The API SHALL support the HTTP GET operation at the path /collections .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/collections/rc-md-success": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/collections/rc-md-success",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 .",
+            "The content of that response SHALL be based upon the schema collections.yaml .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/collections/src-md-op": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/collections/src-md-op",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "The API SHALL support the HTTP GET operation at the path /collections/{collectionId} .",
+            "The parameter collectionId is each id property in the resource collections response (JSONPath: $.collections[*].id ).",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/collections/src-md-success": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/collections/src-md-success",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 .",
+            "The content of that response SHALL be based upon the schema collection.yaml .",
+            "The content of that response SHALL be consistent with the content for this resource collection in the /collections response. That is, the values for id , title , description and extent SHALL be identical.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/api-definition-op": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/api-definition-op",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "The server SHALL support the HTTP GET operation on all links from the landing page which have the relation type service-desc .",
+            "The server SHALL support the HTTP GET operation on all links from the landing page which have the relation type service-doc .",
+            "The responses to all HTTP GET requests issued in A and B SHALL satisfy requirement /req/core/api-definition-success .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/api-definition-success": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/api-definition-success",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 .",
+            "The content of that response SHALL be an API Definition document.",
+            "The API Definition document SHALL be consistent with the media type identified through HTTP content negotiation. Note: The f parameter MAY be used to satisfy this requirement.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/conformance": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/conformance",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "The list of Conformance Classes advertised by the API SHALL include: A: http://www.opengis.net/spec/ogcapi-common-1/1.0/conf/core B: http://www.opengis.net/spec/ogcapi-common-2/1.0/conf/collections C: http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/conformance-success": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/conformance-success",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 .",
+            "The content of that response SHALL be based upon the schema confClasses.yaml and list all OGC API conformance classes that the API conforms to.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/crs84": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/crs84",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Unless the client explicitly requests a different coordinate reference system, all spatial geometries SHALL be in the CRS84 (WGS 84 longitude/latitude) coordinate reference system for geometries without height information and CRS84h (WGS 84 longitude/latitude plus ellipsoidal height) for geometries with height information.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/datetime-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/datetime-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "The datetime parameter SHALL have the following characteristics (using an OpenAPI Specification 3.0 fragment): name: datetime in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/datetime-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/datetime-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the datetime parameter is provided, only resources that have a temporal geometry that intersects the temporal information in the datetime parameter SHALL be part of the result set.",
+            "If a resource has multiple temporal properties, the API implementor decides whether only a single temporal property is used to determine the extent or all relevant temporal properties.",
+            "The datetime parameter SHALL match all resources in the collection that are not associated with a temporal geometry.",
+            'The temporal information is either a date-time or a time interval. The parameter value SHALL conform to the following syntax (using ABNF ): interval-closed = date-time "/" date-time interval-open-start = "../" date-time interval-open-end = date-time "/.." interval = interval-closed / interval-open-start / interval-open-end datetime = date-time / interval',
+            "The syntax of date-time is specified by RFC 3339, 5.6 .",
+            "Open ranges in time intervals at the start or end SHALL be supported using a double-dot ( .. ).",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/http": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/http",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "The API SHALL conform to HTTP 1.1 .",
+            "If the API supports HTTPS, then the API SHALL also conform to HTTP over TLS .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/rc-bbox-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/rc-bbox-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "The operation SHALL support a parameter bbox with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: bbox in: query required: false schema: oneOf: - items: minItems: 4 maxItems: 4 type: number type: array - items: minItems: 6 maxItems: 6 type: number type: array style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/rc-bbox-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/rc-bbox-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Only features that have a spatial geometry that intersects the bounding box SHALL be part of the result set, if the bbox parameter is provided.",
+            "If a feature has multiple spatial geometry properties, it is the decision of the server whether only a single spatial geometry property is used to determine the extent or all relevant geometries.",
+            "The bbox parameter SHALL match all features in the collection that are not associated with a spatial geometry, too.",
+            "The bounding box is provided as four or six numbers, depending on whether the coordinate reference system includes a vertical axis (height or depth): Lower left corner, coordinate axis 1 Lower left corner, coordinate axis 2 Minimum value, coordinate axis 3 (optional) Upper right corner, coordinate axis 1 Upper right corner, coordinate axis 2 Maximum value, coordinate axis 3 (optional)",
+            "The bounding box SHALL consist of four or six numbers, depending on whether the coordinate reference system includes a vertical axis (height or depth) and the coordinate reference system of the values SHALL be interpreted as the coordinate reference system that is specified in a parameter crs .",
+            "If the crs query parameter is not defined, the bounding box SHALL consist of four or six numbers, depending on whether the coordinate reference system includes a vertical axis (height or depth) and the coordinate reference system of the values SHALL be interpreted as the default coordinate reference system specified for the query type.",
+            "If the crs query parameter is not defined and a default crs is not defined for the query, the bounding box SHALL consist of four numbers and the coordinate reference system of the values SHALL be interpreted as WGS 84 longitude/latitude ( http://www.opengis.net/def/crs/OGC/1.3/CRS84 ).",
+            "The coordinate values SHALL be within the extent specified for the coordinate reference system.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/rc-collection-info-links": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/rc-collection-info-links",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "A 200 -response SHALL include the following links in the links property of the response: a link to this response document (relation: self ), a link to the response document in every other media type supported by the server (relation: alternate ). at least one link to a query endpoint.",
+            "All links SHALL include the rel and type link parameters.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/rc-extent": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/rc-extent",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "For each spatial resource collection, the extent property, if provided, SHALL provide bounding boxes that include all spatial geometries and time intervals that include all temporal geometries in this collection. The temporal extent may use null values to indicate an open time interval.",
+            "If a spatial resource has multiple properties with spatial or temporal information, it is the decision of the API implementation whether only a single spatial or temporal geometry property is used to determine the extent or all relevant geometries.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/rc-md-query-links": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/rc-md-query-links",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "For each collection included in the response, the links property of the collection SHALL include at least one link to a query resource (relation: data ) or an instance resource (relation: instance ).",
+            "All links SHALL include the rel and type link parameters.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/root-op": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/root-op",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=("The server SHALL support the HTTP GET operation at the path / .",),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/root-success": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/core/root-success",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 .",
+            "The content of that response SHALL be based upon the OpenAPI 3.0 schema landingPage.yaml and include at least links to the following resources: the API definition (relation type service-desc or service-doc ) /conformance (relation type conformance ) /collections (relation type data )",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/covjson/content": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/covjson/content",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/covjson",
+        document="19-086r5",
+        parts=(
+            "Every 200 -response with the media type application/prs.coverage+json SHALL be a CoverageJSON Object",
+            "The schema of all responses with the media type application/prs.coverage+json SHALL conform with the JSON Schema specified for the resource in the Core requirements class.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/covjson/definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/covjson/definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/covjson",
+        document="19-086r5",
+        parts=(
+            "200 -responses of the server SHALL support the following media types: application/prs.coverage+json for resources that include data content, and application/json for all other resources.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr-geojson/content": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr-geojson/content",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/edr-geojson",
+        document="19-086r5",
+        parts=(
+            "Every 200 -response with the media type application/geo+json SHALL be a EDR GeoJSON FeatureCollection Object for features, and a EDR GeoJSON Feature Object for a single feature.",
+            "The links specified in the requirements /req/core/rc-collection-info-links and /req/core/rc-collection-info-links SHALL be added in an extension property (foreign member) with the name links .",
+            "The parameters specified in the requirements /req/edr/rc-parameters MAY be added in an extension property (foreign member) with the name parameters .",
+            "The schema of all responses with the media type application/json SHALL conform with the JSON Schema specified for the resource in the Core requirements class.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr-geojson/definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr-geojson/definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/edr-geojson",
+        document="19-086r5",
+        parts=(
+            "200 -responses of the server SHALL support the following media types: application/geo+json for resources that include feature content, and application/json for all other resources.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-corridor-height-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-corridor-height-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each resource collection operation SHALL support a parameter corridor-height with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: corridor-height in: query required: true schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-corridor-height-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-corridor-height-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the corridor-height parameter is defined the result set SHALL contain values derived from the chosen interpolation algorithm at the number of specified intervals. corridor-height = height",
+            "The height of corridor parameter is the total height of the required corridor.",
+            "The coordinates of the coords parameter define the center point of the corridor.",
+            "If an unsupported units value is requested a 400 error should be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-corridor-width-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-corridor-width-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "The corridor-width information is the total width of the required corridor.",
+            "The supported corridor-width width units will be supplied by the query metadata information. corridor-width = width",
+            "If the width value is the total width of the corridor.",
+            "The coordinates of the coords parameter define the center point of the corridor.",
+            "If an unsupported units value is requested a 400 error should be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-crs-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-crs-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each resource collection operation SHALL support a parameter crs with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: crs in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-crs-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-crs-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the crs parameter is provided, the returned information should be reprojected (if required) to the defined coordinate system. If the crs parameter is not specified the data will be returned in its native projection.",
+            "The crs parameter SHALL consist of an identifier selected from the enumerated list of valid values supplied in the collections metadata.",
+            "If an unsupported crs value is requested a 400 error message SHOULD be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-f-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-f-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the f parameter is provided, the returned information should be transformed to the defined data format.",
+            "The f parameter SHALL consist of a string value based on an enumerated list of available options provided in the collections metadata.",
+            "If an unsupported f value is requested a 400 error message should be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-height-units-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-height-units-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each corridor resource collection operation SHALL support a parameter height-units with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: height-units in: query required: true schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-parameter-name-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-parameter-name-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each resource collection operation SHALL support a parameter parameter-name with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: parameter-name in: query required: false explode: false schema: minItems: 1 type: array items: type: string",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-width-units-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-width-units-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each corridor resource collection operation SHALL support a parameter width-units with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: width-units in: query required: true schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-within-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-within-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the within parameter is provided, all selected information within the specified radius SHALL be part of the result set.",
+            "If a within-units parameter is not provided, a 400 error WILL be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-within-units-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/REQ_rc-within-units-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "The within-units parameter defines the distance units of the within query parameter value.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/coords-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/coords-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each geometry based resource (Position, Radius, Area, Cube , Trajectory, Corridor) collection operation SHALL support a parameter coords with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: coords in: query required: true schema: type: string style: form explode: false",
+            "The coords string value will be a Well Known Text of representation geometry as defined in Simple Feature Access — Part 1: Common Architecture . The representation type will depend on the queryType of the API",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/coords-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/coords-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Only those resources that have a spatial geometry that intersects the area defined by the coords parameter SHALL be part of the result set.",
+            "The coordinates SHALL consist of a Well Known Text (WKT) geometry string.",
+            'The coordinate reference system of the values SHALL be interpreted as WGS84 longitude/latitude WKT: GEOGCS["WGS 84", DATUM["WGS_1984", SPHEROID["WGS 84", 6378137, 298.257223563, AUTHORITY["EPSG", "7030"]], AUTHORITY["EPSG", "6326"]], PRIMEM["Greenwich", 0 , AUTHORITY["EPSG", "8901"]], UNIT["degree", 0.01745329251994328, AUTHORITY["EPSG", "9122"]], AUTHORITY["EPSG", "4326"]] unless a different coordinate reference system is specified in a parameter crs .',
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/corridor-width-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/corridor-width-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each resource collection operation SHALL support a parameter `corridor-width`with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: corridor-width in: query required: true schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/cube-z-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/cube-z-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the z parameter is provided, only resources that have a vertical geometry that intersects the vertical information in the z parameter SHALL be part of the result set.",
+            "The z can be defined as a height range by specifying a min-level and max-level separated by a forward slash “/”",
+            "A list of z can be defined by specifying a comma delimited list of values level1, level2, level3 etc",
+            "An Arithmetic sequence using Recurring height intervals can be specified by R number of intervals / min height / height interval",
+            "If the z parameter is not provided, the server SHOULD return data at all available vertical levels",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/height-units-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/height-units-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the height-units parameter is defined the result set SHALL contain values derived based on the chosen units. height-units = units",
+            "If an unsupported units value is requested a 400 error should be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/parameter-name-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/parameter-name-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the parameter-name parameter is provided, only those parameters named SHALL be returned. If the parameter-name parameter is not specified all parameters in the collection SHALL be returned.",
+            "The parameter-name parameter SHALL consist of a comma delimited string value based on an enumerated list of options listed in the collections metadata.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-area": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-area",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/queries",
+        document="19-086r5",
+        parts=(
+            "For every collection identified in the feature collections response (path /collections ), the server MAY support the HTTP GET operation at the path /collections/{collectionId}/area .",
+            "The parameter collectionId is each id property in the collections response (JSONPath: $.collections[*].id ).",
+            "An area GET operation MUST include a coords query parameter",
+            "If the coords query parameter is not specified a HTTP 400 error should be generated",
+            "An area GET operation MAY include a z query parameter",
+            "An area GET operation SHOULD include a parameter-name query parameter",
+            "An area GET operation MAY include a datetime query parameter",
+            "An area GET operation SHOULD include a crs query parameter",
+            "An area GET operation SHOULD include an f query parameter",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-collection-info": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-collection-info",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "Every Collection within a collections array MUST have a unique (within the array) id parameter.",
+            "Every Collection within a collections array SHOULD have a title parameter.",
+            "Every Collection within a collections array SHOULD have a description parameter.",
+            "Every Collection within a collections array SHOULD have a Keywords parameter containing an array of values with describe the collection.",
+            "Every Collection within a collections array MUST have a links parameter which must comply with the requirement /req/core/rc-collection-info-links .",
+            "Every Collection within a collections array MUST have a data_queries parameter which must comply with the requirement /req/edr/rc-data-queries .",
+            "Every Collection within a collections array MUST have an extent parameter which must comply with the requirement /req/core/rc-extent .",
+            "Every Collection within a collections array MUST have a crs parameter which must comply with the requirement /req/edr/rc-crs .",
+            "Every Collection within a collections array MUST have an output_formats parameter containing an array of values with describe the output formats supported by the collection.",
+            "Every Collection within a collections array MUST have a parameter_names parameter containing a list of parameters must comply with the requirement /req/edr/rc-parameters .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-common-query-type": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-common-query-type",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "A data_queries object MUST include a link property",
+            "A link property MUST include an href property",
+            "A link property MUST include a rel property",
+            "A link property MUST include a variables property",
+            "if the attribute type has the value position verify the variables property complies with /req/edr/rc-common-variables if the attribute type has the value radius verify the variables property complies with /req/edr/rc-radius-variables if the attribute type has the value area verify the variables property complies with /req/edr/rc-common-variables if the attribute type has the value cube verify the variables property complies with /req/edr/rc-cube-variables if the attribute type has the value trajectory verify the variables property complies with /req/edr/rc-common-variables if the attribute type has the value corridor verify the variables property complies with /req/edr/rc-corridor-variables if the attribute type has the value items verify the variables property complies with /req/edr/rc-items-variables if the attribute type has the value locations verify the variables property complies with /req/edr/rc-common-variables",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-common-variables": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-common-variables",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "A variables property MUST include a query_type property with a value which matches the query type name.",
+            "A variables property MAY include a title property of type string",
+            "A variables property MAY include an output_formats property which MUST be a string array",
+            "A variables property SHOULD include a default_output_format property of type string",
+            "If a default_output_format property exists the defined value MUST be a value contained either in the output_formats defined in the variables section or in the parent collection output_formats .",
+            "A variables property MAY include a crs_details property which MUST be an array of objects.",
+            "Objects in a crs_details array MUST have a crs and wkt property both of which are of type string.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-corridor": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-corridor",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/queries",
+        document="19-086r5",
+        parts=(
+            "For every collection identified in the collections response (path /collections ), the server MAY support the HTTP GET operation at the path /collections/{collectionId}/corridor .",
+            "The parameter collectionId is each id property in the collections response (JSONPath: $.collections[*].id ).",
+            "A corridor GET operation MUST include a coords query parameter",
+            "If the coords query parameter is not specified a HTTP 400 error should be generated",
+            "A corridor GET operation MUST include a corridor-width query parameter",
+            "If the corridor-width query parameter is not specified a HTTP 400 error should be generated",
+            "A corridor GET operation MUST include a corridor-height query parameter",
+            "If the corridor-height query parameter is not specified a HTTP 400 error should be generated",
+            "A corridor GET operation MUST include a width-units query parameter",
+            "If the width-units query parameter is not specified a HTTP 400 error should be generated",
+            "If the width-units query parameter value is not one of the supported values a HTTP 400 error should be generated",
+            "A corridor GET operation MUST include a height-units query parameter",
+            "If the height-units query parameter is not specified a HTTP 400 error should be generated",
+            "If the height-units query parameter value is not one of the supported values a HTTP 400 error should be generated",
+            "A corridor GET operation MAY include a z query parameter",
+            "A corridor GET operation SHOULD include a parameter-name query parameter",
+            "A corridor GET operation MAY include a datetime query parameter",
+            "A corridor GET operation SHOULD include a crs query parameter",
+            "A corridor GET operation SHOULD include an f query parameter",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-corridor-variables": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-corridor-variables",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "A corridor data_queries object variables property MUST comply with the requirement /req/edr/rc-variables-common .",
+            "A corridor data_queries object variables property MUST include a height_units property which MUST be a string array",
+            "A corridor data_queries object variables property MUST include a width_units property which MUST be a string array",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-crs": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-crs",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "A crs object MUST have a unique (to the collection) name property, it MAY be an EPSG code.",
+            "A crs object MUST have a wkt property which MUST be a correctly structured Well Known Text definition for the CRS.",
+            "A crs object MAY have a proj4 property which MAY be a correctly structured proj4 definition for the CRS (and MUST be equivalent to the wkt property).",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-cube": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-cube",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/queries",
+        document="19-086r5",
+        parts=(
+            "For every collection identified in the collections response (path /collections ), the server MAY support the HTTP GET operation at the path /collections/{collectionId}/cube .",
+            "The parameter collectionId is each id property in the collections response (JSONPath: $.collections[*].id ).",
+            "A cube GET operation MUST include a bbox query parameter",
+            "A bbox query parameter SHOULD only consist of four values, any vertical values defined by bbox will be overridden by the values assigned to the z query parameter",
+            "If the bbox query parameter is not specified a HTTP 400 error should be generated",
+            "A cube GET operation MUST include a z query parameter",
+            "If the z query parameter is not specified a HTTP 400 error should be generated",
+            "A cube GET operation SHOULD include a parameter-name query parameter",
+            "A cube GET operation MAY include a datetime query parameter",
+            "A cube GET operation SHOULD include a crs query parameter",
+            "A cube GET operation SHOULD include an f query parameter",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-cube-variables": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-cube-variables",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "A cube data_queries object variables property MUST comply with the requirement /req/edr/rc-variables-common .",
+            "A cube data_queries object variables property MUST include a height_units property which MUST be a string array",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-data-queries": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-data-queries",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "A data_queries object MUST have a least one of the following query data types defined: position radius area cube trajectory corridor items locations",
+            "All query types defined in the data_queries object MUST comply with the requirement /req/edr/rc-common-query-type",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-f-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-f-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each resource collection operation SHALL support a parameter f with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: f in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-items": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-items",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/queries",
+        document="19-086r5",
+        parts=(
+            "For every collection identified in the collections response (path /collections ), the server MAY support the HTTP GET operation at the path /collections/{collectionId}/items .",
+            "The parameter collectionId is each id property in the feature collections response (JSONPath: $.collections[*].id ).",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-items-variables": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-items-variables",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "An items data_queries object variables property MUST include a query_type property the value of which MUST match the query type",
+            "An items data_queries object variables property MAY include a title property of type string",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-locations": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-locations",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/queries",
+        document="19-086r5",
+        parts=(
+            "For every collection identified in the collections response (path /collections ), the server MAY support the HTTP GET operation at the path /collections/{collectionId}/locations .",
+            "The parameter collectionId is each id property in the feature collections response (JSONPath: $.collections[*].id ).",
+            "If a locationId is not specified a list of valid locationId’s MUST be returned with a description of their geospatial extent.",
+            "A locations GET operation SHOULD include a parameter-name query parameter",
+            "A locations GET operation MAY include a datetime query parameter",
+            "A locations GET operation SHOULD include a crs query parameter",
+            "A locations GET operation SHOULD include an f query parameter",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-parameters": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-parameters",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "A parameter object MAY have any number of members (name/value pairs).",
+            "A parameter object MUST have a member with the name “type” and the value “Parameter”.",
+            "A parameter object MAY have a member with the name “id” where the value MUST be a string and SHOULD be a common identifier.",
+            "A parameter object MAY have a member with the name “label” where the value MUST be an i18n object that is the name of the parameter and which SHOULD be short. Note that this SHOULD be left out if it would be identical to the “label” of the “observedProperty” member.",
+            "A parameter object MAY have a member with the name “description” where the value MUST be an i18n object which is a, perhaps lengthy, textual description of the parameter.",
+            "A parameter object MUST have a member with the name “observedProperty” where the value is an object which MUST have the members “label” and “id” and which MAY have the members “description”, and “categories”. The value of “label” MUST be an i18n object that is the name of the observed property and which SHOULD be short. The value of “id” MUST be a string and SHOULD be a common identifier. If given, the value of “description” MUST be an i18n object with a textual description of the observed property. If given, the value of “categories” MUST be a non-empty array of category objects. A category object MUST an “id” and a “label” member, and MAY have a “description” member. The value of “id” MUST be a valid URI string and SHOULD resolve to more detailed information. The value of “label” MUST be an i18n object of the name of the category and SHOULD be short. If given, the value of “description” MUST be an i18n object with a textual description of the category.",
+            "A parameter object MAY have a member with the name “categoryEncoding” where the value is an object where each key is equal to an “id” value of the “categories” array within the “observedProperty” member of the parameter object. There MUST be no duplicate keys. The value is either an integer or an array of integers where each integer MUST be unique within the object.",
+            "A parameter object MAY have a member with the name “unit” where the value is an object which MUST have either or both the members “label” or/and “symbol”, and which MAY have the member “id”. If given, the value of “symbol” MUST either be a string of the symbolic notation of the unit, or an object with the members “value” and “type” where “value” is the symbolic unit notation and “type” references the unit serialization scheme that is used. “type” MUST HAVE the value “http://www.opengis.net/def/uom/UCUM/” if UCUM is used, or a custom value as recommended in section “Extensions”. If given, the value of “label” MUST be an i18n object of the name of the unit and SHOULD be short. If given, the value of “id” MUST be a string and SHOULD be a common identifier. It is RECOMMENDED to reference a unit serialization scheme to allow automatic unit conversion.",
+            "A parameter object MUST NOT have a “unit” member if the “observedProperty” member has a “categories” member.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-radius-variables": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-radius-variables",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/collections",
+        document="19-086r5",
+        parts=(
+            "A variables property MUST comply with the requirement /req/edr/rc-variables-common .",
+            "A variables property MUST include a within_units property which MUST be a string array",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-trajectory": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/rc-trajectory",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/queries",
+        document="19-086r5",
+        parts=(
+            "For every collection identified in the collections response (path /collections ), the server MAY support the HTTP GET operation at the path /collections/{collectionId}/trajectory .",
+            "The parameter collectionId is each id property in the collections response (JSONPath: $.collections[*].id ).",
+            "A trajectory GET operation MUST include a coords query parameter",
+            "If the coords query parameter is not specified a HTTP 400 error should be generated",
+            "A trajectory GET operation MAY include a z query parameter",
+            "A trajectory GET operation SHOULD include a parameter-name query parameter",
+            "A trajectory GET operation MAY include a datetime query parameter",
+            "A trajectory GET operation SHOULD include a crs query parameter",
+            "A trajectory GET operation SHOULD include an f query parameter",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-x-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-x-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each resource collection operation MAY support a parameter resolution-x with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: resolution-x in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-x-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-x-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the resolution-x parameter is provided, it denotes the number of positions to retrieve data for, across the width of the corridor path, including its minimum and maximum width coordinates.",
+            "A resolution-x value of 0 SHALL return all available data at the stored resolution between (and including) the minimum and maximum coordinates of the defined corridor.",
+            "If resolution-x is not specified, the API SHOULD return all available data at a resolution determined by the server, including the minimum and maximum coordinates of the defined corridor. resolution-x = number of intervals + 1",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-y-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-y-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each resource collection operation MAY support a parameter resolution-y with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: resolution-y in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-y-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-y-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the resolution-y parameter is provided, denotes the number of intervals to retrieve data for along the path between the minimum and maximum y coordinates",
+            "The total number of intervals includes the values for the minimum and maximum coordinates",
+            "A resolution-y value of 0 MUST return all available data at the native y resolution between the minimum and maximum coordinates",
+            "IF resolution-y is not specified, data should be returned for just the locations specified in the requested coordinates ( ONLY IF interpolation is supported by the API) resolution-y = number of intervals",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-z-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-z-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each resource collection operation MAY support a parameter resolution-z with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: resolution-z in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-z-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/resolution-z-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the resolution-z parameter is provided, it denotes the number of positions to retrieve data for, over the depth of the corridor path including its minimum and maximum width coordinates.",
+            "A resolution-z value of 0 SHALL return all available data at the stored vertical resolution between (and including) the minimum and maximum coordinates of the defined corridor.",
+            "If resolution-z is not specified the API SHOULD return all available data at a resolution determined by the server, including the minimum and maximum coordinates of the defined corridor. resolution-z = number of intervals + 1",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/width-units-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/width-units-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the width-units parameter is defined the result set SHALL contain values derived based on the chosen units. width-units = units",
+            "If an unsupported units value is requested a 400 error should be returned.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/within-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/within-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each resource collection operation MAY support a parameter within with the following characteristics (using an OpenAPI Specification 3.0 fragment):",
+            "If the instance metadata does not provide within-units values the API SHALL NOT support within queries: name: within in: query required: true schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/within-units-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/within-units-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each resource collection operation MAY support a parameter within-units with the following characteristics (using an OpenAPI Specification 3.0 fragment):",
+            "A within-units value MUST be one of the values defined in the instance metadata: name: within-units in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/z-definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/z-definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "Each resource collection operation MAY support a parameter z with the following characteristics (using an OpenAPI Specification 3.0 fragment): name: z in: query required: false schema: type: string style: form explode: false",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/z-response": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/edr/z-response",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/core",
+        document="19-086r5",
+        parts=(
+            "If the z parameter is provided, only resources that have a vertical geometry that intersects the vertical information in the z parameter SHALL be part of the result set.",
+            "The z can be defined as a height range by specifying a min-level and max-level separated by a forward slash “/”",
+            "A list of z can be defined be specifying a comma delimited list of values level1, level2, level3 etc",
+            "An Arithmetic sequence using Recurring height intervals can be specified by R number of intervals / min height / height interval",
+            "If the z parameter is not provided, the server SHOULD return data at all available vertical levels",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/geojson/content": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/geojson/content",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/geojson",
+        document="19-086r5",
+        parts=(
+            "Every 200 -response with the media type application/geo+json SHALL be a GeoJSON FeatureCollection Object for features, and a GeoJSON Feature Object for a single feature.",
+            "The links specified in the requirements /req/core/rc-collection-info-links and /req/core/rc-collection-info-links SHALL be added in an extension property (foreign member) with the name links .",
+            "The parameters specified in the requirements /req/edr/rc-parameters MAY be added in an extension property (foreign member) with the name parameters .",
+            "The schema of all responses with the media type application/json SHALL conform with the JSON Schema specified for the resource in the Core requirements class.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/geojson/definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/geojson/definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/geojson",
+        document="19-086r5",
+        parts=(
+            "200 -responses of the server SHALL support the following media types: application/geo+json for resources that include feature content, and application/json for all other resources.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/html/content": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/html/content",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/html",
+        document="19-086r5",
+        parts=(
+            "Every 200 -response of the server with the media type text/html SHALL be a HTML 5 document that includes the following information in the HTML body: all information identified in the schemas of the Response Object in the HTML <body> , and all links in HTML <a> elements in the HTML <body> .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/html/definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/html/definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/html",
+        document="19-086r5",
+        parts=(
+            "Every 200 -response of an operation of the server SHALL support the media type text/html .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/instances/rc-md-op": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/instances/rc-md-op",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/queries",
+        document="19-086r5",
+        parts=(
+            "The API MAY support the HTTP GET operation at the path /collections/{collection_id}/instances .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/instances/rc-md-success": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/instances/rc-md-success",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/queries",
+        document="19-086r5",
+        parts=(
+            "A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/instances/src-md-op": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/instances/src-md-op",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/queries",
+        document="19-086r5",
+        parts=(
+            "The API SHALL support the HTTP GET operation at the path /collections/{collectionId}/instances/{instanceId} .",
+            "The parameter collectionId is each id property in the resource collections response (JSONPath: $.collections[*].id ) and instanceId is each id property of instances of the chosen collection.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/instances/src-md-success": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/instances/src-md-success",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/queries",
+        document="19-086r5",
+        parts=(
+            "A successful execution of the operation SHALL be reported as a response with a HTTP status code 200 .",
+            "The content of that response SHALL be based upon the JSON schema instances.yaml .",
+            "The content of that response SHALL be consistent with the content for this resource collection in the /collections response. That is, the values for id , title , description and extent SHALL be identical.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/json/content": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/json/content",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/json",
+        document="19-086r5",
+        parts=(
+            "Every 200 -response with the media type application/json SHALL be a payload encoded according to the JSON Interchange Format .",
+            "The links specified in the requirements /req/core/rc-collection-info-links and /req/core/rc-collection-info-links MAY be added in an extension property (foreign member) with the name links .",
+            "The parameters specified in the requirements /req/edr/rc-parameters MAY be added in an extension property (foreign member) with the name parameters .",
+            "The schema of all responses with the media type application/json SHALL conform with the JSON Schema specified for the resource in the Core requirements class.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/json/definition": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/json/definition",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/json",
+        document="19-086r5",
+        parts=(
+            "200 -responses of the server SHALL support the following media types: application/json for all resources.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/completeness": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/completeness",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/oas30",
+        document="19-086r5",
+        parts=(
+            "The OpenAPI definition SHALL specify for each operation all HTTP Status Codes and Response Objects that the API uses in responses.",
+            "This includes the successful execution of an operation as well as all error situations that originate from the server.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/exceptions-codes": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/exceptions-codes",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/oas30",
+        document="19-086r5",
+        parts=(
+            "For error situations that originate from an API server, the API definition SHALL cover all applicable HTTP Status Codes.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/oas-definition-1": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/oas-definition-1",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/oas30",
+        document="19-086r5",
+        parts=(
+            "The content of the response of the HTTP GET operation at the landing page SHALL include the following links to the API definition: relation type service-desc and content type application/vnd.oai.openapi+json;version=3.0 , relation type service-doc and content type text/html .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/oas-definition-2": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/oas-definition-2",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/oas30",
+        document="19-086r5",
+        parts=(
+            "The JSON representation SHALL conform to the OpenAPI Specification, version 3.0 .",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/oas-impl": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/oas-impl",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/oas30",
+        document="19-086r5",
+        parts=(
+            "The server SHALL implement all capabilities specified in the OpenAPI definition.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/security": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/oas30/security",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/oas30",
+        document="19-086r5",
+        parts=(
+            "For cases, where the operations of the API are access-controlled, the security scheme(s) and requirements SHALL be documented in the OpenAPI definition.",
+        ),
+    ),
+    "http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/queries/position": KnownRequirement(
+        uri="http://www.opengis.net/spec/ogcapi-edr-1/1.0/req/queries/position",
+        conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.0/conf/queries",
+        document="19-086r5",
+        parts=(
+            "For every collection identified in the feature collections response (path /collections ), the server MAY support the HTTP GET operation at the path /collections/{collectionId}/position .",
+            "The parameter collectionId is each id property in the collections response (JSONPath: $.collections[*].id ).",
+            "A position GET operation MUST include a coords query parameter",
+            "If the coords query parameter is not specified a HTTP 400 error should be generated",
+            "A position GET operation MAY include a z query parameter",
+            "A position GET operation SHOULD include a parameter-name query parameter",
+            "A position GET operation MAY include a datetime query parameter",
+            "A position GET operation SHOULD include a crs query parameter",
+            "A position GET operation SHOULD include an f query parameter",
+        ),
+    ),
     "http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/collections/rc-md-op": KnownRequirement(
         uri="http://www.opengis.net/spec/ogcapi-edr-1/1.1/req/collections/rc-md-op",
         conformance_class="http://www.opengis.net/spec/ogcapi-edr-1/1.1/conf/collections",

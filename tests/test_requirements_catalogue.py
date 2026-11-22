@@ -18,6 +18,7 @@ HEADERS = {
     "19-079r2": 18,
     "20-057": 33,
     "18-062r2": 82,
+    "19-086r5": 85,
     "19-086r6": 90,
     "20-058": 63,
     "21-065r2": 41,
@@ -28,6 +29,7 @@ HEADERS = {
 #: Requirements stated in a requirements class that has no conformance class.
 LEFT_OUT: dict[str, int] = {}
 
+EDR_10 = "http://www.opengis.net/spec/ogcapi-edr-1/1.0"
 EDR_11 = "http://www.opengis.net/spec/ogcapi-edr-1/1.1"
 
 
@@ -108,3 +110,35 @@ def test_edr_11_query_parameters_belong_to_queries():
         f"{EDR_11}/req/edr/resolution-x-definition",
         f"{EDR_11}/req/queries/position",
     } <= uris
+
+
+def test_edr_10_requirements_take_the_class_of_their_section():
+    names = (
+        "core",
+        "collections",
+        "queries",
+        "json",
+        "geojson",
+        "edr-geojson",
+        "covjson",
+        "html",
+        "oas30",
+    )
+
+    counts = {name: len(list_requirements(f"{EDR_10}/conf/{name}")) for name in names}
+
+    assert counts == {
+        "core": 41,
+        "collections": 17,
+        "queries": 11,
+        "json": 2,
+        "geojson": 2,
+        "edr-geojson": 2,
+        "covjson": 2,
+        "html": 2,
+        "oas30": 6,
+    }
+    queries = {r.uri for r in list_requirements(f"{EDR_10}/conf/queries")}
+    assert f"{EDR_10}/req/instances/rc-md-op" in queries
+    core = {r.uri for r in list_requirements(f"{EDR_10}/conf/core")}
+    assert {f"{EDR_10}/req/core/crs84", f"{EDR_10}/req/edr/z-definition"} <= core
